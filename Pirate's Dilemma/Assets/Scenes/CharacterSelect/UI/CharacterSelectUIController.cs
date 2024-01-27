@@ -82,7 +82,6 @@ public class CharacterSelectUIController : MonoBehaviour
         newReadyUpHover.style.left =
             screen.x;// - (newReadyUpHover.Q<VisualElement>("root").layout.width / 2);
         newReadyUpHover.style.top = (Screen.height - screen.y);// + 200;
-        Debug.Log($"screen: {screen}. Resolved Style: {newReadyUpHover.resolvedStyle.left}, {newReadyUpHover.resolvedStyle.top}");
 
         PlayerInput input = PlayerSystem.Instance.m_playerInputObjects[newPlayerNum - 1];
 
@@ -150,9 +149,6 @@ public class CharacterSelectUIController : MonoBehaviour
     private IEnumerator StartGameCountdown()
     {
         yield return new WaitForSeconds(m_startGameCountdownSeconds);
-
-        SceneManager.sceneLoaded += PlayerSystem.Instance.OnGameSceneLoaded;
         SceneManager.LoadScene(m_gameSceneToLoadName);
-        
     }
 }

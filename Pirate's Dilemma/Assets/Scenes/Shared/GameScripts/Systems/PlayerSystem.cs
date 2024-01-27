@@ -54,7 +54,8 @@ public class PlayerSystem : MonoBehaviour
 
     private void Start()
     {
-        this.SetPlayerSpawnPositions();
+        SetPlayerSpawnPositions();
+        SceneManager.sceneLoaded += OnGameSceneLoaded;
     }
 
     private void SetPlayerSpawnPositions()
@@ -140,8 +141,11 @@ public class PlayerSystem : MonoBehaviour
         }
     }
 
-    public void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        //only call the callback for the next scene loaded.
+        SceneManager.sceneLoaded -= OnGameSceneLoaded;
+        
         if (GameStartSystem.Instance.m_levelSceneNames.Contains(scene.name))
         {
             //get spawn positions from gameobject in scene with special tags.

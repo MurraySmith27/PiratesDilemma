@@ -323,7 +323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_screenSpaceUIDoc: {fileID: 310474083}
-  m_gameSceneToLoadName: Level1
+  m_gameSceneToLoadName: 2v2Level
   m_readyUpHover: {fileID: 9197481963319205126, guid: c53cdccbf2a72f449aed808be412b57f,
     type: 3}
   m_renderTextureQuads:
@@ -565,7 +565,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_characterSelectSceneName: CharacterSelect
   m_levelSceneNames:
-  - Level1
+  - 2v2Level
 --- !u!4 &1660667910
 Transform:
   m_ObjectHideFlags: 0
