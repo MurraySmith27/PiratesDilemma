@@ -13,7 +13,9 @@ public class CharacterSelectUIController : MonoBehaviour
     [SerializeField] private UIDocument m_screenSpaceUIDoc;
     private VisualElement m_root;
 
-    private VisualTreeAsset m_readyUpHover;
+    public string m_gameSceneToLoadName;
+
+    [SerializeField] private VisualTreeAsset m_readyUpHover;
 
     private List<VisualElement> m_pressToJoinElements;
     private List<VisualElement> m_readyUpHoverElements;
@@ -24,7 +26,7 @@ public class CharacterSelectUIController : MonoBehaviour
     [SerializeField] private Sprite m_controllerReadyUpIcon;
     [SerializeField] private Sprite m_keyboardReadyUpIcon;
 
-    private List<bool> m_readyPlayers = new List<bool>();
+    private List<bool> m_readyPlayers;
 
     private List<InputAction> m_readyUpActions;
 
@@ -33,13 +35,13 @@ public class CharacterSelectUIController : MonoBehaviour
     
     void Awake()
     {
-        m_root = m_screenSpaceUIDoc.rootVisualElement;
+        m_root = m_screenSpaceUIDoc.rootVisualElement.Q<VisualElement>("root");
         m_docs = new List<UIDocument>();
 
         m_pressToJoinElements = new List<VisualElement>();
         m_readyUpHoverElements = new List<VisualElement>();
         m_readyUpActions = new List<InputAction>();
-        m_readyUpHover = Resources.Load<VisualTreeAsset>("ReadyUpHover");
+        m_readyPlayers = new List<bool>();
     }
 
     void Start()
@@ -59,8 +61,8 @@ public class CharacterSelectUIController : MonoBehaviour
             m_renderTextureQuads[i].transform.position = new Vector3(quadWidthScale * (i - 1.5f), currentPos.y, currentPos.z);
             
             m_docs.Add(m_renderTextureQuads[i].GetComponent<UIDocument>());
+            
             m_pressToJoinElements.Add(m_docs[i].rootVisualElement);
-
             m_pressToJoinElements[i].Q<Label>("player-label").text = $"Player {i + 1}";
         }
         
@@ -77,10 +79,10 @@ public class CharacterSelectUIController : MonoBehaviour
         m_root.Add(newReadyUpHover);
         
         Vector3 screen = Camera.main.WorldToScreenPoint(m_renderTextureQuads[newPlayerNum - 1].transform.position);
-       // newReadyUpHover.style.left =
-        //    screen.x;// - (newReadyUpHover.layout.width / 2) + 50;
-        //newReadyUpHover.style.top = (Screen.height - screen.y);// + 50;
-        //Debug.Log($"screen: {screen}. Resolved Style: {newReadyUpHover.resolvedStyle.left}, {newReadyUpHover.resolvedStyle.top}");
+        newReadyUpHover.style.left =
+            screen.x;// - (newReadyUpHover.Q<VisualElement>("root").layout.width / 2);
+        newReadyUpHover.style.top = (Screen.height - screen.y);// + 200;
+        Debug.Log($"screen: {screen}. Resolved Style: {newReadyUpHover.resolvedStyle.left}, {newReadyUpHover.resolvedStyle.top}");
 
         PlayerInput input = PlayerSystem.Instance.m_playerInputObjects[newPlayerNum - 1];
 
@@ -149,11 +151,8 @@ public class CharacterSelectUIController : MonoBehaviour
     {
         yield return new WaitForSeconds(m_startGameCountdownSeconds);
 
-        SceneManager.LoadScene("MainGame");
-        
-        //when scene loaded
-
-        SceneManager.sceneLoaded += GameStartSystem.Instance.StartGame;
         SceneManager.sceneLoaded += PlayerSystem.Instance.OnGameSceneLoaded;
+        SceneManager.LoadScene(m_gameSceneToLoadName);
+        
     }
 }

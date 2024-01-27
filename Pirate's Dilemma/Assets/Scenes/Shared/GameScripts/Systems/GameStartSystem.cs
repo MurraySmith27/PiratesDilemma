@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,9 +9,6 @@ using UnityEngine.SceneManagement;
 public delegate void OnGameStart();
 public class GameStartSystem : MonoBehaviour
 {
-
-    private static GameStartSystem m_instance;
-
     public static GameStartSystem Instance
     {
         get
@@ -18,10 +16,17 @@ public class GameStartSystem : MonoBehaviour
             return m_instance;
         }
     }
+
+    [SerializeField] private string m_characterSelectSceneName;
+
+    public List<string> m_levelSceneNames;
+
+    private static GameStartSystem m_instance;
+
+    public OnGameStart m_onGameStart;
     
-    public OnGameStart onGameStart;
     
-    void Start()
+    void Awake()
     {
         if (m_instance != null && m_instance != this)
         {
@@ -33,6 +38,16 @@ public class GameStartSystem : MonoBehaviour
         }
         
         DontDestroyOnLoad(this.gameObject);
+
+        //idea here is that the scene manager only wants to register the callback if loading into player select screen.
+        if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
+        {
+            SceneManager.sceneLoaded -= StartGame;
+        }
+        else if (SceneManager.GetActiveScene().name == m_characterSelectSceneName)
+        {
+            SceneManager.sceneLoaded += StartGame;
+        }
     }
 
     public void StartGame(Scene scene, LoadSceneMode mode)
@@ -43,7 +58,10 @@ public class GameStartSystem : MonoBehaviour
 
             player.GetComponent<PlayerDataController>().m_playerNum = i;
         }
-        
-        onGameStart();
+
+        if (m_onGameStart?.GetInvocationList()?.Length > 0)
+        {
+            m_onGameStart();
+        }
     }
 }

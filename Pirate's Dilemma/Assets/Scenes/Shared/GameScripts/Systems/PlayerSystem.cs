@@ -5,6 +5,7 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using Debug = UnityEngine.Debug;
 
 
 public delegate void OnPlayerJoin(int newPlayerNum);
@@ -17,10 +18,10 @@ public class PlayerSystem : MonoBehaviour
     {
         get { return _instance; }
     }
-
-    [SerializeField] private List<Transform> m_playerSpawnPositions = new List<Transform>(4);
     
-    public List<Color> m_playerColors = new List<Color>(4);
+    private List<Transform> m_playerSpawnPositions;
+    
+    public List<Color> m_playerColors;
     
     public int m_maxNumPlayers = 4;
 
@@ -31,7 +32,7 @@ public class PlayerSystem : MonoBehaviour
     
     [HideInInspector]
     public List<PlayerInput> m_playerInputObjects;
-
+    
     public OnPlayerJoin m_onPlayerJoin;
     
     private void Awake()
@@ -49,6 +50,22 @@ public class PlayerSystem : MonoBehaviour
         m_playerInputObjects = new List<PlayerInput>(m_maxNumPlayers);
         
         DontDestroyOnLoad(this.gameObject);    
+    }
+
+    private void Start()
+    {
+        this.SetPlayerSpawnPositions();
+    }
+
+    private void SetPlayerSpawnPositions()
+    {
+        m_playerSpawnPositions = new List<Transform>(new Transform[]
+        {
+            GameObject.FindGameObjectWithTag("P1Spawn").transform,
+            GameObject.FindGameObjectWithTag("P2Spawn").transform,
+            GameObject.FindGameObjectWithTag("P3Spawn").transform,
+            GameObject.FindGameObjectWithTag("P4Spawn").transform
+        });
     }
 
     public void OnPlayerJoined(PlayerInput playerInput)
@@ -125,10 +142,12 @@ public class PlayerSystem : MonoBehaviour
 
     public void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainGame")
+        if (GameStartSystem.Instance.m_levelSceneNames.Contains(scene.name))
         {
+            //get spawn positions from gameobject in scene with special tags.
+            SetPlayerSpawnPositions();
+            
             //move players to spawn positions
-
             for (int i = 0; i < m_numPlayers; i++)
             {
                 GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
