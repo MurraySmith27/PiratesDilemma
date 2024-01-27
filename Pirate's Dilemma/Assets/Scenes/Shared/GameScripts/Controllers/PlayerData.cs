@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerDataController : MonoBehaviour
+public class PlayerData : MonoBehaviour
 {
     public int m_playerNum;
+    public int m_teamNum;
 }

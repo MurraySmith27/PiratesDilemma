@@ -56,7 +56,10 @@ public class GameStartSystem : MonoBehaviour
         {
             GameObject player = PlayerSystem.Instance.m_playerInputObjects[i].gameObject;
 
-            player.GetComponent<PlayerDataController>().m_playerNum = i;
+            PlayerData playerData = player.GetComponent<PlayerData>();
+
+            playerData.m_playerNum = i;
+            playerData.m_teamNum = PlayerSystem.Instance.m_playerTeamAssignments[i];
         }
 
         if (m_onGameStart?.GetInvocationList()?.Length > 0)

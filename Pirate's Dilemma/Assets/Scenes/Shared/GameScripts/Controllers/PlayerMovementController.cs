@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(PlayerInput), typeof(PlayerDataController), typeof(GoldController))]
+[RequireComponent(typeof(PlayerInput), typeof(PlayerData), typeof(PlayerGoldController))]
 public class PlayerMovementController : MonoBehaviour
 {
     [SerializeField] private float m_speed;
     
-    private GoldController m_goldController;
+    private PlayerGoldController _mPlayerGoldController;
     private PlayerInput m_playerInput;
 
     private InputAction m_moveAction;
@@ -20,7 +20,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (m_intialized)
         {
-            float speed = m_speed * ((100 - 2 * m_goldController.goldCarried) / 100f);
+            float speed = m_speed * ((100 - 2 * _mPlayerGoldController.goldCarried) / 100f);
             Vector2 moveVector = m_moveAction.ReadValue<Vector2>().normalized * speed;
             transform.Translate(new Vector3(moveVector.x, 0f, moveVector.y));
         }
@@ -28,7 +28,7 @@ public class PlayerMovementController : MonoBehaviour
 
     void OnGameStart()
     {
-        m_goldController = GetComponent<GoldController>();
+        _mPlayerGoldController = GetComponent<PlayerGoldController>();
         m_playerInput = GetComponent<PlayerInput>();
         
         m_moveAction = m_playerInput.actions["Move"];

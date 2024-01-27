@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-[RequireComponent(typeof(PlayerInput), typeof(PlayerDataController))]
-public class GoldController : MonoBehaviour
+[RequireComponent(typeof(PlayerInput), typeof(PlayerData))]
+public class PlayerGoldController : MonoBehaviour
 {
     
     private PlayerInput m_playerInput;
@@ -78,11 +78,11 @@ public class GoldController : MonoBehaviour
         {
             GameObject boat = MaybeFindNearestBoat();
             
-            if (boat && boat.GetComponent<BoatController>().acceptingGold)
+            if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
             {
                 Destroy(spawnedGold);
                 goldPrefabSpawned = false;
-                boat.GetComponent<BoatController>().AddGold(goldCarried, GetComponent<PlayerDataController>().m_playerNum);
+                boat.GetComponent<BoatGoldController>().AddGold(goldCarried, GetComponent<PlayerData>().m_teamNum);
                 goldCarried = 0;
                 
             }

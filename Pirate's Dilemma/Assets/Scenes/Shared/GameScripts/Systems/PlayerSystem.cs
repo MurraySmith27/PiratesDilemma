@@ -25,13 +25,15 @@ public class PlayerSystem : MonoBehaviour
     
     public int m_maxNumPlayers = 4;
 
-    [HideInInspector]
-    public int m_numPlayers = 0;
+    [HideInInspector] public int m_numPlayers = 0;
+
+    [HideInInspector] public List<int> m_playerTeamAssignments;
+
+    public int m_numTeams = 2;
 
     private List<PlayerControlSchemes> m_playerControlSchemesList;
     
-    [HideInInspector]
-    public List<PlayerInput> m_playerInputObjects;
+    [HideInInspector] public List<PlayerInput> m_playerInputObjects;
     
     public OnPlayerJoin m_onPlayerJoin;
     
@@ -48,6 +50,7 @@ public class PlayerSystem : MonoBehaviour
 
         m_playerControlSchemesList = new List<PlayerControlSchemes>(m_maxNumPlayers);
         m_playerInputObjects = new List<PlayerInput>(m_maxNumPlayers);
+        m_playerTeamAssignments = new List<int>();
         
         DontDestroyOnLoad(this.gameObject);    
     }
@@ -71,7 +74,7 @@ public class PlayerSystem : MonoBehaviour
 
     public void OnPlayerJoined(PlayerInput playerInput)
     {
-        int playerNum = PlayerSystem.Instance.AddPlayer();
+        int playerNum = this.AddPlayer();
         if (playerNum == -1)
         {
             //at player limit. destroy.
@@ -88,13 +91,34 @@ public class PlayerSystem : MonoBehaviour
         m_onPlayerJoin(playerNum);
     }
 
-    public int AddPlayer()
+    int AddPlayer()
     {
         if (m_numPlayers < m_maxNumPlayers)
         {
             m_numPlayers++;
             
             m_playerControlSchemesList.Add(new PlayerControlSchemes());
+            
+            //assign player to team. Initially whichever team has the least.
+            List<int> numPlayersPerTeam = new List<int>(m_numTeams);
+
+            foreach (int playerTeamAssignment in m_playerTeamAssignments)
+            {
+                numPlayersPerTeam[playerTeamAssignment]++;
+            }
+
+            int smallestTeamNum = 1;
+            int numPlayersOnSmallestTeam = numPlayersPerTeam[0];
+            for (int i = 1; i < m_numTeams; i++)
+            {
+                if (numPlayersPerTeam[i] < numPlayersOnSmallestTeam)
+                {
+                    smallestTeamNum = i + 1;
+                    numPlayersOnSmallestTeam = numPlayersPerTeam[i];
+                }
+            }
+            
+            m_playerTeamAssignments.Add(smallestTeamNum);
                         
             return m_numPlayers;
         }

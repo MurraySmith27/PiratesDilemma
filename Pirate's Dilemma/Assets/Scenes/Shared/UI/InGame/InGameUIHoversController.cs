@@ -41,8 +41,8 @@ public class InGameUIHoversController : MonoBehaviour
 
         m_currentPlayerLabels = new List<string>();
         
-        BoatController.OnSpawnBoat += NewBoatSpawned;
-        BoatController.OnAddGold += GoldAddedToBoat;
+        BoatSystem.Instance.m_onSpawnBoat += NewBoatSpawned;
+        BoatSystem.Instance. += GoldAddedToBoat;
         
         m_root = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("root");
 
@@ -88,7 +88,7 @@ public class InGameUIHoversController : MonoBehaviour
         {
             foreach (GameObject boat in GameObject.FindGameObjectsWithTag("Boat"))
             {
-                if (boat.GetComponent<BoatController>().boatSlot == boatNum)
+                if (boat.GetComponent<BoatGoldController>().boatSlot == boatNum)
                 {
                     m_boats[boatNum] = boat;
                 }
@@ -96,10 +96,10 @@ public class InGameUIHoversController : MonoBehaviour
             
             if (m_boats[boatNum])
             {
-                BoatController boatController = m_boats[boatNum].GetComponent<BoatController>();
-                initialTimeToLive = boatController.timeToLive;
-                boatController.OnDeleteBoat += BoatDeleted;
-                m_currentBoatLabels[boatNum] = $"0/{boatController.boatTotalCapacity}";
+                BoatGoldController boatGoldController = m_boats[boatNum].GetComponent<BoatGoldController>();
+                initialTimeToLive = boatGoldController.timeToLive;
+                boatGoldController.OnDeleteBoat += BoatDeleted;
+                m_currentBoatLabels[boatNum] = $"0/{boatGoldController.boatTotalCapacity}";
             }
 
             yield return null;
@@ -122,8 +122,8 @@ public class InGameUIHoversController : MonoBehaviour
                     screen.x - (m_boatElements[boatNum].Q<RadialProgress>("radial-timer").layout.width / 2) + 50;
                 m_boatElements[boatNum].style.top = (Screen.height - screen.y) - 50;
 
-                BoatController boatController = m_boats[boatNum].GetComponent<BoatController>();
-                timerElement.progress = boatController.timeToLive;
+                BoatGoldController boatGoldController = m_boats[boatNum].GetComponent<BoatGoldController>();
+                timerElement.progress = boatGoldController.timeToLive;
 
                 capacityLabel.text = m_currentBoatLabels[boatNum];
             }
@@ -136,7 +136,7 @@ public class InGameUIHoversController : MonoBehaviour
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-        GoldController[] goldControllers = players.Select(obj => { return obj.GetComponent<GoldController>(); }).ToArray();
+        PlayerGoldController[] goldControllers = players.Select(obj => { return obj.GetComponent<PlayerGoldController>(); }).ToArray();
 
         Label[] playerUILabels = new Label[4];
 
@@ -156,7 +156,7 @@ public class InGameUIHoversController : MonoBehaviour
             {
                 //Begin hack
                 players = GameObject.FindGameObjectsWithTag("Player");
-                goldControllers = players.Select(obj => { return obj.GetComponent<GoldController>(); }).ToArray();
+                goldControllers = players.Select(obj => { return obj.GetComponent<PlayerGoldController>(); }).ToArray();
 
                 if (m_playerElements[i] == null)
                 {
