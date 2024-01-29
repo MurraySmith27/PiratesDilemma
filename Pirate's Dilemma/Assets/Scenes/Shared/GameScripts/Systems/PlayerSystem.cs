@@ -2,16 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 
-
 public delegate void OnPlayerJoin(int newPlayerNum);
 
 //The purpose of this class to to store data that persists between scenes about players.
-public class PlayerSystem : MonoBehaviour
+public class PlayerSystem : GameSystem
 {
     private static PlayerSystem _instance;
     public static PlayerSystem Instance
@@ -19,21 +19,30 @@ public class PlayerSystem : MonoBehaviour
         get { return _instance; }
     }
     
-    private List<Transform> m_playerSpawnPositions;
+    public int m_maxNumPlayers = 4;
     
     public List<Color> m_playerColors;
     
-    public int m_maxNumPlayers = 4;
+    public int m_numTeams = 2;
 
     [HideInInspector] public int m_numPlayers = 0;
 
-    [HideInInspector] public List<int> m_playerTeamAssignments;
+    [HideInInspector]
+    public List<PlayerInput> m_playerInputObjects
+    {
+        get
+        {
+            return m_players.Select(player => player.GetComponent<PlayerInput>()).ToList();
+        }
+    }
 
-    public int m_numTeams = 2;
+    [HideInInspector] public List<GameObject> m_players;
+
+    private List<Transform> m_playerSpawnPositions;
 
     private List<PlayerControlSchemes> m_playerControlSchemesList;
     
-    [HideInInspector] public List<PlayerInput> m_playerInputObjects;
+    [HideInInspector] public List<int> m_playerTeamAssignments;
     
     public OnPlayerJoin m_onPlayerJoin;
     
@@ -49,16 +58,18 @@ public class PlayerSystem : MonoBehaviour
         }
 
         m_playerControlSchemesList = new List<PlayerControlSchemes>(m_maxNumPlayers);
-        m_playerInputObjects = new List<PlayerInput>(m_maxNumPlayers);
+        m_players = new List<GameObject>();
         m_playerTeamAssignments = new List<int>();
         
         DontDestroyOnLoad(this.gameObject);    
     }
 
-    private void Start()
+    protected override void Start()
     {
         SetPlayerSpawnPositions();
         SceneManager.sceneLoaded += OnGameSceneLoaded;
+
+        base.Start();
     }
 
     private void SetPlayerSpawnPositions()
@@ -85,7 +96,7 @@ public class PlayerSystem : MonoBehaviour
         playerInput.gameObject.GetComponent<MeshRenderer>().material.color = m_playerColors[playerNum - 1];
 
         RegisterDeviceWithPlayer(playerNum, playerInput.devices[0]);
-        m_playerInputObjects.Add(playerInput);
+        m_players.Add(playerInput.gameObject);
         
         DontDestroyOnLoad(playerInput.gameObject);
         m_onPlayerJoin(playerNum);
@@ -100,12 +111,18 @@ public class PlayerSystem : MonoBehaviour
             m_playerControlSchemesList.Add(new PlayerControlSchemes());
             
             //assign player to team. Initially whichever team has the least.
-            List<int> numPlayersPerTeam = new List<int>(m_numTeams);
+            List<int> numPlayersPerTeam = new List<int>();
 
+            for (int i = 0; i < m_numTeams; i++)
+            {
+                numPlayersPerTeam.Add(0);
+            }
+            
             foreach (int playerTeamAssignment in m_playerTeamAssignments)
             {
                 numPlayersPerTeam[playerTeamAssignment]++;
             }
+
 
             int smallestTeamNum = 1;
             int numPlayersOnSmallestTeam = numPlayersPerTeam[0];
@@ -180,7 +197,7 @@ public class PlayerSystem : MonoBehaviour
             {
                 GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
 
-                m_playerInputObjects[i].gameObject.transform.position = spawnPos.transform.position;
+                m_players[i].transform.position = spawnPos.transform.position;
                 
                 SwitchToActionMapForPlayer(i + 1, "InGame");
             }

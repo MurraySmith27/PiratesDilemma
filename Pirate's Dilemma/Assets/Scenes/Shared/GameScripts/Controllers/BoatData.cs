@@ -23,13 +23,17 @@ public class BoatData : MonoBehaviour
     public int m_goldCapacity;
     // The total time to live for this boat (when it's spawned, not the current timer value).
     public int m_timeToLive;
+    //The sink audio source
+    public AudioSource m_sinkAudioSource;
+    // The sail away audio source.
+    public AudioSource m_sailAudioSource;
     private void Awake()
     {
         m_currentGoldStored = new List<int>();
 
         for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
-            m_currentGoldStored[i] = 0;
+            m_currentGoldStored.Add(0);
         }
     }
 }

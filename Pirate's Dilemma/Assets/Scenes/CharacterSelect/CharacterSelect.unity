@@ -322,6 +322,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b608b8a816e7f47549ce1f1eb7321c09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_systemDependencies:
+  - PlayerSystem
   m_screenSpaceUIDoc: {fileID: 310474083}
   m_gameSceneToLoadName: 2v2Level
   m_readyUpHover: {fileID: 9197481963319205126, guid: c53cdccbf2a72f449aed808be412b57f,
@@ -816,14 +818,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad585bb2d108b0e42acd2bdd00588da2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_maxNumPlayers: 4
   m_playerColors:
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0, g: 0, b: 1, a: 1}
   - {r: 1, g: 1, b: 0, a: 1}
   - {r: 0, g: 1, b: 0, a: 1}
-  m_maxNumPlayers: 4
+  m_numTeams: 2
   m_numPlayers: 0
-  m_playerInputObjects: []
+  m_players: []
+  m_playerTeamAssignments: 
 --- !u!1 &1841775409
 GameObject:
   m_ObjectHideFlags: 0

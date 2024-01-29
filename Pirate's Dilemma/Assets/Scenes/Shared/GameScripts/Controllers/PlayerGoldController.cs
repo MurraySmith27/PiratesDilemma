@@ -23,7 +23,7 @@ public class PlayerGoldController : MonoBehaviour
 
     public int goldCapacity = 30;
 
-    private bool m_initialized = false;
+    [SerializeField] private AudioSource m_goldPickupAudioSource;
 
     void Awake()
     {
@@ -45,8 +45,6 @@ public class PlayerGoldController : MonoBehaviour
         {
             goldPile = GameObject.FindGameObjectWithTag("GoldPile");
         }
-
-        m_initialized = true;
     }
     
 
@@ -57,7 +55,7 @@ public class PlayerGoldController : MonoBehaviour
             //Check if close enough to gold pile
             if ((this.transform.position - goldPile.transform.position).magnitude < 50)
             {
-                GetComponent<AudioSource>().Play();
+                m_goldPickupAudioSource.Play();
                 goldCarried += 5;
 
                 if (!goldPrefabSpawned)

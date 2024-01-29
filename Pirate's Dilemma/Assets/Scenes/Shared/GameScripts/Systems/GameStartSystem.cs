@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,9 @@ using UnityEngine.SceneManagement;
 
 
 public delegate void OnGameStart();
-public class GameStartSystem : MonoBehaviour
+public class GameStartSystem : GameSystem
 {
+    
     public static GameStartSystem Instance
     {
         get
@@ -48,6 +50,11 @@ public class GameStartSystem : MonoBehaviour
         {
             SceneManager.sceneLoaded += StartGame;
         }
+    }
+
+    protected override void Start()
+    {
+        base.Start();
     }
 
     public void StartGame(Scene scene, LoadSceneMode mode)

@@ -10,7 +10,7 @@ public delegate void BoatSinkEvent(int teamNum, int boatNum);
 public class BoatGoldController : MonoBehaviour
 {
     
-    public bool m_acceptingGold = true;
+    [HideInInspector] public bool m_acceptingGold = true;
     
     public GoldAddedToBoatEvent m_onGoldAddedToBoat;
     public BoatSinkEvent m_onBoatSink;

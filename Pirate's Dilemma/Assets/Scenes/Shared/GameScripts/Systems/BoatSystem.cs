@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,8 @@ using UnityEngine.SceneManagement;
 public delegate void DeleteBoatEvent(int teamNum, int boatNum);
 public delegate void SpawnBoatEvent(int teamNum, int boatNum);
 public delegate void GoldAddedToBoatEvent(int teamNum, int boatNum, int currentGold, int capacity);
-public class BoatSystem : MonoBehaviour
+public class BoatSystem : GameSystem
 {
-
     private static BoatSystem _instance;
     
     public static BoatSystem Instance
@@ -24,7 +24,7 @@ public class BoatSystem : MonoBehaviour
     [SerializeField] private AudioSource m_boatSinkSound;
     [SerializeField] private AudioSource m_boatSailSound;
     
-    [SerializeField] private const float m_boatRespawnTime = 5f;
+    [SerializeField] private float m_boatRespawnTime = 5f;
 
     [SerializeField] private int m_boatMinTimeToLive;
     [SerializeField] private int m_boatMaxTimeToLive;
@@ -38,7 +38,7 @@ public class BoatSystem : MonoBehaviour
     {
         get { return m_numBoatsPerTeam.Sum(); }
     }
-    
+
     [HideInInspector] public List<int> m_numBoatsPerTeam;
 
 
@@ -54,14 +54,38 @@ public class BoatSystem : MonoBehaviour
         }
     }
 
-    private List<List<GameObject>> m_boatsPerTeam;
+    public List<List<GameObject>> m_boatsPerTeam;
 
     private List<List<Transform>> m_boatSpawnLocationsPerTeam;
     
-    void Start()
+    protected override void Start()
     {
+    
+        m_boatSpawnLocationsPerTeam = new List<List<Transform>>();
+        m_boatsPerTeam = new List<List<GameObject>>();
+        
+        for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
+        {
+            m_boatSpawnLocationsPerTeam.Add(null);
+        }
+        
+        //get spawn positions from gameobjects in scene with special tags.
         SetBoatSpawnPositions();
-        SceneManager.sceneLoaded += OnGameSceneLoaded;
+    
+        for (int teamNum = 0; teamNum < PlayerSystem.Instance.m_numTeams; teamNum++)
+        {
+            m_numBoatsPerTeam.Add(m_boatSpawnLocationsPerTeam[teamNum].Count);
+            m_boatsPerTeam.Add(new List<GameObject>());
+            
+            //Spawn boats
+            for (int boatNum = 0; boatNum < m_numBoatsPerTeam[teamNum]; boatNum++)
+            {
+                m_boatsPerTeam[teamNum].Add(null);
+                SpawnBoat(teamNum, boatNum);
+            }
+        }
+        
+        base.Start();   
     }
 
     // Spawn the boats with their randomized timeToLive and boatTotalCapacity
@@ -94,14 +118,11 @@ public class BoatSystem : MonoBehaviour
     //Spawn a single boat for team teamNum, in that team's "boatNum"th spawn position.
     public void SpawnBoat(int teamNum, int boatNum)
     {
-        //Spawn boats
-        if (boatNum == m_boatsPerTeam[teamNum].Count)
-        {
-            m_boatsPerTeam[teamNum].Add(null);
-        }
         
         GameObject newBoat = Instantiate(m_boatPrefabsPerTeam[teamNum], 
-            m_boatSpawnLocationsPerTeam[teamNum][boatNum].transform.position, Quaternion.identity);
+            m_boatSpawnLocationsPerTeam[teamNum][boatNum].transform.position, 
+            m_boatSpawnLocationsPerTeam[teamNum][boatNum].transform.rotation);
+        newBoat.transform.localScale = m_boatSpawnLocationsPerTeam[teamNum][boatNum].transform.localScale;
         
         m_boatsPerTeam[teamNum][boatNum] = newBoat;
 
@@ -117,6 +138,7 @@ public class BoatSystem : MonoBehaviour
         boatGoldController.m_onGoldAddedToBoat = this.m_onGoldAddedToBoat;
 
         BoatTimerController boatTimerController = newBoat.GetComponent<BoatTimerController>();
+        
         boatTimerController.m_onBoatSail += OnBoatSail;
     }
     
@@ -128,6 +150,7 @@ public class BoatSystem : MonoBehaviour
     private IEnumerator SinkBoat(int teamNum, int boatNum)
     {
         m_onDeleteBoat(teamNum, boatNum);
+        m_boatsPerTeam[teamNum][boatNum].GetComponent<BoatData>().m_sinkAudioSource.Play();
         Coroutine sinkAnimationCoroutine = StartCoroutine(SinkBoatAnimation());
 
         yield return new WaitForSeconds(m_boatRespawnTime);
@@ -141,7 +164,6 @@ public class BoatSystem : MonoBehaviour
     
     IEnumerator SinkBoatAnimation()
     {
-        m_boatSinkSound.Play();
         
         while (true)
         {
@@ -158,6 +180,7 @@ public class BoatSystem : MonoBehaviour
     IEnumerator SailBoat(int teamNum, int boatNum, List<int> goldScoredPerTeam)
     {
         m_onDeleteBoat(teamNum, boatNum);
+        m_boatsPerTeam[teamNum][boatNum].GetComponent<BoatData>().m_sailAudioSource.Play();
         Coroutine sailAnimationCoroutine = StartCoroutine(SailBoatAnimation());
 
         yield return new WaitForSeconds(m_boatRespawnTime);
@@ -174,35 +197,10 @@ public class BoatSystem : MonoBehaviour
 
     IEnumerator SailBoatAnimation()
     {
-        m_boatSailSound.Play();
-        
         while (true)
         {
             transform.Translate(new Vector3(-10, 0, 0) * Time.deltaTime);
             yield return null;
-        }
-    }
-    
-    private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        //only call the callback for the next scene loaded.
-        SceneManager.sceneLoaded -= OnGameSceneLoaded;
-        
-        if (GameStartSystem.Instance.m_levelSceneNames.Contains(scene.name))
-        {
-            //get spawn positions from gameobjects in scene with special tags.
-            SetBoatSpawnPositions();
-
-            for (int teamNum = 0; teamNum < PlayerSystem.Instance.m_numTeams; teamNum++)
-            {
-                m_numBoatsPerTeam[teamNum] = m_boatSpawnLocationsPerTeam[teamNum].Count;
-                
-                //Spawn boats
-                for (int boatNum = 0; boatNum < m_numBoatsPerTeam[teamNum]; boatNum++)
-                {
-                    SpawnBoat(teamNum, boatNum);
-                }
-            }
         }
     }
     

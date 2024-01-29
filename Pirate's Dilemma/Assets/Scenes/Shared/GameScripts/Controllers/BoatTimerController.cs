@@ -11,7 +11,7 @@ public class BoatTimerController : MonoBehaviour
     private BoatGoldController m_boatGoldController;
     private Coroutine m_countDownCoroutine;
 
-    private int m_currentTimeToLive;
+    [HideInInspector] public int m_currentTimeToLive;
     
     void Start()
     {
