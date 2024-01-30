@@ -38,7 +38,7 @@ public class PlayerMovementController : MonoBehaviour
     
     void Awake()
     {
-        GameStartSystem.Instance.m_onGameStart += OnGameStart;
+        GameTimerSystem.Instance.m_onGameStart += OnGameStart;
 
         m_intialized = false;
     }

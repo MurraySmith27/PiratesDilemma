@@ -207,7 +207,7 @@ public class BoatSystem : GameSystem
     {
         while (true)
         {
-            m_boatsPerTeam[teamNum - 1][boatNum - 1].transform.Translate(new Vector3(0, 0, -10) * Time.deltaTime);
+            m_boatsPerTeam[teamNum - 1][boatNum - 1].transform.Translate(new Vector3(0, 0, 10) * Time.deltaTime);
             yield return null;
         }
     }

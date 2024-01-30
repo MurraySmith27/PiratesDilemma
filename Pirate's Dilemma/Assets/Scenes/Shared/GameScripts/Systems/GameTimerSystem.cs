@@ -7,26 +7,32 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-public delegate void OnGameStart();
-public class GameStartSystem : GameSystem
+public delegate void GameStartEvent();
+public delegate void GameFinishEvent();
+public delegate void GameTimerUpdateEvent(int currentTimerValueSeconds);
+
+public class GameTimerSystem : GameSystem
 {
-    
-    public static GameStartSystem Instance
+    private static GameTimerSystem m_instance;
+    public static GameTimerSystem Instance
     {
         get
         {
             return m_instance;
         }
     }
+    
+    [SerializeField] private int m_gameTimerSeconds = 120;
 
     [SerializeField] private string m_characterSelectSceneName;
 
     public List<string> m_levelSceneNames;
-
-    private static GameStartSystem m_instance;
-
-    public OnGameStart m_onGameStart;
     
+    public GameStartEvent m_onGameStart;
+    
+    public GameFinishEvent m_onGameFinish;
+    
+    public GameTimerUpdateEvent m_onGameTimerUpdate;
     
     void Awake()
     {
@@ -40,7 +46,11 @@ public class GameStartSystem : GameSystem
         }
         
         DontDestroyOnLoad(this.gameObject);
+    }
 
+    protected override void Start()
+    {
+        
         //idea here is that the scene manager only wants to register the callback if loading into player select screen.
         if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
         {
@@ -50,10 +60,8 @@ public class GameStartSystem : GameSystem
         {
             SceneManager.sceneLoaded += StartGame;
         }
-    }
-
-    protected override void Start()
-    {
+        
+        
         base.Start();
     }
 
@@ -73,5 +81,25 @@ public class GameStartSystem : GameSystem
         {
             m_onGameStart();
         }
+        
+        StartCoroutine(GlobalCountdown(GameTimerSystem.Instance.m_gameTimerSeconds));
+        
+    }
+    
+    IEnumerator GlobalCountdown(int seconds)
+    {
+        int count = seconds;
+
+        while (count > 0)
+        {
+            // Wait for one second
+            yield return new WaitForSeconds(1);
+            
+            // Decrease the count
+            count--;
+            m_onGameTimerUpdate(count);
+        }
+
+        m_onGameFinish();
     }
 }

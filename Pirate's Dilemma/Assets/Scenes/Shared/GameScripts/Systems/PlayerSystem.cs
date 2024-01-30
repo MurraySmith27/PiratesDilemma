@@ -187,7 +187,7 @@ public class PlayerSystem : GameSystem
         //only call the callback for the next scene loaded.
         SceneManager.sceneLoaded -= OnGameSceneLoaded;
         
-        if (GameStartSystem.Instance.m_levelSceneNames.Contains(scene.name))
+        if (GameTimerSystem.Instance.m_levelSceneNames.Contains(scene.name))
         {
             //get spawn positions from gameobject in scene with special tags.
             SetPlayerSpawnPositions();

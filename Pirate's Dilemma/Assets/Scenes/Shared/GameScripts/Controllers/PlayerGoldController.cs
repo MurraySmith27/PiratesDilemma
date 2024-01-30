@@ -33,7 +33,7 @@ public class PlayerGoldController : MonoBehaviour
 
     void Awake()
     {
-        GameStartSystem.Instance.m_onGameStart += OnGameStart;
+        GameTimerSystem.Instance.m_onGameStart += OnGameStart;
     }
     
     void OnGameStart()

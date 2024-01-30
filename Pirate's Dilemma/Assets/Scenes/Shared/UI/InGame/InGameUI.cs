@@ -32,14 +32,26 @@ public class InGameUI : UIBase
             m_playerScoreElements[i].style.backgroundColor = PlayerSystem.Instance.m_playerColors[i];
         }
         
-        
         m_leaderBoardLabel.text = "Scores:";
-
-        StartCoroutine(GlobalCountdown(120));
 
         GameObject[] boats = GameObject.FindGameObjectsWithTag("Boat");
 
         ScoreSystem.Instance.m_onScoreUpdate += UpdateScoreUI;
+
+        GameTimerSystem.Instance.m_onGameTimerUpdate += OnGameTimerValueChange;
+        
+        GameTimerSystem.Instance.m_onGameFinish += OnGameFinish;
+    }
+
+    void OnGameTimerValueChange(int newValueSeconds)
+    {
+        // Update the UI
+        m_globalTimerLabel.text = $"TIME REMAINING: {newValueSeconds}";
+    }
+
+    void OnGameFinish()
+    {
+        m_globalTimerLabel.text = "Time's Up!";
     }
 
     void UpdateScoreUI(List<int> newScores)
@@ -48,26 +60,6 @@ public class InGameUI : UIBase
         {
             m_playerScoreElements[i].text = $"P{i}: {newScores[i]}";
         }
-    }
-
-    IEnumerator GlobalCountdown(int seconds)
-    {
-        int count = seconds;
-
-        while (count > 0)
-        {
-            // Update the UI
-            m_globalTimerLabel.text = "TIME REMAINING: " +  count.ToString();
-
-            // Wait for one second
-            yield return new WaitForSeconds(1);
-
-            // Decrease the count
-            count--;
-        }
-
-        // Countdown finished
-        m_globalTimerLabel.text = "Time's up!";
     }
     
 }

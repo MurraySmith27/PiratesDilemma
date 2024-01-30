@@ -41,7 +41,6 @@ public class BoatTimerController : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
         
-        Debug.Log($"current gold stored: {m_boatData.m_currentGoldStored[1]}");
         m_onBoatSail(m_boatData.m_teamNum, m_boatData.m_boatNum, m_boatData.m_currentGoldStored);
     }
 }
