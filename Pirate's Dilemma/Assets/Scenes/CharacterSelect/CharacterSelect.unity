@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731704, g: 0.1341472, b: 0.121078566, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -565,6 +565,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0abb24f8d8452154a83decb4b870d4a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_gameTimerSeconds: 120
   m_characterSelectSceneName: CharacterSelect
   m_levelSceneNames:
   - 2v2Level
@@ -819,11 +820,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_maxNumPlayers: 4
-  m_playerColors:
+  m_teamColors:
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0, g: 0, b: 1, a: 1}
-  - {r: 1, g: 1, b: 0, a: 1}
-  - {r: 0, g: 1, b: 0, a: 1}
   m_numTeams: 2
   m_numPlayers: 0
   m_players: []

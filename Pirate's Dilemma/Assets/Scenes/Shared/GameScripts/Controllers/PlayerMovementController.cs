@@ -15,14 +15,16 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool m_intialized = false;
 
+    [SerializeField] private Rigidbody rb;
+    
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (m_intialized)
         {
             float speed = m_speed * ((100 - 2 * m_PlayerGoldController.m_goldCarried) / 100f);
-            Vector2 moveVector = - m_moveAction.ReadValue<Vector2>().normalized * speed;
-            transform.Translate(new Vector3(moveVector.x, 0f, moveVector.y));
+            Vector2 moveVector = - m_moveAction.ReadValue<Vector2>().normalized * (speed * Time.deltaTime);
+            rb.MovePosition(transform.position + new Vector3(moveVector.x, 0f, moveVector.y));
         }
     }
 
@@ -39,7 +41,7 @@ public class PlayerMovementController : MonoBehaviour
     void Awake()
     {
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
-
+        
         m_intialized = false;
     }
 

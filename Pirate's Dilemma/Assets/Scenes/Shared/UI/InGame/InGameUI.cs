@@ -5,11 +5,13 @@ using UnityEngine.UIElements;
 
 public class InGameUI : UIBase
 {
+    [SerializeField] private VisualTreeAsset m_scoreElementAsset;
+    
     private Label m_globalTimerLabel;
     private Label m_leaderBoardLabel;
     
-    private List<Label> m_playerScoreElements;
-
+    private List<Label> m_teamScoreLabels;
+    
 
     protected override void Awake()
     {
@@ -23,13 +25,14 @@ public class InGameUI : UIBase
         m_globalTimerLabel = root.Q<Label>("global-timer");
         m_leaderBoardLabel = root.Q<Label>("score-board-title");
 
-        m_playerScoreElements = new List<Label>();
+        m_teamScoreLabels = new List<Label>();
 
-        for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
+        for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
-            m_playerScoreElements.Add(root.Q<Label>($"player-{i + 1}-score"));
-            m_playerScoreElements[i].text = $"P{i}: 0";
-            m_playerScoreElements[i].style.backgroundColor = PlayerSystem.Instance.m_playerColors[i];
+            m_teamScoreLabels.Add(m_scoreElementAsset.Instantiate().Q<Label>("score-label"));
+            root.Q<VisualElement>("score-board").Add(m_teamScoreLabels[i]);
+            m_teamScoreLabels[i].text = $"P{i}: 0";
+            m_teamScoreLabels[i].style.backgroundColor = PlayerSystem.Instance.m_teamColors[i];
         }
         
         m_leaderBoardLabel.text = "Scores:";
@@ -58,7 +61,7 @@ public class InGameUI : UIBase
     {
         for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
         {
-            m_playerScoreElements[i].text = $"P{i}: {newScores[i]}";
+            m_teamScoreLabels[i].text = $"P{i}: {newScores[i]}";
         }
     }
     

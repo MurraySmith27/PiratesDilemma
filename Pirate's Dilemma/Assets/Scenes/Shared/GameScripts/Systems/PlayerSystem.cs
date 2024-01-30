@@ -21,7 +21,7 @@ public class PlayerSystem : GameSystem
     
     public int m_maxNumPlayers = 4;
     
-    public List<Color> m_playerColors;
+    public List<Color> m_teamColors;
     
     public int m_numTeams = 2;
 
@@ -85,7 +85,8 @@ public class PlayerSystem : GameSystem
 
     public void OnPlayerJoined(PlayerInput playerInput)
     {
-        int playerNum = this.AddPlayer();
+        int playerNum, teamNum;
+        (playerNum, teamNum) = this.AddPlayer();
         if (playerNum == -1)
         {
             //at player limit. destroy.
@@ -93,7 +94,7 @@ public class PlayerSystem : GameSystem
         }
 
         playerInput.gameObject.transform.position = m_playerSpawnPositions[playerNum - 1].position;
-        playerInput.gameObject.GetComponent<MeshRenderer>().material.color = m_playerColors[playerNum - 1];
+        playerInput.gameObject.GetComponent<MeshRenderer>().material.color = m_teamColors[teamNum- 1];
 
         RegisterDeviceWithPlayer(playerNum, playerInput.devices[0]);
         m_players.Add(playerInput.gameObject);
@@ -102,7 +103,7 @@ public class PlayerSystem : GameSystem
         m_onPlayerJoin(playerNum);
     }
 
-    int AddPlayer()
+    (int, int) AddPlayer()
     {
         if (m_numPlayers < m_maxNumPlayers)
         {
@@ -120,12 +121,15 @@ public class PlayerSystem : GameSystem
             
             foreach (int playerTeamAssignment in m_playerTeamAssignments)
             {
-                numPlayersPerTeam[playerTeamAssignment]++;
+                numPlayersPerTeam[playerTeamAssignment - 1]++;
             }
-
+            
+            
+            
 
             int smallestTeamNum = 1;
             int numPlayersOnSmallestTeam = numPlayersPerTeam[0];
+            
             for (int i = 1; i < m_numTeams; i++)
             {
                 if (numPlayersPerTeam[i] < numPlayersOnSmallestTeam)
@@ -136,12 +140,12 @@ public class PlayerSystem : GameSystem
             }
             
             m_playerTeamAssignments.Add(smallestTeamNum);
-                        
-            return m_numPlayers;
+
+            return (m_numPlayers, smallestTeamNum);
         }
         else
         {
-            return -1;
+            return (-1, -1);
         }
     }
 

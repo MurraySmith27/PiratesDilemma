@@ -110,30 +110,33 @@ public class PlayerGoldController : MonoBehaviour
         m_heldGoldInstance.transform.localRotation = Quaternion.identity;
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider otherCollider)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
+        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
         {
             m_inGoldDropZone = true;
         }
         
-        if (collision.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
+        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
         {
+            Debug.Log("Entered gold pickup zone");
             m_inGoldPickupZone = true;
         }
     }
     
-    void OnCollisionExit(Collision collision)
+    void OnTriggerExit(Collider otherCollider)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
+        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
         {
             m_inGoldDropZone = false;
         }
         
-        if (collision.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
+        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
         {
+            
+            Debug.Log("Left gold pickup zone");
             m_inGoldPickupZone = false;
         }
     }
     
-}
+} 
