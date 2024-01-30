@@ -35,7 +35,6 @@ public class InGameHoversUI : UIBase
 
     protected override void SetUpUI()
     {
-        Debug.Log("calling set up gui in InGameHoversUI.cs");
         m_boatTimerLabelCoroutines = new List<List<Coroutine>>();
 
         m_boatElements = new List<List<VisualElement>>();
@@ -58,17 +57,17 @@ public class InGameHoversUI : UIBase
             m_currentPlayerLabels.Add("");
         }
         
-        for (int teamNum = 0; teamNum < PlayerSystem.Instance.m_numTeams; teamNum++)
+        for (int teamNum = 1; teamNum <= PlayerSystem.Instance.m_numTeams; teamNum++)
         {
             m_boatElements.Add(new List<VisualElement>());
             m_boatTimerLabelCoroutines.Add(new List<Coroutine>());
             m_currentBoatLabels.Add(new List<string>());
             
-            for (int boatNum = 0; boatNum < BoatSystem.Instance.m_numBoatsPerTeam[teamNum]; boatNum++)
+            for (int boatNum = 1; boatNum <= BoatSystem.Instance.m_numBoatsPerTeam[teamNum-1]; boatNum++)
             {
-                m_boatElements[teamNum].Add(null);
-                m_currentBoatLabels[teamNum].Add("");
-                m_boatTimerLabelCoroutines[teamNum].Add( StartCoroutine(UpdateBoatUI(teamNum, boatNum)));
+                m_boatElements[teamNum-1].Add(null);
+                m_currentBoatLabels[teamNum-1].Add("");
+                m_boatTimerLabelCoroutines[teamNum-1].Add( StartCoroutine(UpdateBoatUI(teamNum, boatNum)));
             }
         }
         StartCoroutine(UpdatePlayerUIs());
@@ -76,49 +75,49 @@ public class InGameHoversUI : UIBase
 
     void BoatDeleted(int teamNum, int boatNum)
     {
-        m_boatElements[teamNum][boatNum].Clear();
-        m_boatElements[teamNum][boatNum].RemoveFromHierarchy();
-        m_boatElements[teamNum][boatNum] = null;
-        StopCoroutine(m_boatTimerLabelCoroutines[teamNum][boatNum]);
+        m_boatElements[teamNum-1][boatNum-1].Clear();
+        m_boatElements[teamNum-1][boatNum-1].RemoveFromHierarchy();
+        m_boatElements[teamNum-1][boatNum-1] = null;
+        StopCoroutine(m_boatTimerLabelCoroutines[teamNum-1][boatNum-1]);
     }
 
     void NewBoatSpawned(int teamNum, int boatNum)
     {
-        m_boatTimerLabelCoroutines[teamNum][boatNum] = StartCoroutine(UpdateBoatUI(teamNum, boatNum));
+        m_boatTimerLabelCoroutines[teamNum-1][boatNum-1] = StartCoroutine(UpdateBoatUI(teamNum, boatNum));
     }
 
     void GoldAddedToBoat(int teamNum, int boatNum, int goldTotal, int capacity)
     {
-        m_currentBoatLabels[teamNum][boatNum] = $"{goldTotal} / {capacity}";
+        m_currentBoatLabels[teamNum-1][boatNum-1] = $"{goldTotal} / {capacity}";
     }
 
     IEnumerator UpdateBoatUI(int teamNum, int boatNum)
     {
-        GameObject boat = BoatSystem.Instance.m_boatsPerTeam[teamNum][boatNum];
+        GameObject boat = BoatSystem.Instance.m_boatsPerTeam[teamNum-1][boatNum-1];
         BoatData boatData = boat.GetComponent<BoatData>();
         BoatTimerController boatTimerController = boat.GetComponent<BoatTimerController>();
         int initialTimeToLive = boatData.GetComponent<BoatData>().m_timeToLive;
-        m_currentBoatLabels[teamNum][boatNum] = $"{boatData.m_currentTotalGoldStored}/{boatData.m_goldCapacity}";
+        m_currentBoatLabels[teamNum-1][boatNum-1] = $"{boatData.m_currentTotalGoldStored}/{boatData.m_goldCapacity}";
         
         
-        m_boatElements[teamNum][boatNum] = m_boatUIAsset.Instantiate();
-        m_root.Add(m_boatElements[teamNum][boatNum]);
+        m_boatElements[teamNum-1][boatNum-1] = m_boatUIAsset.Instantiate();
+        m_root.Add(m_boatElements[teamNum-1][boatNum-1]);
 
-        RadialProgress timerElement = m_boatElements[teamNum][boatNum].Q<RadialProgress>("radial-timer");
+        RadialProgress timerElement = m_boatElements[teamNum-1][boatNum-1].Q<RadialProgress>("radial-timer");
         timerElement.maxTotalProgress = initialTimeToLive;
 
-        Label capacityLabel = m_boatElements[teamNum][boatNum].Q<Label>("capacity-label");
+        Label capacityLabel = m_boatElements[teamNum-1][boatNum-1].Q<Label>("capacity-label");
 
         while (true)
         {
             Vector3 screen = Camera.main.WorldToScreenPoint(boat.transform.position);
-            m_boatElements[teamNum][boatNum].style.left =
-                screen.x - (m_boatElements[teamNum][boatNum].Q<RadialProgress>("radial-timer").layout.width / 2) + 50;
-            m_boatElements[teamNum][boatNum].style.top = (Screen.height - screen.y) - 50;
+            m_boatElements[teamNum-1][boatNum-1].style.left =
+                screen.x - (m_boatElements[teamNum-1][boatNum-1].Q<RadialProgress>("radial-timer").layout.width / 2) + 50;
+            m_boatElements[teamNum-1][boatNum-1].style.top = (Screen.height - screen.y) - 50;
 
             timerElement.progress = boatTimerController.m_currentTimeToLive;
 
-            capacityLabel.text = m_currentBoatLabels[teamNum][boatNum];
+            capacityLabel.text = m_currentBoatLabels[teamNum-1][boatNum-1];
         
             yield return null;
         }

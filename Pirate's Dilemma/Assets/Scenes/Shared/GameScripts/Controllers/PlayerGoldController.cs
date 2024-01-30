@@ -114,14 +114,11 @@ public class PlayerGoldController : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
         {
-            Debug.Log("entering drop zone");
             m_inGoldDropZone = true;
         }
         
         if (collision.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
         {
-            
-            Debug.Log("entering pickup zone");
             m_inGoldPickupZone = true;
         }
     }
@@ -130,15 +127,11 @@ public class PlayerGoldController : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
         {
-            
-            Debug.Log("exiting drop zone");
             m_inGoldDropZone = false;
         }
         
         if (collision.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
         {
-            
-            Debug.Log("exiting pickup zone");
             m_inGoldPickupZone = false;
         }
     }

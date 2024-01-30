@@ -72,15 +72,15 @@ public class BoatSystem : GameSystem
         //get spawn positions from gameobjects in scene with special tags.
         SetBoatSpawnPositions();
     
-        for (int teamNum = 0; teamNum < PlayerSystem.Instance.m_numTeams; teamNum++)
+        for (int teamNum = 1; teamNum <= PlayerSystem.Instance.m_numTeams; teamNum++)
         {
-            m_numBoatsPerTeam.Add(m_boatSpawnLocationsPerTeam[teamNum].Count);
+            m_numBoatsPerTeam.Add(m_boatSpawnLocationsPerTeam[teamNum - 1].Count);
             m_boatsPerTeam.Add(new List<GameObject>());
             
             //Spawn boats
-            for (int boatNum = 0; boatNum < m_numBoatsPerTeam[teamNum]; boatNum++)
+            for (int boatNum = 1; boatNum <= m_numBoatsPerTeam[teamNum - 1]; boatNum++)
             {
-                m_boatsPerTeam[teamNum].Add(null);
+                m_boatsPerTeam[teamNum - 1].Add(null);
                 SpawnBoat(teamNum, boatNum);
             }
         }
@@ -119,12 +119,12 @@ public class BoatSystem : GameSystem
     public void SpawnBoat(int teamNum, int boatNum)
     {
         
-        GameObject newBoat = Instantiate(m_boatPrefabsPerTeam[teamNum], 
-            m_boatSpawnLocationsPerTeam[teamNum][boatNum].transform.position, 
-            m_boatSpawnLocationsPerTeam[teamNum][boatNum].transform.rotation);
-        newBoat.transform.localScale = m_boatSpawnLocationsPerTeam[teamNum][boatNum].transform.localScale;
+        GameObject newBoat = Instantiate(m_boatPrefabsPerTeam[teamNum-1], 
+            m_boatSpawnLocationsPerTeam[teamNum - 1][boatNum - 1].transform.position, 
+            m_boatSpawnLocationsPerTeam[teamNum - 1][boatNum - 1].transform.rotation);
+        newBoat.transform.localScale = m_boatSpawnLocationsPerTeam[teamNum - 1][boatNum - 1].transform.localScale;
         
-        m_boatsPerTeam[teamNum][boatNum] = newBoat;
+        m_boatsPerTeam[teamNum - 1][boatNum - 1] = newBoat;
 
         BoatData boatData = newBoat.GetComponent<BoatData>();
         boatData.m_teamNum = teamNum;
@@ -135,16 +135,20 @@ public class BoatSystem : GameSystem
         BoatGoldController boatGoldController = newBoat.GetComponent<BoatGoldController>();
         boatGoldController.m_onBoatSink += OnBoatSink;
         //here we inject our event callback into each instance of BoatGoldController.
-        Debug.Log("adding callback");
-        boatGoldController.m_onGoldAddedToBoat = this.m_onGoldAddedToBoat;
+        boatGoldController.m_onGoldAddedToBoat = OnGoldAddedToBoat;
         //the first child of the boat spawn position is the gold drop zone spawn position.
-        Transform goldDropZoneSpawn = m_boatSpawnLocationsPerTeam[teamNum][boatNum].GetChild(0).transform;
+        Transform goldDropZoneSpawn = m_boatSpawnLocationsPerTeam[teamNum - 1][boatNum - 1].GetChild(0).transform;
         boatGoldController.m_goldDropZone.transform.position = goldDropZoneSpawn.position;
         boatGoldController.m_goldDropZone.transform.localScale = goldDropZoneSpawn.localScale;
         
         BoatTimerController boatTimerController = newBoat.GetComponent<BoatTimerController>();
         
         boatTimerController.m_onBoatSail += OnBoatSail;
+    }
+    
+    private void OnGoldAddedToBoat(int teamNum, int boatNum, int goldTotal, int capacity)
+    {
+        m_onGoldAddedToBoat(teamNum, boatNum, goldTotal, capacity);
     }
     
     private void OnBoatSink(int teamNum, int boatNum)
@@ -155,24 +159,24 @@ public class BoatSystem : GameSystem
     private IEnumerator SinkBoat(int teamNum, int boatNum)
     {
         m_onDeleteBoat(teamNum, boatNum);
-        m_boatsPerTeam[teamNum][boatNum].GetComponent<BoatData>().m_sinkAudioSource.Play();
-        Coroutine sinkAnimationCoroutine = StartCoroutine(SinkBoatAnimation());
+        m_boatsPerTeam[teamNum - 1][boatNum - 1].GetComponent<BoatData>().m_sinkAudioSource.Play();
+        Coroutine sinkAnimationCoroutine = StartCoroutine(SinkBoatAnimation(teamNum, boatNum));
 
         yield return new WaitForSeconds(m_boatRespawnTime);
         StopCoroutine(sinkAnimationCoroutine);
         
-        Destroy(m_boatsPerTeam[teamNum][boatNum]);
+        Destroy(m_boatsPerTeam[teamNum - 1][boatNum - 1]);
         
         SpawnBoat(teamNum, boatNum);
         m_onSpawnBoat(teamNum, boatNum);
     }
     
-    IEnumerator SinkBoatAnimation()
+    IEnumerator SinkBoatAnimation(int teamNum, int boatNum)
     {
         
         while (true)
         {
-            transform.Translate(new Vector3(0, -50, 0) * Time.deltaTime);
+            m_boatsPerTeam[teamNum - 1][boatNum - 1].transform.Translate(new Vector3(0, -50, 0) * Time.deltaTime);
             yield return null;
         }
     }
@@ -185,26 +189,25 @@ public class BoatSystem : GameSystem
     IEnumerator SailBoat(int teamNum, int boatNum, List<int> goldScoredPerTeam)
     {
         m_onDeleteBoat(teamNum, boatNum);
-        m_boatsPerTeam[teamNum][boatNum].GetComponent<BoatData>().m_sailAudioSource.Play();
-        Coroutine sailAnimationCoroutine = StartCoroutine(SailBoatAnimation());
+        m_boatsPerTeam[teamNum - 1][boatNum - 1].GetComponent<BoatData>().m_sailAudioSource.Play();
+        Coroutine sailAnimationCoroutine = StartCoroutine(SailBoatAnimation(teamNum, boatNum));
+        ScoreSystem.Instance.UpdateScore(goldScoredPerTeam);
 
         yield return new WaitForSeconds(m_boatRespawnTime);
         StopCoroutine(sailAnimationCoroutine);
         
         
-        ScoreSystem.Instance.UpdateScore(goldScoredPerTeam);
-        
-        Destroy(m_boatsPerTeam[teamNum][boatNum]);
+        Destroy(m_boatsPerTeam[teamNum - 1][boatNum - 1]);
         
         SpawnBoat(teamNum, boatNum);
         m_onSpawnBoat(teamNum, boatNum);
     }
 
-    IEnumerator SailBoatAnimation()
+    IEnumerator SailBoatAnimation(int teamNum, int boatNum)
     {
         while (true)
         {
-            transform.Translate(new Vector3(-10, 0, 0) * Time.deltaTime);
+            m_boatsPerTeam[teamNum - 1][boatNum - 1].transform.Translate(new Vector3(0, 0, -10) * Time.deltaTime);
             yield return null;
         }
     }

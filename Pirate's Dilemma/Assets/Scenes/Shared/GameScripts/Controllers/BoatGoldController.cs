@@ -35,18 +35,15 @@ public class BoatGoldController : MonoBehaviour
     }
     
 
-    public void AddGold(int goldCapacity, int teamNum)
+    public void AddGold(int goldAdded, int teamNum)
     {
-        
-        m_boatData.m_currentGoldStored[teamNum] += goldCapacity;
+        m_boatData.m_currentGoldStored[teamNum - 1] += goldAdded;
         
         if (m_boatData.m_currentTotalGoldStored > m_boatData.m_goldCapacity)
         {
             m_onBoatSink(m_boatData.m_teamNum, m_boatData.m_boatNum);
             m_acceptingGold = false;
         }
-
-        Debug.Log($"{m_boatData.m_teamNum}, {m_boatData.m_boatNum}, {m_boatData.m_currentTotalGoldStored}, {m_boatData.m_goldCapacity}");
         
         m_onGoldAddedToBoat(m_boatData.m_teamNum, m_boatData.m_boatNum, m_boatData.m_currentTotalGoldStored, m_boatData.m_goldCapacity);
     }
