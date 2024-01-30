@@ -11,6 +11,7 @@ public class BoatGoldController : MonoBehaviour
 {
     
     [HideInInspector] public bool m_acceptingGold = true;
+    public GameObject m_goldDropZone;
     
     public GoldAddedToBoatEvent m_onGoldAddedToBoat;
     public BoatSinkEvent m_onBoatSink;
@@ -44,6 +45,8 @@ public class BoatGoldController : MonoBehaviour
             m_onBoatSink(m_boatData.m_teamNum, m_boatData.m_boatNum);
             m_acceptingGold = false;
         }
+
+        Debug.Log($"{m_boatData.m_teamNum}, {m_boatData.m_boatNum}, {m_boatData.m_currentTotalGoldStored}, {m_boatData.m_goldCapacity}");
         
         m_onGoldAddedToBoat(m_boatData.m_teamNum, m_boatData.m_boatNum, m_boatData.m_currentTotalGoldStored, m_boatData.m_goldCapacity);
     }

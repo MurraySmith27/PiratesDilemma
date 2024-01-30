@@ -135,8 +135,13 @@ public class BoatSystem : GameSystem
         BoatGoldController boatGoldController = newBoat.GetComponent<BoatGoldController>();
         boatGoldController.m_onBoatSink += OnBoatSink;
         //here we inject our event callback into each instance of BoatGoldController.
+        Debug.Log("adding callback");
         boatGoldController.m_onGoldAddedToBoat = this.m_onGoldAddedToBoat;
-
+        //the first child of the boat spawn position is the gold drop zone spawn position.
+        Transform goldDropZoneSpawn = m_boatSpawnLocationsPerTeam[teamNum][boatNum].GetChild(0).transform;
+        boatGoldController.m_goldDropZone.transform.position = goldDropZoneSpawn.position;
+        boatGoldController.m_goldDropZone.transform.localScale = goldDropZoneSpawn.localScale;
+        
         BoatTimerController boatTimerController = newBoat.GetComponent<BoatTimerController>();
         
         boatTimerController.m_onBoatSail += OnBoatSail;

@@ -152,7 +152,7 @@ public class InGameHoversUI : UIBase
                     screen.x - (playerUILabels[i].layout.width / 2);
                 m_playerElements[i].style.top = (Screen.height - screen.y) - 100;
 
-                m_currentPlayerLabels[i] = $"{goldControllers[i].goldCarried}";
+                m_currentPlayerLabels[i] = $"{goldControllers[i].m_goldCarried}";
                 playerUILabels[i].text = m_currentPlayerLabels[i];
             }
 
