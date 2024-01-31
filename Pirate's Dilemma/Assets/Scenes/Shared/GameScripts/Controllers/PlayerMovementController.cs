@@ -87,12 +87,29 @@ public class PlayerMovementController : MonoBehaviour
         Vector3 initial = transform.position;
         Vector2 dashVector = -m_moveAction.ReadValue<Vector2>().normalized * m_dashDistance;
         Vector3 final = new Vector3(initial.x + dashVector.x, initial.y, initial.z + dashVector.y);
+        
+        float finalDistance = m_dashDistance;
+        
+        //do a raycast, see if we need to stop early because we're hitting a wall.
+        RaycastHit hit;
+        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: ~LayerMask.NameToLayer("StaticObstacle"), maxDistance: m_dashDistance))
+        {
+            finalDistance = hit.distance;
+        }
+        
         Vector3 pos;
         for (float t = 0; t < 1; t += Time.deltaTime / m_dashDuration)
         {
             yield return new WaitForFixedUpdate();
-            pos = initial + (final - initial) * Mathf.Pow(t, 1f / 3f);
+
+            float progress = Mathf.Pow(t, 1f / 3f);
+            pos = initial + (final - initial) * progress;
             rb.MovePosition(pos);
+
+            if (progress * m_dashDistance >= finalDistance)
+            {
+                break;
+            }
         }
 
         m_isDashing = false;
@@ -145,12 +162,29 @@ public class PlayerMovementController : MonoBehaviour
     {
         Vector3 initial = transform.position;
         Vector3 final = initial + new Vector3(dashDirection.x, 0, dashDirection.y) * m_pushDistance;
+        
+        float finalDistance = m_pushDistance;
+        
+        //do a raycast, see if we need to stop early because we're hitting a wall.
+        RaycastHit hit;
+        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: ~LayerMask.NameToLayer("StaticObstacle"), maxDistance: m_pushDistance))
+        {
+            finalDistance = hit.distance;
+        }
+        
         Vector3 pos;
         for (float t = 0; t < 1; t += Time.deltaTime / m_pushDuration)
         {
             yield return new WaitForFixedUpdate();
-            pos = initial + (final - initial) * Mathf.Pow(t, 1f / 3f);
+
+            float progress = Mathf.Pow(t, 1f / 3f);
+            pos = initial + (final - initial) * progress;
             rb.MovePosition(pos);
+
+            if (progress * m_pushDistance >= finalDistance)
+            {
+                break;
+            }
         }
 
         m_isBeingPushed = false;
