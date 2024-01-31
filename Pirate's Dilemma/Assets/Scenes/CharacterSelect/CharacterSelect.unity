@@ -825,7 +825,10 @@ MonoBehaviour:
   - {r: 0, g: 0, b: 1, a: 1}
   m_numTeams: 2
   m_numPlayers: 0
+  m_deathAnimationDistance: 3
+  m_deathAnimationDuration: 1.3
   m_players: []
+  m_playerRespawnTime: 3
   m_playerTeamAssignments: 
 --- !u!1 &1841775409
 GameObject:

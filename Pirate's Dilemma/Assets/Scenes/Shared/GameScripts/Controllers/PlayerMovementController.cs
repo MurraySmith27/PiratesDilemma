@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public delegate void OnPlayerDie(int playerNum);
 
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData), typeof(PlayerGoldController))]
 public class PlayerMovementController : MonoBehaviour
 {
+    public PlayerDieEvent m_onPlayerDie;
+    
     [SerializeField] private Rigidbody rb;
     
     [SerializeField] private float m_speed;
@@ -32,13 +33,15 @@ public class PlayerMovementController : MonoBehaviour
     private InputAction m_dashAction;
     private InputAction m_moveAction;
 
+    private PlayerData m_playerData;
+
     private bool m_intialized;
-
-
     
     private void Awake()
     {
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+
+        m_playerData = GetComponent<PlayerData>();
         
         m_intialized = false;
     }
@@ -109,11 +112,15 @@ public class PlayerMovementController : MonoBehaviour
 
                 otherPlayerMovement.GetPushed(dashDirection);
             }
-        }   
-        else if (collision.gameObject.layer == LayerMask.NameToLayer("Killzone"))
+        } 
+    }
+
+    private void OnTriggerEnter(Collider otherCollider)
+    {
+        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Killzone"))
         {
             //player dies.
-            
+            m_onPlayerDie(m_playerData.m_playerNum);
         }
     }
 
@@ -149,4 +156,30 @@ public class PlayerMovementController : MonoBehaviour
         m_isBeingPushed = false;
     }
 
+
+    void OnEnable()
+    {
+        if (m_dashAction != null)
+        {
+            m_dashAction.Enable();
+        }
+
+        if (m_moveAction != null)
+        {
+            m_moveAction.Enable();
+        }
+}
+
+    void OnDisable()
+    {
+        if (m_dashAction != null)
+        {
+            m_dashAction.Disable();
+        }
+
+        if (m_moveAction != null)
+        {
+            m_moveAction.Disable();
+        }
+    }
 }

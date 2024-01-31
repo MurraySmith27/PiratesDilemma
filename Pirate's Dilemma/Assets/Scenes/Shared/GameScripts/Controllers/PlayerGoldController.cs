@@ -74,9 +74,8 @@ public class PlayerGoldController : MonoBehaviour
             
             if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
             {
-                Destroy(m_heldGoldInstance);
                 boat.GetComponent<BoatGoldController>().AddGold(m_goldCarried, GetComponent<PlayerData>().m_teamNum);
-                m_goldCarried = 0;
+                DropAllGold();
                 
             }
         }
@@ -110,6 +109,12 @@ public class PlayerGoldController : MonoBehaviour
         m_heldGoldInstance.transform.localRotation = Quaternion.identity;
     }
 
+    public void DropAllGold()
+    {
+        Destroy(m_heldGoldInstance);
+        m_goldCarried = 0;
+    }
+
     void OnTriggerEnter(Collider otherCollider)
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
@@ -119,7 +124,6 @@ public class PlayerGoldController : MonoBehaviour
         
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
         {
-            Debug.Log("Entered gold pickup zone");
             m_inGoldPickupZone = true;
         }
     }
@@ -133,9 +137,23 @@ public class PlayerGoldController : MonoBehaviour
         
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
         {
-            
-            Debug.Log("Left gold pickup zone");
             m_inGoldPickupZone = false;
+        }
+    }
+    
+    void OnEnable()
+    {
+        if (m_interactAction != null)
+        {
+            m_interactAction.Enable();
+        }
+    }
+
+    void OnDisable()
+    {
+        if (m_interactAction != null)
+        {
+            m_interactAction.Disable();
         }
     }
     

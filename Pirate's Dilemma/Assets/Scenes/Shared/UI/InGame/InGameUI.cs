@@ -59,7 +59,7 @@ public class InGameUI : UIBase
 
     void UpdateScoreUI(List<int> newScores)
     {
-        for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
+        for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
             m_teamScoreLabels[i].text = $"P{i}: {newScores[i]}";
         }

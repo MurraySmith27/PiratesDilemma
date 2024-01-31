@@ -34,6 +34,7 @@ public class BoatGoldController : MonoBehaviour
         m_acceptingGold = false;
     }
     
+    
 
     public void AddGold(int goldAdded, int teamNum)
     {

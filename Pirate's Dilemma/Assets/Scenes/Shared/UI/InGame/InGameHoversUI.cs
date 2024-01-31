@@ -25,6 +25,8 @@ public class InGameHoversUI : UIBase
     private List<List<string>> m_currentBoatLabels;
 
     private List<string> m_currentPlayerLabels;
+
+    private List<bool> m_deadPlayers;
     
 
     protected override void Awake()
@@ -44,10 +46,15 @@ public class InGameHoversUI : UIBase
         m_currentBoatLabels = new List<List<string>>();
 
         m_currentPlayerLabels = new List<string>();
+
+        m_deadPlayers = new List<bool>();
         
         BoatSystem.Instance.m_onSpawnBoat += NewBoatSpawned;
         BoatSystem.Instance.m_onDeleteBoat += BoatDeleted;
         BoatSystem.Instance.m_onGoldAddedToBoat += GoldAddedToBoat;
+
+        PlayerSystem.Instance.m_onPlayerDie += OnPlayerDie;
+        PlayerSystem.Instance.m_onPlayerRespawn += OnPlayerRespawn;
         
         m_root = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("root");
 
@@ -55,6 +62,7 @@ public class InGameHoversUI : UIBase
         {
             m_playerElements.Add(null);
             m_currentPlayerLabels.Add("");
+            m_deadPlayers.Add(false);
         }
         
         for (int teamNum = 1; teamNum <= PlayerSystem.Instance.m_numTeams; teamNum++)
@@ -123,6 +131,18 @@ public class InGameHoversUI : UIBase
         }
     }
 
+    private void OnPlayerDie(int playerNum)
+    {
+        m_deadPlayers[playerNum - 1] = true;
+        m_playerElements[playerNum - 1].style.left = 10000;
+        m_playerElements[playerNum - 1].style.left = 10000;
+    }
+
+    private void OnPlayerRespawn(int playerNum)
+    {
+        m_deadPlayers[playerNum - 1] = false;
+    }
+
     IEnumerator UpdatePlayerUIs()
     {
         List<GameObject> players = PlayerSystem.Instance.m_players;
@@ -145,14 +165,17 @@ public class InGameHoversUI : UIBase
         {
             for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
             {
-                Vector3 screen = Camera.main.WorldToScreenPoint(players[i].transform.position);
-    
-                m_playerElements[i].style.left =
-                    screen.x - (playerUILabels[i].layout.width / 2);
-                m_playerElements[i].style.top = (Screen.height - screen.y) - 100;
+                if (!m_deadPlayers[i])
+                {
+                    Vector3 screen = Camera.main.WorldToScreenPoint(players[i].transform.position);
 
-                m_currentPlayerLabels[i] = $"{goldControllers[i].m_goldCarried}";
-                playerUILabels[i].text = m_currentPlayerLabels[i];
+                    m_playerElements[i].style.left =
+                        screen.x - (playerUILabels[i].layout.width / 2);
+                    m_playerElements[i].style.top = (Screen.height - screen.y) - 100;
+
+                    m_currentPlayerLabels[i] = $"{goldControllers[i].m_goldCarried}";
+                    playerUILabels[i].text = m_currentPlayerLabels[i];
+                }
             }
 
             yield return null;

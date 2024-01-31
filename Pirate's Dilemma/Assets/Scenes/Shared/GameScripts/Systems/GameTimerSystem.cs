@@ -73,7 +73,7 @@ public class GameTimerSystem : GameSystem
 
             PlayerData playerData = player.GetComponent<PlayerData>();
 
-            playerData.m_playerNum = i;
+            playerData.m_playerNum = i + 1;
             playerData.m_teamNum = PlayerSystem.Instance.m_playerTeamAssignments[i];
         }
 
