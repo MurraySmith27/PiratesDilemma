@@ -3,7 +3,19 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - P1Spawn
+  - P2Spawn
+  - P3Spawn
+  - P4Spawn
+  - GoldPile
+  - Boat
+  - BoatDropZone
+  - GoldPickupZone
+  - Team1Boat
+  - Team2Boat
+  - Team1BoatSpawn
+  - Team2BoatSpawn
   layers:
   - Default
   - TransparentFX
@@ -11,10 +23,10 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - GoldDropZone
+  - GoldPickupZone
+  - Player
+  - Killzone
   - 
   - 
   - 
