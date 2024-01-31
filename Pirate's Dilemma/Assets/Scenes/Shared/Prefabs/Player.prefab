@@ -18,9 +18,9 @@ GameObject:
   - component: {fileID: 4657405196688796297}
   - component: {fileID: 4268078201383633483}
   - component: {fileID: 2835345827739117067}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,7 +104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 1f8c678d0c1572946ad4ccad197af8ad,
     type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 2
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -115,7 +115,27 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f0bc74ff-5bf6-4c08-b7e5-004914d05715
+    m_ActionName: InGame/Move[/XInputControllerWindows/leftStick/up,/XInputControllerWindows/leftStick/down,/XInputControllerWindows/leftStick/left,/XInputControllerWindows/leftStick/right]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 281384fe-9a4e-4ce7-a5b2-7c51c99bb395
+    m_ActionName: InGame/Interact[/XInputControllerWindows/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8e0b1afc-a687-4f6c-86c3-0e972f205748
+    m_ActionName: InGame/Dash[/XInputControllerWindows/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f85a0d33-9db8-4d25-a57c-6c834ac62edb
+    m_ActionName: CharacterSelect/ReadyUp[/XInputControllerWindows/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 32e1f21a-7e05-40ed-869a-8bd29e6ef232
+    m_ActionName: CharacterSelect/Join[/XInputControllerWindows/start]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: CharacterSelect
@@ -165,8 +185,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e41d529fd4a209a4c9c4fd9de2581fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 10
   rb: {fileID: 4268078201383633483}
+  m_speed: 10
+  m_dashDistance: 5
+  m_dashDuration: 0.3
+  m_pushDistance: 5
+  m_pushDuration: 0.3
 --- !u!82 &4657405196688796297
 AudioSource:
   m_ObjectHideFlags: 0
