@@ -106,7 +106,7 @@ public class PlayerSystem : GameSystem
         }
 
         playerInput.gameObject.transform.position = m_playerSpawnPositions[playerNum - 1].position;
-        foreach (MeshRenderer meshRenderer in playerInput.gameObject.transform.GetComponentsInChildren<MeshRenderer>())
+        foreach (MeshRenderer meshRenderer in playerInput.gameObject.transform.GetChild(0).GetComponentsInChildren<MeshRenderer>())
         {
             meshRenderer.material.color = m_teamColors[teamNum - 1];
         }
@@ -266,6 +266,8 @@ public class PlayerSystem : GameSystem
                 GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
 
                 m_players[i].transform.position = spawnPos.transform.position;
+                m_players[i].transform.localScale = spawnPos.transform.localScale;
+                m_players[i].transform.rotation = spawnPos.transform.rotation;
                 
                 SwitchToActionMapForPlayer(i + 1, "InGame");
             }

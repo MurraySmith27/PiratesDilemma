@@ -9,7 +9,7 @@ public class PlayerMovementController : MonoBehaviour
 {
     public PlayerDieEvent m_onPlayerDie;
     
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Rigidbody m_rigidbody;
     
     [SerializeField] private float m_speed;
     
@@ -52,7 +52,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             float speed = m_speed * ((100 - 2 * m_PlayerGoldController.m_goldCarried) / 100f);
             Vector2 moveVector = -m_moveAction.ReadValue<Vector2>().normalized * (speed * Time.deltaTime);
-            rb.MovePosition(transform.position + new Vector3(moveVector.x, 0f, moveVector.y));
+            m_rigidbody.MovePosition(transform.position + new Vector3(moveVector.x, 0f, moveVector.y));
         }
     }
 
@@ -104,7 +104,7 @@ public class PlayerMovementController : MonoBehaviour
 
             float progress = Mathf.Pow(t, 1f / 3f);
             pos = initial + (final - initial) * progress;
-            rb.MovePosition(pos);
+            m_rigidbody.MovePosition(pos);
 
             if (progress * m_dashDistance >= finalDistance)
             {
@@ -114,6 +114,7 @@ public class PlayerMovementController : MonoBehaviour
 
         m_isDashing = false;
     }
+
     
     private void OnCollisionEnter(Collision collision)
     {
@@ -179,7 +180,7 @@ public class PlayerMovementController : MonoBehaviour
 
             float progress = Mathf.Pow(t, 1f / 3f);
             pos = initial + (final - initial) * progress;
-            rb.MovePosition(pos);
+            m_rigidbody.MovePosition(pos);
 
             if (progress * m_pushDistance >= finalDistance)
             {

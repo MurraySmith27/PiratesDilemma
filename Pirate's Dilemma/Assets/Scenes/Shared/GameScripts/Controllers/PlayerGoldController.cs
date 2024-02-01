@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 
 
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData))]
 public class PlayerGoldController : MonoBehaviour
 {
+    public int m_goldCarried;
     
     [SerializeField] public int m_goldCapacity = 3;
 
@@ -14,22 +16,32 @@ public class PlayerGoldController : MonoBehaviour
     
     [SerializeField] private AudioSource m_goldPickupAudioSource;
 
-    [SerializeField] private GameObject m_heldGoldPrefab;
+    [SerializeField] private GameObject m_heldGoldGameObject;
 
+    [SerializeField] private GameObject m_throwingTargetGameObject;
+
+    [SerializeField] private float m_maxThrowDistance;
+    
+    [SerializeField] private float m_timeToGetMaxThrowRange;
+    
     private GameObject m_heldGoldInstance;
     
     private PlayerInput m_playerInput;
     
     private InputAction m_interactAction;
+    private InputAction m_throwAction;
+    private InputAction m_moveAction;
 
     private PlayerData m_playerData;
 
     private bool m_inGoldDropZone = false;
     private bool m_inGoldPickupZone = false;
+
+    private Rigidbody m_rigidbody;
+
+    private Coroutine m_throwingCoroutine;
     
-
-    public int m_goldCarried;
-
+    private bool m_throwing;
 
     void Awake()
     {
@@ -44,42 +56,105 @@ public class PlayerGoldController : MonoBehaviour
         m_playerData = GetComponent<PlayerData>();
 
         m_interactAction = m_playerInput.actions["Interact"];
-        m_interactAction.performed += ctx => { OnPickupGold(ctx); };
-        m_interactAction.performed += ctx => { OnDropGold(ctx); };
-    }
-    
+        m_interactAction.performed += OnInteractButtonPressed;
 
-    public void OnPickupGold(InputAction.CallbackContext ctx)
+        m_throwAction = m_playerInput.actions["Throw"];
+        m_throwAction.performed += OnThrowButtonHeld;
+        m_throwAction.canceled += OnThrowButtonReleased;
+
+        m_moveAction = m_playerInput.actions["Move"];
+        
+        m_throwing = false;
+
+        m_rigidbody = GetComponent<Rigidbody>();
+    }
+
+    private void OnInteractButtonPressed(InputAction.CallbackContext ctx)
     {
         if (m_goldCarried < m_goldCapacity && m_inGoldPickupZone)
         {
-            m_goldPickupAudioSource.Play();
-            m_goldCarried += 1;
-
-            if (m_heldGoldInstance == null)
-            {
-                SpawnGoldAsChild();
-            }
-            else
-            {
-                m_heldGoldInstance.transform.localScale *= m_goldPrefabScaleIncreaseFactor;
-            }
+            PickupGold();
         }
-    }
-    public void OnDropGold(InputAction.CallbackContext ctx)
-    {
-        if (m_goldCarried != 0 && m_inGoldDropZone)
+        else if (m_goldCarried != 0 && m_inGoldDropZone)
         {
-            GameObject boat = MaybeFindNearestBoat();
-            
-            if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
-            {
-                boat.GetComponent<BoatGoldController>().AddGold(m_goldCarried, GetComponent<PlayerData>().m_teamNum);
-                DropAllGold();
-                
-            }
+            DropGold();
         }
     }
+
+    private void OnThrowButtonHeld(InputAction.CallbackContext ctx)
+    {
+        m_throwing = true;
+        m_rigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+        m_throwingCoroutine = StartCoroutine(ExtendLandingPositionCoroutine());
+    }
+
+    private void OnThrowButtonReleased(InputAction.CallbackContext ctx)
+    {
+        if (m_throwingCoroutine != null)
+        {
+            StopCoroutine(m_throwingCoroutine);
+
+            
+
+            m_throwingTargetGameObject.SetActive(false);
+        }
+    }
+
+    private IEnumerator ExtendLandingPositionCoroutine()
+    {
+        m_throwingTargetGameObject.SetActive(true);
+        m_throwingTargetGameObject.transform.position = transform.position;
+
+        Vector3 initialPos = m_throwingTargetGameObject.transform.position;
+
+        Vector2 moveVector = m_moveAction.ReadValue<Vector2>();
+        Vector3 maxDistancePos = initialPos + new Vector3(moveVector.x, initialPos.y, moveVector.y) * m_maxThrowDistance;
+
+        float t = 0;
+        while (true)
+        {
+            t = Mathf.Min(t + Time.deltaTime * m_timeToGetMaxThrowRange, 1);
+            moveVector = m_moveAction.ReadValue<Vector2>();
+            maxDistancePos = initialPos + new Vector3(moveVector.x, initialPos.y, moveVector.y) * m_maxThrowDistance;
+            
+            m_throwingTargetGameObject.transform.position = initialPos + (maxDistancePos - initialPos) * t;
+            yield return null;
+        }
+
+    }
+
+    private void PickupGold()
+    {
+        m_goldPickupAudioSource.Play();
+        m_goldCarried += 1;
+
+        m_heldGoldGameObject.SetActive(true);
+        m_heldGoldGameObject.transform.localScale *= m_goldPrefabScaleIncreaseFactor;
+    }
+    
+    private void DropGold()
+    {
+        GameObject boat = MaybeFindNearestBoat();
+        
+        if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
+        {
+            boat.GetComponent<BoatGoldController>().AddGold(m_goldCarried, GetComponent<PlayerData>().m_teamNum);
+            DropAllGold();
+        }
+    }
+
+    private IEnumerator ThrowGoldCoroutine(IInputInteraction interactionTriggered)
+    {
+        yield return new WaitForFixedUpdate();
+        //lock position
+        m_rigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+        
+        
+        //unlock x and z positions
+        m_rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+    }
+    
+    
 
     public GameObject MaybeFindNearestBoat()
     {
@@ -100,18 +175,9 @@ public class PlayerGoldController : MonoBehaviour
         return nearestDropZoneBoat;
     }
     
-    void SpawnGoldAsChild()
-    {
-        // Instantiate objectToSpawn as a child of this.transform
-        m_heldGoldInstance = Instantiate(m_heldGoldPrefab, this.transform.position + new Vector3(1, 0, 0), this.transform.rotation, this.transform);
-
-        m_heldGoldInstance.transform.localPosition = Vector3.forward * 2;
-        m_heldGoldInstance.transform.localRotation = Quaternion.identity;
-    }
-
     public void DropAllGold()
     {
-        Destroy(m_heldGoldInstance);
+        m_heldGoldGameObject.SetActive(false);
         m_goldCarried = 0;
     }
 
