@@ -7,6 +7,16 @@ public class LooseGoldController : MonoBehaviour
 {
     public LooseGoldCollisionEvent m_onLooseGoldCollision;
 
+    void Start()
+    {
+        StartCoroutine(DespawnAfterSeconds());
+    }
+
+    IEnumerator DespawnAfterSeconds()
+    {
+        yield return new WaitForSeconds(5);
+        Destroy(this.gameObject);
+    }
 
     void OnCollisionEnter(Collision collision)
     {

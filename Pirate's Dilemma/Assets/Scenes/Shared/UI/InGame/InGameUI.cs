@@ -20,7 +20,7 @@ public class InGameUI : UIBase
     
     protected override void SetUpUI()
     {
-        VisualElement root = GetComponent<UIDocument>().rootVisualElement;
+        VisualElement root = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("root");
 
         m_globalTimerLabel = root.Q<Label>("global-timer");
         m_leaderBoardLabel = root.Q<Label>("score-board-title");

@@ -239,8 +239,9 @@ public class PlayerGoldController : MonoBehaviour
     {
         GameObject nearestDropZoneBoat = null;
         float nearestDropZoneDistance = float.MaxValue;
-
-        foreach (GameObject boat in GameObject.FindGameObjectsWithTag($"Team{m_playerData.m_teamNum}Boat"))
+        List<GameObject> allBoats = GameObject.FindGameObjectsWithTag($"Team1Boat")
+            .Concat(GameObject.FindGameObjectsWithTag($"Team2Boat")).ToList();
+        foreach (GameObject boat in allBoats)
         {
             Transform dropZoneTransform = boat.GetComponent<BoatGoldController>().m_goldDropZone.transform;
             float distanceToDropZone = (this.transform.position - dropZoneTransform.position).magnitude;
