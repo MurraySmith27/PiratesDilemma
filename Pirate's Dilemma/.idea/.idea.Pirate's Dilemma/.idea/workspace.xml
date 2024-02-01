@@ -6,13 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="2fa9daa2-90f4-44c3-9351-b9e137dd4c15" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level_Map.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level_Map.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerMovementController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerMovementController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/PlayerControlSchemes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/PlayerControlSchemes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/PlayerControlSchemes.inputactions" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/PlayerControlSchemes.inputactions" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/LooseGold.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/LooseGold.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Player.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +22,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/LooseGoldController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.burst@1.8.11/Tests/Runtime/PlaymodeTest.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/LineBillboardMetal.shader" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/PointBillboard.shader" root0="SKIP_HIGHLIGHTING" />
@@ -111,6 +111,8 @@
       <workItem from="1706624189892" duration="7303000" />
       <workItem from="1706635990204" duration="13922000" />
       <workItem from="1706667571703" duration="8362000" />
+      <workItem from="1706814895976" duration="2479000" />
+      <workItem from="1706818153861" duration="2600000" />
     </task>
     <servers />
   </component>

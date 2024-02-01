@@ -144,6 +144,8 @@ public class PlayerMovementController : MonoBehaviour
 
     public void GetPushed(Vector2 dashDirection)
     {
+        m_PlayerGoldController.DropAllGold();
+        
         if (m_isDashing)
         {
             //if attacked while dashing, stop dashing and get pushed.

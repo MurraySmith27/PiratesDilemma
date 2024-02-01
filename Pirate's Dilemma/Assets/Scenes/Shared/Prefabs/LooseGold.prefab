@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 7281345515390719502}
   - component: {fileID: 7260388526917366809}
   - component: {fileID: 6219640582716932669}
+  - component: {fileID: 7241188248614680902}
   m_Layer: 0
   m_Name: LooseGold
-  m_TagString: Untagged
+  m_TagString: LooseGold
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -133,3 +134,15 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7241188248614680902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4714602978416047080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d69db1f7612fa6149982490da1965b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
