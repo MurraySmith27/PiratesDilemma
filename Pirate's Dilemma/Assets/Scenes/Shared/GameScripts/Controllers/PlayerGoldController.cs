@@ -23,6 +23,12 @@ public class PlayerGoldController : MonoBehaviour
     [SerializeField] private float m_maxThrowDistance;
     
     [SerializeField] private float m_timeToGetMaxThrowRange;
+
+    [SerializeField] private GameObject m_looseGoldPrefab;
+
+    [SerializeField] private float m_goldThrowingAirTime;
+    
+    [SerializeField] private float m_goldThrowingPeakHeight;
     
     private GameObject m_heldGoldInstance;
     
@@ -83,21 +89,32 @@ public class PlayerGoldController : MonoBehaviour
 
     private void OnThrowButtonHeld(InputAction.CallbackContext ctx)
     {
+        Debug.Log("throw started");
         m_throwing = true;
+        //freeze player while charging throw
         m_rigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
         m_throwingCoroutine = StartCoroutine(ExtendLandingPositionCoroutine());
     }
 
     private void OnThrowButtonReleased(InputAction.CallbackContext ctx)
     {
+        
         if (m_throwingCoroutine != null)
         {
             StopCoroutine(m_throwingCoroutine);
-
             
+            Vector3 targetPos = m_throwingTargetGameObject.transform.position;
+
+            StartCoroutine(ThrowGoldCoroutine(targetPos));
 
             m_throwingTargetGameObject.SetActive(false);
+            
+            m_throwing = false;
+            
+            //unlock player 
+            m_rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
         }
+
     }
 
     private IEnumerator ExtendLandingPositionCoroutine()
@@ -114,8 +131,8 @@ public class PlayerGoldController : MonoBehaviour
         while (true)
         {
             t = Mathf.Min(t + Time.deltaTime * m_timeToGetMaxThrowRange, 1);
-            moveVector = m_moveAction.ReadValue<Vector2>();
-            maxDistancePos = initialPos + new Vector3(moveVector.x, initialPos.y, moveVector.y) * m_maxThrowDistance;
+            moveVector = -m_moveAction.ReadValue<Vector2>();
+            maxDistancePos = initialPos + new Vector3(moveVector.x, 0, moveVector.y) * m_maxThrowDistance;
             
             m_throwingTargetGameObject.transform.position = initialPos + (maxDistancePos - initialPos) * t;
             yield return null;
@@ -143,15 +160,37 @@ public class PlayerGoldController : MonoBehaviour
         }
     }
 
-    private IEnumerator ThrowGoldCoroutine(IInputInteraction interactionTriggered)
+    private IEnumerator ThrowGoldCoroutine(Vector3 finalPos)
     {
-        yield return new WaitForFixedUpdate();
-        //lock position
-        m_rigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
-        
-        
-        //unlock x and z positions
-        m_rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+        Vector3 initialPos = transform.position;
+        float initialHeight = initialPos.y;
+        RaycastHit hit;
+        float heightDeltaWithFloor = initialHeight;
+        if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
+                layerMask: ~LayerMask.NameToLayer("Floor")))
+        {
+            heightDeltaWithFloor = hit.distance;
+        }
+
+        float distance = (new Vector3(finalPos.x, 0, finalPos.z) - new Vector3(initialPos.x, 0, initialPos.z)).magnitude;
+            
+        GameObject looseGold = Instantiate(m_looseGoldPrefab, initialPos, Quaternion.identity);
+        Rigidbody looseGoldRb = looseGold.GetComponent<Rigidbody>();
+        looseGoldRb.isKinematic = true;
+        for (float t = 0; t < 1; t += Time.deltaTime / m_goldThrowingAirTime)
+        {
+            yield return new WaitForFixedUpdate();
+
+            float progress = Mathf.Asin(2f * t - 1f) / Mathf.PI + 0.5f;
+            Vector3 newPos = initialPos + (initialPos - finalPos) * progress;
+
+            newPos.y = -(t - distance) * (t + (heightDeltaWithFloor / distance));
+            
+            looseGoldRb.MovePosition(newPos);
+        }
+
+        looseGoldRb.isKinematic = false;
+
     }
     
     

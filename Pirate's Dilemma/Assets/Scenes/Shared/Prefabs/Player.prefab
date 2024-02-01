@@ -38,6 +38,7 @@ Transform:
   m_Children:
   - {fileID: 1851902502003433891}
   - {fileID: 1858198445927862084}
+  - {fileID: 6279727065334515979}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3147251643471744126
@@ -86,6 +87,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 32e1f21a-7e05-40ed-869a-8bd29e6ef232
     m_ActionName: CharacterSelect/Join[/XInputControllerWindows/start]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ace547a2-e929-4c3a-a4fe-9ed4ff7a9437
+    m_ActionName: InGame/Throw[/Keyboard/space,/DualShock4GamepadHID/buttonSouth,/XInputControllerWindows/buttonSouth,/DualShock4GamepadHID1/buttonSouth]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: CharacterSelect
@@ -117,11 +122,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4e2bacc805930941b7c63bf80e6320d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_goldCapacity: 3
+  m_goldCarried: 0
+  m_goldCapacity: 1
   m_goldPrefabScaleIncreaseFactor: 1.1
   m_goldPickupAudioSource: {fileID: 4657405196688796297}
   m_heldGoldGameObject: {fileID: 6890432593796141586}
-  m_goldCarried: 0
+  m_throwingTargetGameObject: {fileID: 8660961137410361375}
+  m_maxThrowDistance: 5
+  m_timeToGetMaxThrowRange: 2
+  m_looseGoldPrefab: {fileID: 4714602978416047080, guid: ea421fdecbc4cef428b431abf643e362,
+    type: 3}
+  m_goldThrowingAirTime: 2
+  m_goldThrowingPeakHeight: 4
 --- !u!114 &8159576825246783168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,7 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e41d529fd4a209a4c9c4fd9de2581fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 4268078201383633483}
+  m_rigidbody: {fileID: 4268078201383633483}
   m_speed: 10
   m_dashDistance: 5
   m_dashDuration: 0.3
@@ -286,6 +298,89 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &8660961137410361375
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6279727065334515979}
+  - component: {fileID: 6935317409378041944}
+  - component: {fileID: 4133702019816221156}
+  m_Layer: 8
+  m_Name: Quad
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &6279727065334515979
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8660961137410361375}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.992, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4313782162737317191}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!33 &6935317409378041944
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8660961137410361375}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &4133702019816221156
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8660961137410361375}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: b46b7e73d4bfa03449592a10b9bfc6e3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1001 &2157355564610948835
 PrefabInstance:
   m_ObjectHideFlags: 0
