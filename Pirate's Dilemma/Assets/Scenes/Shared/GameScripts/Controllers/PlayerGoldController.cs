@@ -30,6 +30,8 @@ public class PlayerGoldController : MonoBehaviour
     [SerializeField] private float m_goldThrowingAirTime;
     
     [SerializeField] private float m_goldThrowingPeakHeight;
+
+    [SerializeField] private int m_trajectoryLineResolution = 10;
     
     private GameObject m_heldGoldInstance;
     
@@ -110,6 +112,8 @@ public class PlayerGoldController : MonoBehaviour
             m_throwing = true;
             //freeze player while charging throw
             m_rigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+            LineRenderer trajectoryLine = GetComponent<LineRenderer>();
+            trajectoryLine.enabled = true;
             m_throwingCoroutine = StartCoroutine(ExtendLandingPositionCoroutine());
         }
     }
@@ -120,6 +124,9 @@ public class PlayerGoldController : MonoBehaviour
         if (m_throwingCoroutine != null && m_throwing)
         {
             StopCoroutine(m_throwingCoroutine);
+            
+            LineRenderer trajectoryLine = GetComponent<LineRenderer>();
+            trajectoryLine.enabled = false;
             
             Vector3 targetPos = m_throwingTargetGameObject.transform.position;
             
@@ -156,6 +163,17 @@ public class PlayerGoldController : MonoBehaviour
             moveVector = new Vector2(1f, 0f);
         }
         Vector3 maxDistancePos = initialPos + new Vector3(moveVector.x, 0, moveVector.y) * m_maxThrowDistance;
+        
+        float heightDeltaWithFloor = transform.position.y;
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
+                layerMask: ~LayerMask.NameToLayer("Floor")))
+        {
+            heightDeltaWithFloor = hit.distance;
+        }
+        
+        
+        LineRenderer trajectoryLine = GetComponent<LineRenderer>();
 
         float t = 0;
         while (true)
@@ -164,7 +182,25 @@ public class PlayerGoldController : MonoBehaviour
             moveVector = -m_moveAction.ReadValue<Vector2>();
             maxDistancePos = initialPos + new Vector3(moveVector.x, 0, moveVector.y) * m_maxThrowDistance;
             
-            m_throwingTargetGameObject.transform.position = initialPos + (maxDistancePos - initialPos) * t;
+            trajectoryLine.positionCount = m_trajectoryLineResolution;
+            
+            Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
+            m_throwingTargetGameObject.transform.position = targetPos;
+
+            float currentDistance = ((maxDistancePos - initialPos) * t).magnitude;
+            
+            List<Vector3> linePositions = new List<Vector3>();
+            for (int i = 0; i < m_trajectoryLineResolution; i++)
+            {
+                //progress along line
+                float t2 = i / (float)m_trajectoryLineResolution;
+                float currentHeight = -(t2 * currentDistance - currentDistance) * (t2 * currentDistance + (heightDeltaWithFloor / currentDistance));
+                Vector3 currentPositionAlongLine = initialPos + (targetPos - initialPos) * t2;
+                linePositions.Add(new Vector3(currentPositionAlongLine.x, currentHeight, currentPositionAlongLine.z));
+            }
+            
+            trajectoryLine.SetPositions(linePositions.ToArray());
+            
             yield return null;
         }
     }
@@ -175,6 +211,9 @@ public class PlayerGoldController : MonoBehaviour
         m_goldCarried += 1;
 
         m_heldGoldGameObject.SetActive(true);
+
+        m_interactAction.Disable();
+        m_throwAction.Enable();
     }
     
     private void DropGold()
@@ -205,6 +244,7 @@ public class PlayerGoldController : MonoBehaviour
         Rigidbody looseGoldRb = looseGold.GetComponent<Rigidbody>();
         looseGoldRb.isKinematic = true;
         looseGold.layer = LayerMask.NameToLayer("AirbornLooseGold");
+        
         for (float t = 0; t < 1; t += Time.deltaTime / m_goldThrowingAirTime)
         {
             yield return new WaitForFixedUpdate();
@@ -233,9 +273,7 @@ public class PlayerGoldController : MonoBehaviour
 
     }
     
-    
-
-    public GameObject MaybeFindNearestBoat()
+    private GameObject MaybeFindNearestBoat()
     {
         GameObject nearestDropZoneBoat = null;
         float nearestDropZoneDistance = float.MaxValue;
@@ -259,12 +297,21 @@ public class PlayerGoldController : MonoBehaviour
     {
         m_heldGoldGameObject.SetActive(false);
         m_goldCarried = 0;
+        
+        m_interactAction.Enable();
+        m_throwAction.Disable();
     }
 
     void OnTriggerEnter(Collider otherCollider)
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
         {
+            if (m_goldCarried > 0)
+            {
+                m_interactAction.Enable();
+                m_throwAction.Disable();
+            }
+
             m_inGoldDropZone = true;
         }
         
@@ -278,6 +325,12 @@ public class PlayerGoldController : MonoBehaviour
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
         {
+            if (m_goldCarried > 0)
+            {
+                m_interactAction.Disable();
+                m_throwAction.Enable();
+            }
+
             m_inGoldDropZone = false;
         }
         
