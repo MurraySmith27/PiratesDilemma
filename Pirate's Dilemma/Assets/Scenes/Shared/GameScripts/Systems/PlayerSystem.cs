@@ -22,8 +22,10 @@ public class PlayerSystem : GameSystem
     }
     
     public int m_maxNumPlayers = 4;
-    
+
     public List<Color> m_teamColors;
+    
+    public List<Material> m_teamPlayerMaterials;
     
     public int m_numTeams = 2;
 
@@ -106,9 +108,10 @@ public class PlayerSystem : GameSystem
         }
 
         playerInput.gameObject.transform.position = m_playerSpawnPositions[playerNum - 1].position;
+        
         foreach (MeshRenderer meshRenderer in playerInput.gameObject.transform.GetChild(0).GetComponentsInChildren<MeshRenderer>())
         {
-            meshRenderer.material.color = m_teamColors[teamNum - 1];
+            meshRenderer.material = new Material(m_teamPlayerMaterials[playerNum - 1]);
         }
 
         playerInput.gameObject.GetComponent<PlayerMovementController>().m_onPlayerDie += OnPlayerDie;
