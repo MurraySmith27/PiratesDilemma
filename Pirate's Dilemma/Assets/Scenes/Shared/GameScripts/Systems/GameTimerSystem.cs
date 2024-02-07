@@ -67,23 +67,12 @@ public class GameTimerSystem : GameSystem
 
     public void StartGame(Scene scene, LoadSceneMode mode)
     {
-        for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
-        {
-            GameObject player = PlayerSystem.Instance.m_playerInputObjects[i].gameObject;
-
-            PlayerData playerData = player.GetComponent<PlayerData>();
-
-            playerData.m_playerNum = i + 1;
-            playerData.m_teamNum = PlayerSystem.Instance.m_playerTeamAssignments[i];
-        }
-
         if (m_onGameStart?.GetInvocationList()?.Length > 0)
         {
             m_onGameStart();
         }
         
         StartCoroutine(GlobalCountdown(GameTimerSystem.Instance.m_gameTimerSeconds));
-        
     }
     
     IEnumerator GlobalCountdown(int seconds)

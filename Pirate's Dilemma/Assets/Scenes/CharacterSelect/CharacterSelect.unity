@@ -764,7 +764,7 @@ MonoBehaviour:
   m_NotificationBehavior: 0
   m_MaxPlayerCount: -1
   m_AllowJoining: 1
-  m_JoinBehavior: 1
+  m_JoinBehavior: 2
   m_PlayerJoinedEvent:
     m_PersistentCalls:
       m_Calls:
@@ -796,8 +796,7 @@ MonoBehaviour:
       m_Flags: 0
     m_Reference: {fileID: -9079797502138405322, guid: 1f8c678d0c1572946ad4ccad197af8ad,
       type: 3}
-  m_PlayerPrefab: {fileID: 3528894974979799562, guid: 309f4b1f8aeff5241a6fa058a36bb100,
-    type: 3}
+  m_PlayerPrefab: {fileID: 0}
   m_SplitScreen: 0
   m_MaintainAspectRatioInSplitScreen: 0
   m_FixedNumberOfSplitScreens: -1
@@ -822,10 +821,13 @@ MonoBehaviour:
   m_maxNumPlayers: 4
   m_teamColors:
   - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 0, g: 0, b: 1, a: 1}
-  m_teamPlayerMaterials:
-  - {fileID: 2100000, guid: 573de0d4ac4d0fa42981c6e6e1be42d1, type: 2}
-  - {fileID: 2100000, guid: 2bd6ece480429864bbea0bd092e5b2a2, type: 2}
+  - {r: 0, g: 1, b: 0, a: 1}
+  m_team1playerPrefabs:
+  - {fileID: 5354033023548086294, guid: b72a50d36c35bc349ad35366a561bbeb, type: 3}
+  - {fileID: 5354033023548086294, guid: b72a50d36c35bc349ad35366a561bbeb, type: 3}
+  m_team2playerPrefabs:
+  - {fileID: 2619592585149760542, guid: 18d45fdb0b1974647a4fc2765c488c23, type: 3}
+  - {fileID: 2619592585149760542, guid: 18d45fdb0b1974647a4fc2765c488c23, type: 3}
   m_numTeams: 2
   m_numPlayers: 0
   m_deathAnimationDistance: 3
@@ -833,6 +835,8 @@ MonoBehaviour:
   m_players: []
   m_playerRespawnTime: 3
   m_playerTeamAssignments: 
+  m_actions: {fileID: -944628639613478452, guid: 1f8c678d0c1572946ad4ccad197af8ad,
+    type: 3}
 --- !u!1 &1841775409
 GameObject:
   m_ObjectHideFlags: 0
