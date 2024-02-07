@@ -1,14 +1,14 @@
 void CellShadingShadows_float(in float3 Normal, in float ToonRampSmoothness, in float3 ClipSpacePos, in float3 WorldPos, in float4 ToonRampTinting,
-in float ToonRampOffset, out float3 ToonRampOutput, out float3 Direction, out float ToonRamp, out float ShadowAttenuation)
+in float ToonRampOffset, in float3 ViewDirection, in float Smoothness, out float3 ToonRampOutput, out float3 Direction, out float SpecularContribution)
 {
     #ifdef SHADERGRAPH_PREVIEW
         ToonRampOutput = float3(0.5, 0.5, 0);
         Direction = float3(0.5, 0.5, 0);
-    
-        float d = dot(Normal, Direction) * 0.5 + 0.5;
-        ToonRamp = smoothstep(ToonRampOffset, ToonRampOffset + ToonRampSmoothness, d);
 
-        ShadowAttenuation = 0.5;
+        float3 M = normalize(ViewDirection + Direction);
+            
+        SpecularContribution = saturate(dot(M, Normal));
+    
     #else
         #if SHADOWS_SCREEN
             half4 shadowCoord = ComputeScreenPos(ClipSpacePos);
@@ -33,9 +33,12 @@ in float ToonRampOffset, out float3 ToonRampOutput, out float3 Direction, out fl
 
         Direction = light.direction;
 
-        ToonRamp = toonRamp;
+        float3 M = normalize(ViewDirection + light.direction);
+
+        float smoothnessPower = exp2(10 * Smoothness + 1);
         
-        ShadowAttenuation = light.shadowAttenuation;
+        SpecularContribution = pow(saturate(dot(M, Normal)), smoothnessPower);
+        
     #endif
 
 }

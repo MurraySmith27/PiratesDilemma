@@ -5,15 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2fa9daa2-90f4-44c3-9351-b9e137dd4c15" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CellShadingDefault/CellShadingDefault.shadergraph" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CellShadingDefault/CellShadingDefault.shadergraph" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CellShadingDefault/CellShadingDefaultSubGraph.shadersubgraph" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CellShadingDefault/CellShadingDefaultSubGraph.shadersubgraph" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CellShadingDefault/CellShading_Shadows.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CellShadingDefault/CellShading_Shadows.hlsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/DockMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/DockMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/GoldMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/GoldMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Team1Mat.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Team1Mat.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Team2Mat.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Team2Mat.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level_Map.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level_Map.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/WallMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/WallMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/WaterMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/WaterMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Models/Characters/blah2.png" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Models/Characters/blah2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Models/Characters/blah2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Models/Characters/blah2.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/CharacterSelectUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/CharacterSelectUI.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Playground/Murray.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Playground/Murray.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/GameTimerSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/GameTimerSystem.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Settings/URP-HighFidelity.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/URP-HighFidelity.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Player.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Player.prefab.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Player.prefab.meta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +40,8 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/PointBillboard.shader" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/ProBuilderCG.cginc" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@14.0.9/Shaders/BakedLitForwardPass.hlsl" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@14.0.9/Shaders/UnlitForwardPass.hlsl" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@14.0.9/Shaders/UnlitGBufferPass.hlsl" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Editor/Canvas/AssertionFailureOnOutputVertexCount.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/Canvas/CanvasScalerWithChildTextObjectDoesNotCrash.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -41,27 +53,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Attach to Unity Editor.Attach to Unity Editor.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;fixing-dash-clipping&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Attach to Unity Editor.Attach to Unity Editor.executor": "Debug",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "cell-shading-experiment",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\murra\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\murra\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\murra\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\murra\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache",
+      "C:\\Users\\murra\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache",
+      "C:\\Users\\murra\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\2022.3.17f1\Editor\Unity.exe" />
@@ -116,6 +128,7 @@
       <workItem from="1706814895976" duration="2479000" />
       <workItem from="1706818153861" duration="2600000" />
       <workItem from="1707228709839" duration="8229000" />
+      <workItem from="1707318423300" duration="7997000" />
     </task>
     <servers />
   </component>
