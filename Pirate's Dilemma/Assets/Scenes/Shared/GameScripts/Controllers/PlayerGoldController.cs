@@ -136,7 +136,11 @@ public class PlayerGoldController : MonoBehaviour
             Coroutine throwGoldCoroutine = StartCoroutine(ThrowGoldCoroutine(targetPos, looseGold));
 
             looseGold.GetComponent<LooseGoldController>().m_onLooseGoldCollision +=
-                () => { StopCoroutine(throwGoldCoroutine); };
+                () =>
+                {
+                    looseGold.GetComponent<Rigidbody>().isKinematic = false;
+                    StopCoroutine(throwGoldCoroutine); 
+                };
             
             m_throwingTargetGameObject.SetActive(false);
             
@@ -245,7 +249,9 @@ public class PlayerGoldController : MonoBehaviour
         looseGoldRb.isKinematic = true;
         looseGold.layer = LayerMask.NameToLayer("AirbornLooseGold");
         
-        for (float t = 0; t < 1; t += Time.deltaTime / m_goldThrowingAirTime)
+        float throwGoldTime = m_goldThrowingAirTime * (distance / m_maxThrowDistance);
+        
+        for (float t = 0; t < 1; t += Time.deltaTime / throwGoldTime)
         {
             yield return new WaitForFixedUpdate();
             if (looseGoldRb == null)
