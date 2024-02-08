@@ -124,14 +124,17 @@ public class BoatSystem : GameSystem
             m_boatSpawnLocationsPerTeam[teamNum - 1][boatNum - 1].transform.rotation);
         newBoat.transform.localScale = m_boatSpawnLocationsPerTeam[teamNum - 1][boatNum - 1].transform.localScale;
         
+        
         m_boatsPerTeam[teamNum - 1][boatNum - 1] = newBoat;
 
+    
+            
         BoatData boatData = newBoat.GetComponent<BoatData>();
         boatData.m_teamNum = teamNum;
         boatData.m_boatNum = boatNum;
         boatData.m_timeToLive = new System.Random().Next(m_boatMinTimeToLive, m_boatMaxTimeToLive);
         boatData.m_goldCapacity = new System.Random().Next(m_boatMinCapacity, m_boatMaxCapacity);
-
+        
         BoatGoldController boatGoldController = newBoat.GetComponent<BoatGoldController>();
         boatGoldController.m_onBoatSink += OnBoatSink;
         //here we inject our event callback into each instance of BoatGoldController.

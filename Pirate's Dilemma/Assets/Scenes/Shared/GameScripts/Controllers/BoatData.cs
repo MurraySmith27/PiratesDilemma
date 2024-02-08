@@ -23,6 +23,8 @@ public class BoatData : MonoBehaviour
     public int m_goldCapacity;
     // The total time to live for this boat (when it's spawned, not the current timer value).
     public int m_timeToLive;
+
+    public List<Transform> m_playerBoardedPositions;
     //The sink audio source
     public AudioSource m_sinkAudioSource;
     // The sail away audio source.
