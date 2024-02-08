@@ -20,7 +20,7 @@ public class InGameUI : UIBase
     
     protected override void SetUpUI()
     {
-        VisualElement root = GetComponent<UIDocument>().rootVisualElement;
+        VisualElement root = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("root");
 
         m_globalTimerLabel = root.Q<Label>("global-timer");
         m_leaderBoardLabel = root.Q<Label>("score-board-title");
@@ -59,7 +59,7 @@ public class InGameUI : UIBase
 
     void UpdateScoreUI(List<int> newScores)
     {
-        for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
+        for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
             m_teamScoreLabels[i].text = $"P{i}: {newScores[i]}";
         }

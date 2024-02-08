@@ -16,6 +16,7 @@ TagManager:
   - Team2Boat
   - Team1BoatSpawn
   - Team2BoatSpawn
+  - LooseGold
   layers:
   - Default
   - TransparentFX
@@ -27,10 +28,10 @@ TagManager:
   - GoldPickupZone
   - Player
   - Killzone
-  - 
-  - 
-  - 
-  - 
+  - StaticObstacle
+  - Floor
+  - AirbornLooseGold
+  - LooseGold
   - 
   - 
   - 

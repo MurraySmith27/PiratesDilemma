@@ -32,7 +32,7 @@ public class ScoreSystem : GameSystem
     protected override void Start()
     {
         m_playerScores = new List<int>();
-        for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
+        for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
             m_playerScores.Add(0);
         }
@@ -41,7 +41,7 @@ public class ScoreSystem : GameSystem
 
     public void UpdateScore(List<int> scoreDelta)
     {
-        for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
+        for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
             m_playerScores[i] += scoreDelta[i];
         }

@@ -8,6 +8,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 
+public delegate void PlayerDieEvent(int playerNum);
+public delegate void PlayerRespawnEvent(int playerNum);
 public delegate void OnPlayerJoin(int newPlayerNum);
 
 //The purpose of this class to to store data that persists between scenes about players.
@@ -27,6 +29,10 @@ public class PlayerSystem : GameSystem
 
     [HideInInspector] public int m_numPlayers = 0;
 
+    [SerializeField] private float m_deathAnimationDistance = 5f;
+
+    [SerializeField] private float m_deathAnimationDuration = 2f;
+
     [HideInInspector]
     public List<PlayerInput> m_playerInputObjects
     {
@@ -40,11 +46,17 @@ public class PlayerSystem : GameSystem
 
     private List<Transform> m_playerSpawnPositions;
 
+    [SerializeField] private float m_playerRespawnTime = 3f;
+
     private List<PlayerControlSchemes> m_playerControlSchemesList;
     
     [HideInInspector] public List<int> m_playerTeamAssignments;
     
     public OnPlayerJoin m_onPlayerJoin;
+    
+    public PlayerDieEvent m_onPlayerDie;
+
+    public PlayerRespawnEvent m_onPlayerRespawn;
     
     private void Awake()
     {
@@ -94,14 +106,69 @@ public class PlayerSystem : GameSystem
         }
 
         playerInput.gameObject.transform.position = m_playerSpawnPositions[playerNum - 1].position;
-        playerInput.gameObject.GetComponent<MeshRenderer>().material.color = m_teamColors[teamNum- 1];
+        foreach (MeshRenderer meshRenderer in playerInput.gameObject.transform.GetChild(0).GetComponentsInChildren<MeshRenderer>())
+        {
+            meshRenderer.material.color = m_teamColors[teamNum - 1];
+        }
+
+        playerInput.gameObject.GetComponent<PlayerMovementController>().m_onPlayerDie += OnPlayerDie;
 
         RegisterDeviceWithPlayer(playerNum, playerInput.devices[0]);
+        
         m_players.Add(playerInput.gameObject);
         
         DontDestroyOnLoad(playerInput.gameObject);
         m_onPlayerJoin(playerNum);
     }
+
+    private void OnPlayerDie(int playerNum)
+    {
+        StartCoroutine(WaitForRespawn(playerNum));
+
+        m_onPlayerDie(playerNum);
+    }
+
+    private IEnumerator WaitForRespawn(int playerNum)
+    {
+        m_players[playerNum - 1].GetComponent<PlayerMovementController>().enabled = false;
+        PlayerGoldController playerGoldController = m_players[playerNum - 1].GetComponent<PlayerGoldController>();
+        playerGoldController.enabled = false;
+        if (playerGoldController.m_goldCarried > 0)
+        {
+            playerGoldController.DropAllGold();
+        }
+
+        Coroutine deathCoroutine = StartCoroutine(DeathAnimation(playerNum));
+     
+        yield return new WaitForSeconds(m_playerRespawnTime);
+        //if still running, kill it
+        StopCoroutine(deathCoroutine);
+        
+        m_players[playerNum - 1].GetComponent<PlayerMovementController>().enabled = true;
+        m_players[playerNum - 1].GetComponent<PlayerGoldController>().enabled = true;
+
+        m_players[playerNum - 1].transform.position = m_playerSpawnPositions[playerNum - 1].position;
+
+        Rigidbody rb = m_players[playerNum - 1].GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        m_onPlayerRespawn(playerNum);
+    }
+
+    private IEnumerator DeathAnimation(int playerNum)
+    {
+        Vector3 initial = m_players[playerNum - 1].transform.position;
+        Vector3 final = initial + new Vector3(0, -m_deathAnimationDistance, 0);
+        Vector3 pos;
+        for (float t = 0; t < 1; t += Time.deltaTime / m_deathAnimationDuration)
+        {
+            yield return new WaitForFixedUpdate();
+            pos = initial + (final - initial) * (Mathf.Sin(-(1.5f * Mathf.PI * t)) * t);
+            m_players[playerNum-1].transform.position = pos;
+        }
+    }
+    
 
     (int, int) AddPlayer()
     {
@@ -123,9 +190,6 @@ public class PlayerSystem : GameSystem
             {
                 numPlayersPerTeam[playerTeamAssignment - 1]++;
             }
-            
-            
-            
 
             int smallestTeamNum = 1;
             int numPlayersOnSmallestTeam = numPlayersPerTeam[0];
@@ -202,6 +266,8 @@ public class PlayerSystem : GameSystem
                 GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
 
                 m_players[i].transform.position = spawnPos.transform.position;
+                m_players[i].transform.localScale = spawnPos.transform.localScale;
+                m_players[i].transform.rotation = spawnPos.transform.rotation;
                 
                 SwitchToActionMapForPlayer(i + 1, "InGame");
             }
