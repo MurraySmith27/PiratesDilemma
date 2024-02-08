@@ -103,8 +103,31 @@ public class PlayerGoldController : MonoBehaviour
         {
             DropGold();
         }
+        else if (m_goldCarried == 0 && m_inGoldDropZone)
+        {
+            BoardBoat();
+        }
     }
 
+    private void BoardBoat()
+    {
+        GameObject boat = MaybeFindNearestBoat();
+        if (boat != null)
+        {
+            BoatData boatData = boat.GetComponent<BoatData>();
+            if (boatData != null && boatData.m_currentTotalGoldStored > 0 && boatData.m_teamNum == )
+            {
+                this.transform.position =;
+
+            }
+            else
+            {
+                Debug.Log("Boat is full.");
+                //do nothing
+            }
+        }
+        
+    }
     private void OnThrowButtonHeld(InputAction.CallbackContext ctx)
     {
         if (m_goldCarried > 0)
