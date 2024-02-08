@@ -90,6 +90,8 @@ public class CharacterSelectUI : UIBase
         PlayerSystem.Instance.SwitchToActionMapForPlayer(newPlayerNum, "CharacterSelect");
 
         InputDevice device = PlayerSystem.Instance.m_playerInputObjects[newPlayerNum - 1].devices[0];
+        
+        
         Image image = new Image();
         if (device is Gamepad)
         {

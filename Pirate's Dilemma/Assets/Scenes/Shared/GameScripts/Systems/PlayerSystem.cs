@@ -22,8 +22,12 @@ public class PlayerSystem : GameSystem
     }
     
     public int m_maxNumPlayers = 4;
-    
+
     public List<Color> m_teamColors;
+    
+    public List<GameObject> m_team1playerPrefabs;
+    
+    public List<GameObject> m_team2playerPrefabs;
     
     public int m_numTeams = 2;
 
@@ -57,6 +61,8 @@ public class PlayerSystem : GameSystem
     public PlayerDieEvent m_onPlayerDie;
 
     public PlayerRespawnEvent m_onPlayerRespawn;
+
+    public InputActionAsset m_actions;
     
     private void Awake()
     {
@@ -69,7 +75,16 @@ public class PlayerSystem : GameSystem
             PlayerSystem._instance = this;
         }
 
-        m_playerControlSchemesList = new List<PlayerControlSchemes>(m_maxNumPlayers);
+        m_playerControlSchemesList = new List<PlayerControlSchemes>();
+
+        for (int i = 0; i < m_maxNumPlayers; i++)
+        {
+            m_playerControlSchemesList.Add(new PlayerControlSchemes());
+        }
+        
+        m_playerControlSchemesList[0].FindAction("Join").performed += OnJoinButtonPressed;
+        m_playerControlSchemesList[0].FindAction("Join").Enable();
+        
         m_players = new List<GameObject>();
         m_playerTeamAssignments = new List<int>();
         
@@ -95,29 +110,68 @@ public class PlayerSystem : GameSystem
         });
     }
 
-    public void OnPlayerJoined(PlayerInput playerInput)
+    
+    public void OnJoinButtonPressed(InputAction.CallbackContext ctx)
     {
         int playerNum, teamNum;
         (playerNum, teamNum) = this.AddPlayer();
+        Debug.Log($"join ubtton proessed! PlayerNum: {playerNum}, TeamNum: {teamNum}");
         if (playerNum == -1)
         {
             //at player limit. destroy.
             Destroy(this.gameObject);
         }
 
-        playerInput.gameObject.transform.position = m_playerSpawnPositions[playerNum - 1].position;
-        foreach (MeshRenderer meshRenderer in playerInput.gameObject.transform.GetChild(0).GetComponentsInChildren<MeshRenderer>())
+        List<int> numPlayersPerTeam = new List<int>();
+        for (int i = 0; i < m_numTeams; i++)
         {
-            meshRenderer.material.color = m_teamColors[teamNum - 1];
+            numPlayersPerTeam.Add(0);
+        }
+        
+        foreach (int playerTeamAssignment in m_playerTeamAssignments)
+        {
+            numPlayersPerTeam[playerTeamAssignment - 1]++;
+        }
+        
+        GameObject playerPrefab;
+        if (teamNum == 1)
+        {
+            playerPrefab = m_team1playerPrefabs[numPlayersPerTeam[teamNum - 1] - 1];
+        }
+        else
+        {
+            playerPrefab = m_team2playerPrefabs[numPlayersPerTeam[teamNum - 1] - 1];
+        }
+        
+        
+        GameObject newPlayerInstance = Instantiate(playerPrefab,
+            m_playerSpawnPositions[playerNum - 1].position, Quaternion.identity);
+
+        newPlayerInstance.transform.position = m_playerSpawnPositions[playerNum - 1].position;
+        
+        newPlayerInstance.GetComponentInChildren<PlayerMovementController>().m_onPlayerDie += OnPlayerDie;
+
+        PlayerData playerData = newPlayerInstance.GetComponentInChildren<PlayerData>();
+        
+        playerData.m_playerNum = playerNum;
+        playerData.m_teamNum = m_playerTeamAssignments[playerNum - 1];
+
+        PlayerInput playerInput = newPlayerInstance.GetComponentInChildren<PlayerInput>();
+        
+        Debug.Log($"device: {ctx.control.device}");
+        RegisterDeviceWithPlayer(playerNum, playerInput, ctx.control.device);
+
+        if (playerNum < m_maxNumPlayers)
+        {
+            //add the callback for the next player.
+            m_playerControlSchemesList[playerNum].FindAction("Join").performed += OnJoinButtonPressed;
+            m_playerControlSchemesList[playerNum].FindAction("Join").Enable();
+            m_playerControlSchemesList[playerNum-1].FindAction("Join").Disable();
         }
 
-        playerInput.gameObject.GetComponent<PlayerMovementController>().m_onPlayerDie += OnPlayerDie;
-
-        RegisterDeviceWithPlayer(playerNum, playerInput.devices[0]);
+        m_players.Add(playerData.gameObject);
         
-        m_players.Add(playerInput.gameObject);
-        
-        DontDestroyOnLoad(playerInput.gameObject);
+        DontDestroyOnLoad(newPlayerInstance);
         m_onPlayerJoin(playerNum);
     }
 
@@ -176,8 +230,6 @@ public class PlayerSystem : GameSystem
         {
             m_numPlayers++;
             
-            m_playerControlSchemesList.Add(new PlayerControlSchemes());
-            
             //assign player to team. Initially whichever team has the least.
             List<int> numPlayersPerTeam = new List<int>();
 
@@ -213,7 +265,7 @@ public class PlayerSystem : GameSystem
         }
     }
 
-    public void RegisterDeviceWithPlayer(int playerNum, InputDevice device)
+    public void RegisterDeviceWithPlayer(int playerNum, PlayerInput playerInput, InputDevice device)
     {
         if (playerNum > m_numPlayers)
         {
@@ -222,9 +274,18 @@ public class PlayerSystem : GameSystem
         }
 
         m_playerControlSchemesList[playerNum - 1].devices = new[] { device };
+
+        string controlScheme = "Keyboard";
+        if (device is Gamepad)
+        {
+            controlScheme = "Gamepad";
+        }
+
+        playerInput.SwitchCurrentControlScheme(controlScheme, new[] { device });
+
     }
 
-    public void DeregisterDeviceFromPlayer(int playerNum, InputDevice device)
+    public void DeregisterDeviceFromPlayer(int playerNum, PlayerInput playerInput, InputDevice device)
     {
         if (playerNum > m_numPlayers)
         {
@@ -233,6 +294,14 @@ public class PlayerSystem : GameSystem
         }
 
         m_playerControlSchemesList[playerNum - 1].devices = null;
+        
+        string controlScheme = "Keyboard";
+        if (device is Gamepad)
+        {
+            controlScheme = "Gamepad";
+        }
+        
+        playerInput.SwitchCurrentControlScheme(controlScheme, null);
     }
 
     public void SwitchToActionMapForPlayer(int playerNum, string actionMapName)
@@ -241,6 +310,17 @@ public class PlayerSystem : GameSystem
         
         m_playerInputObjects[playerNum - 1].actions.FindActionMap(actionMapName).Enable();
     }
+
+    public void OnEnable()
+    {
+        
+        foreach (PlayerInput playerInput in m_playerInputObjects)
+        {
+            playerInput.actions.Enable();
+        }
+        
+        m_actions.FindActionMap("CharacterSelect").Enable();
+    }
     
     public void OnDisable()
     {
@@ -248,6 +328,8 @@ public class PlayerSystem : GameSystem
         {
             playerInput.actions.Disable();
         }
+        
+        m_actions.FindActionMap("CharacterSelect").Enable();
     }
 
     private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
