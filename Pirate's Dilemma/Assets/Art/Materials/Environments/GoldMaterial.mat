@@ -120,7 +120,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadowOffset: 0.84
+    - _ShadowOffset: 0.64
     - _ShadowSmoothness: 0
     - _ShadowStrength: 1
     - _Shininess: 0
@@ -129,6 +129,8 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecSource: 0
     - _SpecularHighlights: 1
+    - _SpecularSmoothness: 0.6
+    - _SpecularThreshold: 0.2
     - _SquashAmount: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
@@ -140,12 +142,13 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Dark_Color: {r: 1, g: 0.92156863, b: 0, a: 0}
+    - _Dark_Color: {r: 0.7075472, g: 0.6606915, b: 0.110137075, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Light_Color: {r: 0.5943396, g: 0.54240704, b: 0, a: 0}
+    - _Light_Color: {r: 0.8679245, g: 0.7951801, b: 0.061409745, a: 0}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
-    - _ShadowColor: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 0}
+    - _ShadowColor: {r: 0.5566038, g: 0.50583035, b: 0.06038627, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
     - _TranslucencyColor: {r: 0.73, g: 0.85, b: 0.40999997, a: 1}
     - _TreeInstanceColor: {r: 1, g: 1, b: 1, a: 1}
     - _TreeInstanceScale: {r: 1, g: 1, b: 1, a: 1}

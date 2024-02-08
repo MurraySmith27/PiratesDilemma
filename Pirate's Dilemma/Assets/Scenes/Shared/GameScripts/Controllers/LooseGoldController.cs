@@ -20,8 +20,11 @@ public class LooseGoldController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        
+        Debug.Log($"on loose gold collision. Layer: {collision.gameObject.layer}");
         if ((collision.gameObject.layer & ~LayerMask.NameToLayer("Player")) != 0)
         {
+            Debug.Log("layer mask");
             m_onLooseGoldCollision();
         }
     }
