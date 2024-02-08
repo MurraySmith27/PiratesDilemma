@@ -133,7 +133,7 @@ public class PlayerMovementController : MonoBehaviour
         } 
     }
 
-    private void OnTriggerEnter(Collider otherCollider)
+    private void OnTriggerStay(Collider otherCollider)
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Killzone"))
         {

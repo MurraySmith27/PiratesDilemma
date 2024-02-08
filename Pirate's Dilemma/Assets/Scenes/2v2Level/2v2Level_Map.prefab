@@ -1681,6 +1681,7 @@ Transform:
   - {fileID: 3223675545677525788}
   - {fileID: 2464909516491257768}
   - {fileID: 759262053907293297}
+  - {fileID: 7348330000259345412}
   - {fileID: 2676082162124647039}
   - {fileID: 974283108359905857}
   - {fileID: 7160210276912256582}
@@ -2131,6 +2132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CutCascades: 5
   ExplodeForce: 100
+  m_partsTimeToLive: 2
 --- !u!1 &3306854875240061917
 GameObject:
   m_ObjectHideFlags: 0
@@ -6505,6 +6507,59 @@ Transform:
   - {fileID: 3775527890106610457}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8654384671508805162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7348330000259345412}
+  - component: {fileID: 1266369359684769607}
+  m_Layer: 9
+  m_Name: KrakenKillzone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7348330000259345412
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8654384671508805162}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.34, y: 12, z: 1.5}
+  m_LocalScale: {x: 52.41, y: 10, z: 9}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7390824878794026079}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1266369359684769607
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8654384671508805162}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &2744190009964004752
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6635,7 +6690,7 @@ PrefabInstance:
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_krakenRiseHeight
-      value: 5.5
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
@@ -6647,6 +6702,11 @@ PrefabInstance:
       propertyPath: m_mainDirectionalLight
       value: 
       objectReference: {fileID: 1619132109848267649}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
+      propertyPath: m_krakenArrivalAgressiveness
+      value: 1.4
+      objectReference: {fileID: 0}
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_krakenArrivalLightAngles.x
@@ -6662,6 +6722,16 @@ PrefabInstance:
       propertyPath: m_krakenArrivalLightAngles.z
       value: 150
       objectReference: {fileID: 0}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
+      propertyPath: m_krakenKillZones.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
+      propertyPath: m_krakenKillZones.Array.data[0]
+      value: 
+      objectReference: {fileID: 8654384671508805162}
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_krakenArrivalDestrucables.Array.size
@@ -6685,7 +6755,7 @@ PrefabInstance:
     - target: {fileID: 7064740615299961290, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.08
+      value: -5.74
       objectReference: {fileID: 0}
     - target: {fileID: 7064740615299961290, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}

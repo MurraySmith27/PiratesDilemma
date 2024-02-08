@@ -13,6 +13,8 @@ public class MeshDestroy : MonoBehaviour
     public int CutCascades = 1;
     public float ExplodeForce = 0;
 
+    public float m_partsTimeToLive = 2f;
+
     public void DestroyMesh()
     {
         var originalMesh = GetComponent<MeshFilter>().mesh;
@@ -55,7 +57,10 @@ public class MeshDestroy : MonoBehaviour
         for (var i = 0; i < parts.Count; i++)
         {
             parts[i].MakeGameobject(this);
-            parts[i].GameObject.GetComponent<Rigidbody>().AddForceAtPosition(parts[i].Bounds.center * ExplodeForce, transform.position);
+            Rigidbody rb = parts[i].GameObject.GetComponent<Rigidbody>();
+            rb.AddForceAtPosition(parts[i].Bounds.center * ExplodeForce, transform.position);
+            parts[i].GameObject.layer = LayerMask.NameToLayer("DestroyedDestructable");
+            Destroy(parts[i].GameObject, m_partsTimeToLive);
         }
 
         Destroy(gameObject);

@@ -22,6 +22,10 @@ public class KrakenController : MonoBehaviour
     [SerializeField] private List<GameObject> m_krakenArrivalDestrucables;
 
     [SerializeField] private float m_krakenArrivalAgressiveness = 1;
+
+    [SerializeField] private float m_bobIntensity = 0.1f;
+
+    [SerializeField] private List<GameObject> m_krakenKillZones;
     
     
     public void StartKrakenArrival()
@@ -36,7 +40,6 @@ public class KrakenController : MonoBehaviour
         Quaternion initialLightRotation = m_mainDirectionalLight.transform.rotation;
 
         Quaternion finalLightRotation = Quaternion.Euler(m_krakenArrivalLightAngles);
-        
         
         //begin screen shake
         CameraController cameraController = Camera.main.GetComponent<CinemachineBrain>().ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CameraController>();
@@ -64,13 +67,29 @@ public class KrakenController : MonoBehaviour
 
         Rigidbody krakenRb = GetComponent<Rigidbody>();
         //actually make kraken rise up.
-        for (float t = 0; t < 1; t += Time.deltaTime / m_krakenRiseSeconds)
+        for (float t2 = 0; t2 < 1; t2 += Time.fixedDeltaTime / m_krakenRiseSeconds)
         {
             float aggressiveness = Mathf.Max(m_krakenArrivalAgressiveness + 1, 0);
-            float progress = -(t * aggressiveness - aggressiveness) + (t * aggressiveness - (1 / aggressiveness)) + 1;
+            float progress = -(t2 * aggressiveness - aggressiveness) * (t2 * aggressiveness - (1 / aggressiveness)) + 1;
+
             Vector3 pos = krakenInitialPos + (krakenFinalPos - krakenInitialPos) * progress;
             krakenRb.MovePosition(pos);
-            yield return null;
+            yield return new WaitForFixedUpdate();
+        }
+
+        foreach (GameObject killZone in m_krakenKillZones)
+        {
+            killZone.SetActive(true);
+        }
+
+        Vector3 krakenPos = transform.position;
+        float t3 = 0f;
+        while (true)
+        {
+            t3 += Time.fixedDeltaTime;
+            
+            krakenRb.MovePosition(krakenPos + new Vector3(0, Mathf.Sin(t3) * m_bobIntensity, 0));
+            yield return new WaitForFixedUpdate();
         }
     }
 }

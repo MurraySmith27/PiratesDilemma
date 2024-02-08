@@ -36,6 +36,8 @@ public class GameTimerSystem : GameSystem
     public GameFinishEvent m_onGameFinish;
     
     public GameTimerUpdateEvent m_onGameTimerUpdate;
+
+    private bool m_krakenArrived = false;
     
     void Awake()
     {
@@ -90,7 +92,7 @@ public class GameTimerSystem : GameSystem
             // Decrease the count
             count--;
 
-            if (count <= m_krakenArrivalTimeRemaining)
+            if (count <= m_krakenArrivalTimeRemaining && !m_krakenArrived)
             {
                 GameObject kraken = GameObject.FindGameObjectWithTag("Kraken");
 
@@ -98,6 +100,7 @@ public class GameTimerSystem : GameSystem
                 {
                     kraken.GetComponent<KrakenController>().StartKrakenArrival();
                 }
+                m_krakenArrived = true;
             }
             
             m_onGameTimerUpdate(count);

@@ -36,6 +36,7 @@ public class PlayerSystem : GameSystem
     [SerializeField] private float m_deathAnimationDistance = 5f;
 
     [SerializeField] private float m_deathAnimationDuration = 2f;
+    private bool m_playerDying;
 
     [HideInInspector]
     public List<PlayerInput> m_playerInputObjects
@@ -177,13 +178,16 @@ public class PlayerSystem : GameSystem
 
     private void OnPlayerDie(int playerNum)
     {
-        StartCoroutine(WaitForRespawn(playerNum));
-
-        m_onPlayerDie(playerNum);
+        if (!m_playerDying)
+        {
+            StartCoroutine(WaitForRespawn(playerNum));
+            m_onPlayerDie(playerNum);
+        }
     }
 
     private IEnumerator WaitForRespawn(int playerNum)
     {
+        m_playerDying = true;
         m_players[playerNum - 1].GetComponent<PlayerMovementController>().enabled = false;
         PlayerGoldController playerGoldController = m_players[playerNum - 1].GetComponent<PlayerGoldController>();
         playerGoldController.enabled = false;
@@ -208,6 +212,7 @@ public class PlayerSystem : GameSystem
         rb.angularVelocity = Vector3.zero;
 
         m_onPlayerRespawn(playerNum);
+        m_playerDying = false;
     }
 
     private IEnumerator DeathAnimation(int playerNum)

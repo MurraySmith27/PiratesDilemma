@@ -21,7 +21,6 @@ public class CameraController : MonoBehaviour
 
     public void StopScreenShake()
     {
-        m_vcam.
-        m_vcamPerlinShake.enabled = false;
+        m_vcamPerlinShake.m_AmplitudeGain = 0;
     }
 }
