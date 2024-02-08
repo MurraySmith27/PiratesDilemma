@@ -46,6 +46,8 @@ public class PlayerGoldController : MonoBehaviour
     private bool m_inGoldDropZone = false;
     private bool m_inGoldPickupZone = false;
 
+    private bool m_inBoat = false;
+
     private Rigidbody m_rigidbody;
 
     private Coroutine m_throwingCoroutine;
@@ -103,6 +105,32 @@ public class PlayerGoldController : MonoBehaviour
         {
             DropGold();
         }
+        else if (m_goldCarried == 0 && m_inGoldDropZone)
+        {
+            ToSailBoat();
+        }
+    }
+    
+    private void ToSailBoat()
+    {
+        GameObject boat = MaybeFindNearestBoat();
+        if (boat != null)
+        {
+            BoatController boatController = boat.GetComponent<BoatController>();
+            if (boatController != null && boatController.AddPlayer())
+            {
+                // Move player to the boat's player spot
+                this.transform.position = boatController.playerSpot.position;
+                this.transform.SetParent(boatController.playerSpot); // Optionally parent the player to the boat
+
+                // Here you can disable player movement or other components as necessary
+            }
+            else
+            {
+                Debug.Log("Boat is full or no boat controller found.");
+            }
+        }
+        
     }
 
     private void OnThrowButtonHeld(InputAction.CallbackContext ctx)
