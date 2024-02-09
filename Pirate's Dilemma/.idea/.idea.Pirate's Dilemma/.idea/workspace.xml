@@ -6,10 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="2fa9daa2-90f4-44c3-9351-b9e137dd4c15" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatGoldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatGoldController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatTimerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatTimerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/LooseGoldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/LooseGoldController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerMovementController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerMovementController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/BoatSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/BoatSystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team1Boat.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team1Boat.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team2Boat.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team2Boat.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/BoatHoverUI.uxml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/BoatHoverUI.uxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameHoversUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameHoversUI.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,9 +30,11 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/LooseGoldController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.burst@1.8.11/Tests/Runtime/PlaymodeTest.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/FaceHighlight.shader" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/LineBillboardMetal.shader" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/PointBillboard.shader" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/ProBuilderCG.cginc" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@14.0.9/Shaders/BakedLit.shader" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@14.0.9/Shaders/BakedLitForwardPass.hlsl" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@14.0.9/Shaders/UnlitForwardPass.hlsl" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@14.0.9/Shaders/UnlitGBufferPass.hlsl" root0="SKIP_HIGHLIGHTING" />
@@ -116,6 +126,7 @@
       <workItem from="1707228709839" duration="8229000" />
       <workItem from="1707318423300" duration="7997000" />
       <workItem from="1707419848244" duration="3910000" />
+      <workItem from="1707425301997" duration="4814000" />
     </task>
     <servers />
   </component>

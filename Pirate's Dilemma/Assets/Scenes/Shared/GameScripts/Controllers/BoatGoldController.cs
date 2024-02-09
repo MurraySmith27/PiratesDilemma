@@ -15,6 +15,7 @@ public class BoatGoldController : MonoBehaviour
     
     public GoldAddedToBoatEvent m_onGoldAddedToBoat;
     public BoatSinkEvent m_onBoatSink;
+    public BoatSailEvent m_onBoatSail;
 
     private BoatData m_boatData;
     private BoatTimerController m_boatTimerController;
@@ -33,7 +34,23 @@ public class BoatGoldController : MonoBehaviour
     {
         m_acceptingGold = false;
     }
-    
+
+    public void BoardPlayerOnBoat(Transform playerTransform)
+    {
+        playerTransform.parent = m_boatData.m_playerBoardedPositions[m_boatData.m_numPlayersBoarded];
+        m_boatData.m_numPlayersBoarded++;
+        playerTransform.localPosition = new Vector3(0, 0, 0);
+
+        playerTransform.GetComponent<PlayerGoldController>().enabled = false;
+        playerTransform.GetComponent<PlayerMovementController>().enabled = false;
+        playerTransform.GetComponent<Collider>().enabled = false;
+
+        if (m_boatData.m_numPlayersBoarded == m_boatData.m_playerBoardedPositions.Count)
+        {
+            m_onBoatSail(m_boatData.m_teamNum, m_boatData.m_boatNum, m_boatData.m_currentGoldStored);
+            m_boatData.m_numPlayersBoarded = 0;
+        }
+    }
     
 
     public void AddGold(int goldAdded, int teamNum)

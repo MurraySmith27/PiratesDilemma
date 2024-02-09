@@ -87,25 +87,26 @@ public class PlayerGoldController : MonoBehaviour
         else if (m_goldCarried < m_goldCapacity)
         {
             List<GameObject> looseGoldInScene = GameObject.FindGameObjectsWithTag("LooseGold").ToList();
-
+            bool pickedUpGold = false;
             foreach (GameObject looseGold in looseGoldInScene)
             {
                 if ((looseGold.transform.position - transform.position).magnitude < 2f)
                 {
                     PickupGold();
-                    
+                    pickedUpGold = true;
                     Destroy(looseGold);
                     break;
                 }
+            }
+
+            if (!pickedUpGold)
+            {
+                BoardBoat();
             }
         }
         else if (m_goldCarried != 0 && m_inGoldDropZone)
         {
             DropGold();
-        }
-        else if (m_goldCarried == 0 && m_inGoldDropZone)
-        {
-            BoardBoat();
         }
     }
 
@@ -115,15 +116,13 @@ public class PlayerGoldController : MonoBehaviour
         if (boat != null)
         {
             BoatData boatData = boat.GetComponent<BoatData>();
-            if (boatData != null && boatData.m_currentTotalGoldStored > 0 && boatData.m_teamNum == )
+            if (boatData.m_numPlayersBoarded < boatData.m_playerBoardedPositions.Count && 
+                boatData.m_currentTotalGoldStored > 0 && boatData.m_teamNum == m_playerData.m_teamNum)
             {
-                this.transform.position =;
 
-            }
-            else
-            {
-                Debug.Log("Boat is full.");
-                //do nothing
+                BoatGoldController boatGoldController = boat.GetComponent<BoatGoldController>();
+
+                boatGoldController.BoardPlayerOnBoat(this.transform);
             }
         }
         
@@ -141,6 +140,11 @@ public class PlayerGoldController : MonoBehaviour
         }
     }
 
+    public GameObject SpawnLooseGold()
+    {
+        return Instantiate(m_looseGoldPrefab, transform.position, Quaternion.identity);
+    }
+
     private void OnThrowButtonReleased(InputAction.CallbackContext ctx)
     {
         
@@ -152,9 +156,9 @@ public class PlayerGoldController : MonoBehaviour
             trajectoryLine.enabled = false;
             
             Vector3 targetPos = m_throwingTargetGameObject.transform.position;
-            
-            
-            GameObject looseGold = Instantiate(m_looseGoldPrefab, transform.position, Quaternion.identity);
+
+
+            GameObject looseGold = SpawnLooseGold();
             
             Coroutine throwGoldCoroutine = StartCoroutine(ThrowGoldCoroutine(targetPos, looseGold));
 
@@ -274,7 +278,7 @@ public class PlayerGoldController : MonoBehaviour
         
         float throwGoldTime = m_goldThrowingAirTime * (distance / m_maxThrowDistance);
         
-        for (float t = 0; t < 1; t += Time.deltaTime / throwGoldTime)
+        for (float t = 0; t < 1; t += Time.fixedDeltaTime / throwGoldTime)
         {
             yield return new WaitForFixedUpdate();
             if (looseGoldRb == null)

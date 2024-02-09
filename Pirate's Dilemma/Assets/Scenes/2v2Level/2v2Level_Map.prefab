@@ -33,6 +33,10 @@ Transform:
   - {fileID: 2586068410007136108}
   - {fileID: 7965173258849181338}
   - {fileID: 1749412273338742061}
+  - {fileID: 1759232625226735307}
+  - {fileID: 4456545359877200274}
+  - {fileID: 5471196157855301324}
+  - {fileID: 4027996571370835364}
   m_Father: {fileID: 7580684644525770009}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &847724434146542986
@@ -63,7 +67,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 847724434146542986}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.000000017562215, y: 0.8656075, z: -0.5007231, w: -0.000000030360063}
+  m_LocalRotation: {x: 0.0000000054838005, y: 0.86560756, z: -0.5007231, w: 0.000000009479926}
   m_LocalPosition: {x: 1.91, y: 25.62, z: 17.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -498,7 +502,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1492
+  m_VersionIndex: 1495
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -905,7 +909,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 4426
+  m_VersionIndex: 4429
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1310,7 +1314,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2711
+  m_VersionIndex: 2714
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1616,6 +1620,37 @@ Transform:
   m_Children:
   - {fileID: 5647355207147187600}
   m_Father: {fileID: 2103003946705105277}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2536305079622639207
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5471196157855301324}
+  m_Layer: 0
+  m_Name: P3SpawnAfterKraken
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5471196157855301324
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2536305079622639207}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 218421123360947971}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2776908988769929740
 GameObject:
@@ -2014,7 +2049,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5214
+  m_VersionIndex: 5217
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2468,7 +2503,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1492
+  m_VersionIndex: 1495
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2656,6 +2691,68 @@ Transform:
   m_Children:
   - {fileID: 5458051327024743235}
   m_Father: {fileID: 7580684644525770009}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4224838669206504098
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1759232625226735307}
+  m_Layer: 0
+  m_Name: P1SpawnAfterKraken
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1759232625226735307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4224838669206504098}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 218421123360947971}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4638679995082656283
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4456545359877200274}
+  m_Layer: 0
+  m_Name: P2SpawnAfterKraken
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4456545359877200274
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4638679995082656283}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 218421123360947971}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4896231352119670465
 GameObject:
@@ -2929,7 +3026,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5214
+  m_VersionIndex: 5217
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -3033,6 +3130,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 20, y: 1, z: 6}
   m_Center: {x: -10, y: 0.5, z: -3}
+--- !u!1 &5248373542622578357
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4027996571370835364}
+  m_Layer: 0
+  m_Name: P4SpawnAfterKraken
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4027996571370835364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5248373542622578357}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 218421123360947971}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5333586232813789652
 GameObject:
   m_ObjectHideFlags: 0
@@ -3240,7 +3368,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1281
+  m_VersionIndex: 1284
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -3619,7 +3747,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1575
+  m_VersionIndex: 1578
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4121,7 +4249,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2117
+  m_VersionIndex: 2120
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4473,7 +4601,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2711
+  m_VersionIndex: 2714
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5008,7 +5136,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2996
+  m_VersionIndex: 2999
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5384,7 +5512,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1492
+  m_VersionIndex: 1495
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5531,6 +5659,7 @@ GameObject:
   - component: {fileID: 242263893475762377}
   - component: {fileID: 5678870489770406873}
   - component: {fileID: 4215660090557229045}
+  - component: {fileID: 4503929395775927527}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -5614,6 +5743,23 @@ MonoBehaviour:
   m_YawDamping: 0
   m_RollDamping: 0
   m_AngularDamping: 0
+--- !u!114 &4503929395775927527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6691164812318676992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  m_PivotOffset: {x: 0, y: 0, z: 0}
+  m_AmplitudeGain: 0
+  m_FrequencyGain: 1
+  mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &6717970918822453886
 GameObject:
   m_ObjectHideFlags: 0
@@ -5949,7 +6095,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1492
+  m_VersionIndex: 1495
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -6325,7 +6471,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1656
+  m_VersionIndex: 1659
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -6576,7 +6722,7 @@ PrefabInstance:
     - target: {fileID: 5654540451909468714, guid: 53df00a832c583f419c9928e8abb68d6,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 1761
+      value: 1764
       objectReference: {fileID: 0}
     - target: {fileID: 6556779491352028293, guid: 53df00a832c583f419c9928e8abb68d6,
         type: 3}
@@ -6689,8 +6835,13 @@ PrefabInstance:
       objectReference: {fileID: 954493190424271687}
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
+      propertyPath: m_bobIntensity
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
       propertyPath: m_krakenRiseHeight
-      value: 6.5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
@@ -6710,17 +6861,32 @@ PrefabInstance:
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_krakenArrivalLightAngles.x
-      value: 10
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_krakenArrivalLightAngles.y
-      value: 150
+      value: 225
       objectReference: {fileID: 0}
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_krakenArrivalLightAngles.z
-      value: 150
+      value: 225
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
+      propertyPath: m_krakenArrivvalLightColor.b
+      value: 0.7294118
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
+      propertyPath: m_krakenArrivvalLightColor.g
+      value: 0.7294118
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
+      propertyPath: m_krakenArrivvalLightColor.r
+      value: 0.9372549
       objectReference: {fileID: 0}
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
@@ -6742,6 +6908,31 @@ PrefabInstance:
       propertyPath: m_krakenArrivalDestrucables.Array.data[0]
       value: 
       objectReference: {fileID: 3305492472528511605}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
+      propertyPath: m_newSpawnPositionsAfterKraken.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
+      propertyPath: m_newSpawnPositionsAfterKraken.Array.data[0]
+      value: 
+      objectReference: {fileID: 1759232625226735307}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
+      propertyPath: m_newSpawnPositionsAfterKraken.Array.data[1]
+      value: 
+      objectReference: {fileID: 4456545359877200274}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
+      propertyPath: m_newSpawnPositionsAfterKraken.Array.data[2]
+      value: 
+      objectReference: {fileID: 5471196157855301324}
+    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
+        type: 3}
+      propertyPath: m_newSpawnPositionsAfterKraken.Array.data[3]
+      value: 
+      objectReference: {fileID: 4027996571370835364}
     - target: {fileID: 7064740615299961290, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6755,7 +6946,7 @@ PrefabInstance:
     - target: {fileID: 7064740615299961290, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.74
+      value: -7.81
       objectReference: {fileID: 0}
     - target: {fileID: 7064740615299961290, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}

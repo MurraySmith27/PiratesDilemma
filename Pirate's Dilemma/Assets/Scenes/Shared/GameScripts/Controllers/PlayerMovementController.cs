@@ -144,6 +144,10 @@ public class PlayerMovementController : MonoBehaviour
 
     public void GetPushed(Vector2 dashDirection)
     {
+        if (m_PlayerGoldController.m_goldCarried > 0)
+        {
+            m_PlayerGoldController.SpawnLooseGold();
+        }
         m_PlayerGoldController.DropAllGold();
         
         if (m_isDashing)

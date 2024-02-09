@@ -22,7 +22,10 @@ public class LooseGoldController : MonoBehaviour
     {
         if ((collision.gameObject.layer & ~LayerMask.NameToLayer("Player")) != 0)
         {
-            m_onLooseGoldCollision();
+            if (m_onLooseGoldCollision.GetInvocationList().Length > 0)
+            {
+                m_onLooseGoldCollision();
+            }
         }
     }
 }

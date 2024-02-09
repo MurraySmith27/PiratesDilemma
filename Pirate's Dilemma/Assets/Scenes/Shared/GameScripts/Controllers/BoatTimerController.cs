@@ -41,6 +41,6 @@ public class BoatTimerController : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
         
-        m_onBoatSail(m_boatData.m_teamNum, m_boatData.m_boatNum, m_boatData.m_currentGoldStored);
+        // m_onBoatSail(m_boatData.m_teamNum, m_boatData.m_boatNum, m_boatData.m_currentGoldStored);
     }
 }
