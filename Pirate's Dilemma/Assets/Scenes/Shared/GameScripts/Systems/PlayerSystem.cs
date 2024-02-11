@@ -157,7 +157,7 @@ public class PlayerSystem : GameSystem
             RaycastHit hit;
 
             if (Physics.Raycast(initialPlayerPositions[i], new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
-                    layerMask: ~LayerMask.NameToLayer("Floor")))
+                    layerMask: ~~LayerMask.GetMask(new string[]{"Floor"})))
             {
                 playerHeightDeltasWithFloor[i] = hit.distance;
             }

@@ -216,6 +216,8 @@ MonoBehaviour:
   m_timeToGetMaxThrowRange: 2
   m_looseGoldPrefab: {fileID: 4714602978416047080, guid: ea421fdecbc4cef428b431abf643e362,
     type: 3}
+  m_airbornLooseGoldPrefab: {fileID: 7732494119034234731, guid: afd43b0fab985744caf3c4180c389a66,
+    type: 3}
   m_goldThrowingAirTime: 2
   m_goldThrowingPeakHeight: 4
   m_trajectoryLineResolution: 10
@@ -235,8 +237,10 @@ MonoBehaviour:
   m_speed: 10
   m_dashDistance: 5
   m_dashDuration: 0.3
+  m_numLeniencyFramesOnDashMovementInput: 7
   m_pushDistance: 5
   m_pushDuration: 0.3
+  m_isDashing: 0
 --- !u!82 &4657405196688796297
 AudioSource:
   m_ObjectHideFlags: 0
