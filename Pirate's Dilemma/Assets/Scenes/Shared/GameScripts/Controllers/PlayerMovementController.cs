@@ -16,18 +16,19 @@ public class PlayerMovementController : MonoBehaviour
     // For dashing
     [SerializeField] private float m_dashDistance;
     [SerializeField] private float m_dashDuration;
+    [SerializeField] private int m_numLeniencyFramesOnDashMovementInput = 6;
     
     // For when you get pushed
     [SerializeField] private float m_pushDistance;
     [SerializeField] private float m_pushDuration;
     
-    private bool m_isDashing;
+    [SerializeField] private bool m_isDashing;
     private bool m_isBeingPushed;
     
     private Coroutine m_dashCoroutine;
     private Coroutine m_beingPushedCoroutine;
     
-    private PlayerGoldController m_PlayerGoldController;
+    private PlayerGoldController m_playerGoldController;
     private PlayerInput m_playerInput;
 
     private InputAction m_dashAction;
@@ -50,7 +51,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (m_intialized && !m_isDashing && !m_isBeingPushed)
         {
-            float speed = m_speed * ((100 - 2 * m_PlayerGoldController.m_goldCarried) / 100f);
+            float speed = m_speed * ((100 - 2 * m_playerGoldController.m_goldCarried) / 100f);
             Vector2 moveVector = -m_moveAction.ReadValue<Vector2>().normalized * (speed * Time.deltaTime);
             m_rigidbody.MovePosition(transform.position + new Vector3(moveVector.x, 0f, moveVector.y));
         }
@@ -58,7 +59,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnGameStart()
     {
-        m_PlayerGoldController = GetComponent<PlayerGoldController>();
+        m_playerGoldController = GetComponent<PlayerGoldController>();
         m_playerInput = GetComponent<PlayerInput>();
         
         m_moveAction = m_playerInput.actions["Move"];
@@ -74,9 +75,8 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnDash(InputAction.CallbackContext ctx)
     {
-        if (!m_isDashing)
+        if (!m_isDashing && m_playerGoldController.m_goldCarried == 0)
         {
-            m_isDashing = true;
             Vector2 movementInput = -m_moveAction.ReadValue<Vector2>();
             m_dashCoroutine = StartCoroutine(DashCoroutine(movementInput));
         }
@@ -84,15 +84,29 @@ public class PlayerMovementController : MonoBehaviour
 
     private IEnumerator DashCoroutine(Vector2 dashDirection)
     {
+        m_isDashing = true;
+        int numLeniencyFramesCounted = 0;
+        while (dashDirection.magnitude == 0)
+        {
+            yield return null;
+            numLeniencyFramesCounted++;
+            if (numLeniencyFramesCounted > m_numLeniencyFramesOnDashMovementInput)
+            {
+                m_isDashing = false;
+                yield break;
+            }
+            dashDirection = -m_moveAction.ReadValue<Vector2>();
+        }
+
         Vector3 initial = transform.position;
-        Vector2 dashVector = -m_moveAction.ReadValue<Vector2>().normalized * m_dashDistance;
+        Vector2 dashVector = dashDirection.normalized * m_dashDistance;
         Vector3 final = new Vector3(initial.x + dashVector.x, initial.y, initial.z + dashVector.y);
         
         float finalDistance = m_dashDistance;
         
         //do a raycast, see if we need to stop early because we're hitting a wall.
         RaycastHit hit;
-        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: ~LayerMask.NameToLayer("StaticObstacle"), maxDistance: m_dashDistance))
+        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: m_dashDistance))
         {
             finalDistance = hit.distance;
         }
@@ -127,15 +141,14 @@ public class PlayerMovementController : MonoBehaviour
                 Vector3 direction = collision.transform.position - transform.position;
                 direction.y = 0;
                 Vector2 dashDirection = new Vector2(direction.x, direction.z).normalized;
-
                 otherPlayerMovement.GetPushed(dashDirection);
             }
         } 
     }
 
-    private void OnTriggerEnter(Collider otherCollider)
+    private void OnTriggerStay(Collider otherCollider)
     {
-        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Killzone"))
+        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Killzone") && !m_isDashing)
         {
             //player dies.
             m_onPlayerDie(m_playerData.m_playerNum);
@@ -144,7 +157,11 @@ public class PlayerMovementController : MonoBehaviour
 
     public void GetPushed(Vector2 dashDirection)
     {
-        m_PlayerGoldController.DropAllGold();
+        if (m_playerGoldController.m_goldCarried > 0)
+        {
+            m_playerGoldController.SpawnLooseGold(false);
+        }
+        m_playerGoldController.DropAllGold();
         
         if (m_isDashing)
         {
@@ -170,7 +187,7 @@ public class PlayerMovementController : MonoBehaviour
         
         //do a raycast, see if we need to stop early because we're hitting a wall.
         RaycastHit hit;
-        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: ~LayerMask.NameToLayer("StaticObstacle"), maxDistance: m_pushDistance))
+        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: m_pushDistance))
         {
             finalDistance = hit.distance;
         }

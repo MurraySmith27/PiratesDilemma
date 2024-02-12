@@ -37,6 +37,9 @@ public class PlayerSystem : GameSystem
 
     [SerializeField] private float m_deathAnimationDuration = 2f;
 
+    [SerializeField] private float m_playerAirbornOnKrakenArrivalDuration = 1f;
+    private List<bool> m_isPlayerDying;
+
     [HideInInspector]
     public List<PlayerInput> m_playerInputObjects
     {
@@ -48,7 +51,9 @@ public class PlayerSystem : GameSystem
 
     [HideInInspector] public List<GameObject> m_players;
 
-    private List<Transform> m_playerSpawnPositions;
+    [HideInInspector] public List<Transform> m_playersParents;
+
+    [HideInInspector] public List<Transform> m_playerSpawnPositions { get; private set; }
 
     [SerializeField] private float m_playerRespawnTime = 3f;
 
@@ -86,7 +91,9 @@ public class PlayerSystem : GameSystem
         m_playerControlSchemesList[0].FindAction("Join").Enable();
         
         m_players = new List<GameObject>();
+        m_playersParents = new List<Transform>();
         m_playerTeamAssignments = new List<int>();
+        m_isPlayerDying = new List<bool>();
         
         DontDestroyOnLoad(this.gameObject);    
     }
@@ -110,12 +117,85 @@ public class PlayerSystem : GameSystem
         });
     }
 
+    private void OnKrakenEmerge()
+    {
+        //need to update player spawn positions, then throw players to those positions
+        for (int i = 0; i < m_numPlayers; i++)
+        {
+            GameObject.FindGameObjectWithTag($"P{i + 1}Spawn").transform.position = GameObject.FindGameObjectWithTag($"P{i+1}SpawnAfterKraken").transform.position;
+            SetPlayerSpawnPositions();
+        }
+        
+        StartCoroutine(ThrowPlayersToSpawnPositions());
+    }
+    
+    private IEnumerator ThrowPlayersToSpawnPositions()
+    {
+        
+        //disable components of player objects briefly
+        foreach (GameObject player in m_players)
+        {
+            player.GetComponent<PlayerMovementController>().enabled = false;
+            player.GetComponent<PlayerGoldController>().enabled = false;
+        }
+         
+        List<Vector3> initialPlayerPositions = new List<Vector3>();
+        List<Vector3> finalPlayerPositions = new List<Vector3>();
+        List<float> playerTravelDistances = new List<float>();
+        List<float> playerHeightDeltasWithFloor = new List<float>();
+        List<Rigidbody> playerRbs = new List<Rigidbody>();
+        
+        for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
+        {
+            initialPlayerPositions.Add(PlayerSystem.Instance.m_players[i].transform.position);
+            finalPlayerPositions.Add(PlayerSystem.Instance.m_playerSpawnPositions[i].transform.position);
+            playerTravelDistances.Add((finalPlayerPositions[i] - initialPlayerPositions[i]).magnitude);
+            playerRbs.Add(m_players[i].GetComponent<Rigidbody>());
+
+            playerHeightDeltasWithFloor.Add(0.5f);
+            
+            RaycastHit hit;
+
+            if (Physics.Raycast(initialPlayerPositions[i], new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
+                    layerMask: ~~LayerMask.GetMask(new string[]{"Floor"})))
+            {
+                playerHeightDeltasWithFloor[i] = hit.distance;
+            }
+        }
+        
+        for (float t = 0; t < 1; t += Time.fixedDeltaTime / m_playerAirbornOnKrakenArrivalDuration)
+        {
+            for (int i = 0; i < m_numPlayers; i++)
+            {
+                Vector3 newPos = initialPlayerPositions[i] + (finalPlayerPositions[i] - initialPlayerPositions[i]) * t;
+
+                float distance = playerTravelDistances[i];
+                if (distance == 0)
+                {
+                    continue;
+                }
+
+                newPos.y = -(t * distance - distance) *
+                           (t * distance + (playerHeightDeltasWithFloor[i] / distance));
+
+                playerRbs[i].MovePosition(newPos);
+            }
+            yield return new WaitForFixedUpdate();
+        }
+        
+        //re-enable components of player objects briefly
+        foreach (GameObject player in m_players)
+        {
+            player.GetComponent<PlayerMovementController>().enabled = true;
+            player.GetComponent<PlayerGoldController>().enabled = true;
+        }
+    }
+
     
     public void OnJoinButtonPressed(InputAction.CallbackContext ctx)
     {
         int playerNum, teamNum;
         (playerNum, teamNum) = this.AddPlayer();
-        Debug.Log($"join ubtton proessed! PlayerNum: {playerNum}, TeamNum: {teamNum}");
         if (playerNum == -1)
         {
             //at player limit. destroy.
@@ -166,25 +246,31 @@ public class PlayerSystem : GameSystem
             //add the callback for the next player.
             m_playerControlSchemesList[playerNum].FindAction("Join").performed += OnJoinButtonPressed;
             m_playerControlSchemesList[playerNum].FindAction("Join").Enable();
-            m_playerControlSchemesList[playerNum-1].FindAction("Join").Disable();
         }
+        m_playerControlSchemesList[playerNum-1].FindAction("Join").Disable();
 
         m_players.Add(playerData.gameObject);
+        
+        m_playersParents.Add(newPlayerInstance.transform);
         
         DontDestroyOnLoad(newPlayerInstance);
         m_onPlayerJoin(playerNum);
     }
 
-    private void OnPlayerDie(int playerNum)
+    public void OnPlayerDie(int playerNum)
     {
-        StartCoroutine(WaitForRespawn(playerNum));
-
-        m_onPlayerDie(playerNum);
+        if (!m_isPlayerDying[playerNum - 1])
+        {
+            StartCoroutine(WaitForRespawn(playerNum));
+            m_onPlayerDie(playerNum);
+        }
     }
 
     private IEnumerator WaitForRespawn(int playerNum)
     {
+        m_isPlayerDying[playerNum - 1] = true;
         m_players[playerNum - 1].GetComponent<PlayerMovementController>().enabled = false;
+        m_players[playerNum - 1].GetComponent<Collider>().enabled = false;
         PlayerGoldController playerGoldController = m_players[playerNum - 1].GetComponent<PlayerGoldController>();
         playerGoldController.enabled = false;
         if (playerGoldController.m_goldCarried > 0)
@@ -200,6 +286,7 @@ public class PlayerSystem : GameSystem
         
         m_players[playerNum - 1].GetComponent<PlayerMovementController>().enabled = true;
         m_players[playerNum - 1].GetComponent<PlayerGoldController>().enabled = true;
+        m_players[playerNum - 1].GetComponent<Collider>().enabled = true;
 
         m_players[playerNum - 1].transform.position = m_playerSpawnPositions[playerNum - 1].position;
 
@@ -208,6 +295,7 @@ public class PlayerSystem : GameSystem
         rb.angularVelocity = Vector3.zero;
 
         m_onPlayerRespawn(playerNum);
+        m_isPlayerDying[playerNum - 1] = false;
     }
 
     private IEnumerator DeathAnimation(int playerNum)
@@ -256,6 +344,8 @@ public class PlayerSystem : GameSystem
             }
             
             m_playerTeamAssignments.Add(smallestTeamNum);
+            
+            m_isPlayerDying.Add(false);
 
             return (m_numPlayers, smallestTeamNum);
         }
@@ -306,6 +396,7 @@ public class PlayerSystem : GameSystem
 
     public void SwitchToActionMapForPlayer(int playerNum, string actionMapName)
     {
+        m_playerControlSchemesList[playerNum - 1].CharacterSelect.Disable();
         m_playerInputObjects[playerNum - 1].actions.Disable();
         
         m_playerInputObjects[playerNum - 1].actions.FindActionMap(actionMapName).Enable();
@@ -353,6 +444,13 @@ public class PlayerSystem : GameSystem
                 
                 SwitchToActionMapForPlayer(i + 1, "InGame");
             }
+
+            if (m_numPlayers < m_maxNumPlayers)
+            {
+                m_playerControlSchemesList[m_numPlayers].CharacterSelect.Disable();
+            }
         }
+
+        KrakenController.Instance.m_onKrakenEmerge += OnKrakenEmerge;
     }
 }

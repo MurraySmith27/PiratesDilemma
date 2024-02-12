@@ -111,19 +111,18 @@ public class InGameHoversUI : UIBase
         m_boatElements[teamNum-1][boatNum-1] = m_boatUIAsset.Instantiate();
         m_root.Add(m_boatElements[teamNum-1][boatNum-1]);
 
-        RadialProgress timerElement = m_boatElements[teamNum-1][boatNum-1].Q<RadialProgress>("radial-timer");
-        timerElement.maxTotalProgress = initialTimeToLive;
+        // RadialProgress timerElement = m_boatElements[teamNum-1][boatNum-1].Q<RadialProgress>("radial-timer");
+        // timerElement.maxTotalProgress = initialTimeToLive;
 
         Label capacityLabel = m_boatElements[teamNum-1][boatNum-1].Q<Label>("capacity-label");
 
         while (true)
         {
             Vector3 screen = Camera.main.WorldToScreenPoint(boat.transform.position);
-            m_boatElements[teamNum-1][boatNum-1].style.left =
-                screen.x - (m_boatElements[teamNum-1][boatNum-1].Q<RadialProgress>("radial-timer").layout.width / 2) + 50;
+            m_boatElements[teamNum - 1][boatNum - 1].style.left = screen.x;
             m_boatElements[teamNum-1][boatNum-1].style.top = (Screen.height - screen.y) - 50;
 
-            timerElement.progress = boatTimerController.m_currentTimeToLive;
+            // timerElement.progress = boatTimerController.m_currentTimeToLive;
 
             capacityLabel.text = m_currentBoatLabels[teamNum-1][boatNum-1];
         

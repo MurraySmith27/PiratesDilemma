@@ -10,6 +10,7 @@ public class LooseGoldController : MonoBehaviour
     void Start()
     {
         StartCoroutine(DespawnAfterSeconds());
+        Debug.Log($"layer on creation: {gameObject.layer}");
     }
 
     IEnumerator DespawnAfterSeconds()
@@ -20,9 +21,15 @@ public class LooseGoldController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if ((collision.gameObject.layer & ~LayerMask.NameToLayer("Player")) != 0)
+        Debug.Log(
+            $"collided with object: {collision.gameObject.name}, layer: {collision.gameObject.layer}. Current layer: {gameObject.layer}");
+        if (collision.gameObject.layer != LayerMask.NameToLayer("Player"))
         {
-            m_onLooseGoldCollision();
+            if (m_onLooseGoldCollision.GetInvocationList().Length > 0)
+            {
+                Debug.Log("stopping flight!");
+                m_onLooseGoldCollision();
+            }
         }
     }
 }

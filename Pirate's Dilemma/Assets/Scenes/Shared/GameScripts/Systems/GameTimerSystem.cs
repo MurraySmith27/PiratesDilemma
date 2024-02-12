@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,7 +26,9 @@ public class GameTimerSystem : GameSystem
     [SerializeField] private int m_gameTimerSeconds = 120;
 
     [SerializeField] private string m_characterSelectSceneName;
-
+    
+    [SerializeField] private int m_krakenArrivalTimeRemaining = 60;
+    
     public List<string> m_levelSceneNames;
     
     public GameStartEvent m_onGameStart;
@@ -33,6 +36,8 @@ public class GameTimerSystem : GameSystem
     public GameFinishEvent m_onGameFinish;
     
     public GameTimerUpdateEvent m_onGameTimerUpdate;
+
+    private bool m_krakenArrived = false;
     
     void Awake()
     {
@@ -86,9 +91,22 @@ public class GameTimerSystem : GameSystem
             
             // Decrease the count
             count--;
+
+            if (count <= m_krakenArrivalTimeRemaining && !m_krakenArrived)
+            {
+                GameObject kraken = GameObject.FindGameObjectWithTag("Kraken");
+
+                if (kraken != null)
+                {
+                    kraken.GetComponent<KrakenController>().StartKrakenArrival();
+                }
+                m_krakenArrived = true;
+            }
+            
             m_onGameTimerUpdate(count);
         }
 
         m_onGameFinish();
     }
+    
 }

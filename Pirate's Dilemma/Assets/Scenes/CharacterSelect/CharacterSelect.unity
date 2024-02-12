@@ -567,6 +567,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_gameTimerSeconds: 120
   m_characterSelectSceneName: CharacterSelect
+  m_krakenArrivalTimeRemaining: 118
   m_levelSceneNames:
   - 2v2Level
 --- !u!4 &1660667910
@@ -832,7 +833,9 @@ MonoBehaviour:
   m_numPlayers: 0
   m_deathAnimationDistance: 3
   m_deathAnimationDuration: 1.3
+  m_playerAirbornOnKrakenArrivalDuration: 1
   m_players: []
+  m_playersParents: []
   m_playerRespawnTime: 3
   m_playerTeamAssignments: 
   m_actions: {fileID: -944628639613478452, guid: 1f8c678d0c1572946ad4ccad197af8ad,
