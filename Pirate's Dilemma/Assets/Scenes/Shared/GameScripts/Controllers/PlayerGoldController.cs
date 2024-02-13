@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
@@ -33,6 +34,8 @@ public class PlayerGoldController : MonoBehaviour
     [SerializeField] private float m_goldThrowingPeakHeight;
 
     [SerializeField] private int m_trajectoryLineResolution = 10;
+
+    [SerializeField] private Transform m_feetPosition;
     
     private GameObject m_heldGoldInstance;
     
@@ -49,7 +52,7 @@ public class PlayerGoldController : MonoBehaviour
     private bool m_inGoldPickupZone = false;
 
     private Coroutine m_throwingCoroutine;
-    
+
     private bool m_throwing;
 
     void Awake()
@@ -64,6 +67,7 @@ public class PlayerGoldController : MonoBehaviour
         m_playerInput = GetComponent<PlayerInput>();
         m_playerData = GetComponent<PlayerData>();
         m_playerMovementController = GetComponent<PlayerMovementController>();
+        m_playerMovementController.m_onPlayerGetPushed += OnGetPushed;
 
         m_interactAction = m_playerInput.actions["Interact"];
         m_interactAction.performed += OnInteractButtonPressed;
@@ -83,6 +87,11 @@ public class PlayerGoldController : MonoBehaviour
         m_interactAction.performed -= OnInteractButtonPressed;
         m_throwAction.performed -= OnThrowButtonHeld;
         m_throwAction.canceled -= OnThrowButtonReleased;
+    }
+
+    public bool IsOccupied()
+    {
+        return m_throwing;
     }
 
     private void OnInteractButtonPressed(InputAction.CallbackContext ctx)
@@ -135,11 +144,10 @@ public class PlayerGoldController : MonoBehaviour
     }
     private void OnThrowButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_goldCarried > 0)
+        if (m_goldCarried > 0 && !m_playerMovementController.IsOccupied())
         {
             m_throwing = true;
             //freeze player while charging throw
-            m_playerMovementController.m_isThrowing = true;
             LineRenderer trajectoryLine = GetComponent<LineRenderer>();
             trajectoryLine.enabled = true;
             m_throwingCoroutine = StartCoroutine(ExtendLandingPositionCoroutine());
@@ -187,9 +195,6 @@ public class PlayerGoldController : MonoBehaviour
             m_throwing = false;
 
             DropAllGold();
-            
-            //unlock player 
-            m_playerMovementController.m_isThrowing = false;
         }
 
     }
@@ -197,7 +202,7 @@ public class PlayerGoldController : MonoBehaviour
     private IEnumerator ExtendLandingPositionCoroutine()
     {
         m_throwingTargetGameObject.SetActive(true);
-        m_throwingTargetGameObject.transform.position = transform.position;
+        m_throwingTargetGameObject.transform.position = m_feetPosition.position;
 
         Vector3 initialPos = m_throwingTargetGameObject.transform.position;
 
@@ -207,15 +212,8 @@ public class PlayerGoldController : MonoBehaviour
             moveVector = new Vector2(1f, 0f);
         }
         Vector3 maxDistancePos = initialPos + new Vector3(moveVector.x, 0, moveVector.y) * m_maxThrowDistance;
-        
-        float heightDeltaWithFloor = transform.position.y;
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
-                layerMask: ~LayerMask.GetMask(new string[]{"Floor"})))
-        {
-            heightDeltaWithFloor = hit.distance;
-        }
-        
+
+        float heightDeltaWithFloor = transform.position.y - m_feetPosition.position.y;
         
         LineRenderer trajectoryLine = GetComponent<LineRenderer>();
 
@@ -278,16 +276,11 @@ public class PlayerGoldController : MonoBehaviour
 
     private IEnumerator ThrowGoldCoroutine(Vector3 finalPos, GameObject looseGold)
     {
-        Vector3 initialPos = transform.position;
+        Vector3 initialPos = m_feetPosition.position;
         
         float initialHeight = initialPos.y;
         RaycastHit hit;
-        float heightDeltaWithFloor = initialHeight;
-        if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
-                layerMask: ~LayerMask.GetMask(new string[]{"Floor"})))
-        {
-            heightDeltaWithFloor = hit.distance;
-        }
+        float heightDeltaWithFloor = transform.position.y - m_feetPosition.position.y;
 
         float distance = (new Vector3(finalPos.x, 0, finalPos.z) - new Vector3(initialPos.x, 0, initialPos.z)).magnitude;
             
@@ -322,6 +315,21 @@ public class PlayerGoldController : MonoBehaviour
 
         }
 
+    }
+
+    private void OnGetPushed()
+    {
+        if (m_throwing)
+        {
+            StopCoroutine(m_throwingCoroutine);
+            m_throwing = false;
+        }
+        
+        if (m_goldCarried > 0)
+        {
+            SpawnLooseGold(false);
+        }
+        DropAllGold();
     }
     
     private GameObject MaybeFindNearestBoat()

@@ -4,23 +4,38 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
+public delegate void PlayerGetPushedEvent();
+
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData), typeof(PlayerGoldController))]
 public class PlayerMovementController : MonoBehaviour
 {
     public PlayerDieEvent m_onPlayerDie;
+
+    public PlayerGetPushedEvent m_onPlayerGetPushed;
     
     [SerializeField] private float m_speed;
     
     // For dashing
-    [SerializeField] private float m_dashDistance;
+    [SerializeField] private GameObject m_dashTargetGameObject;
+    [SerializeField] private float m_timeToChargeToMaxDashRange;
+    [SerializeField] private float m_minDashDistance;
+    [SerializeField] private float m_maxDashDistance;
     [SerializeField] private float m_dashDuration;
-    [SerializeField] private int m_numLeniencyFramesOnDashMovementInput = 6;
+    [SerializeField] private float m_chargeDashMoveSpeed;
+    [SerializeField] private Transform m_dashIndicatorArrowHeadTransform;
+    [SerializeField] private Transform m_dashIndicatorArrowBodyTransform;
     
     // For when you get pushed
     [SerializeField] private float m_pushDistance;
     [SerializeField] private float m_pushDuration;
     
-    [SerializeField] private bool m_isDashing;
+    [SerializeField] private Transform m_feetPosition;
+    
+    private bool m_isChargingDash;
+    
+    private bool m_isDashing;
+    
+
     private bool m_isBeingPushed;
     
     private Coroutine m_dashCoroutine;
@@ -36,11 +51,12 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool m_initialized;
 
-    public bool m_isThrowing;
-
     private float m_initialHeightFromFloor;
     
     private CharacterController m_characterController;
+
+    private Coroutine m_dashChargeUpCoroutine;
+
     
     private void Awake()
     {
@@ -55,9 +71,14 @@ public class PlayerMovementController : MonoBehaviour
     
     private void FixedUpdate()
     {
-        if (m_initialized && !m_isDashing && !m_isBeingPushed && !m_isThrowing)
+        if (m_initialized && !m_isDashing && !m_isBeingPushed && !m_playerGoldController.IsOccupied())
         {
-            float speed = m_speed * ((100 - 2 * m_playerGoldController.m_goldCarried) / 100f);
+            float speed = m_speed;
+            if (m_isChargingDash)
+            {
+                speed = m_chargeDashMoveSpeed;
+            }
+            
             Vector2 moveVector = -m_moveAction.ReadValue<Vector2>().normalized * (speed * Time.deltaTime);
             m_characterController.Move(new Vector3(moveVector.x, 0, moveVector.y));
 
@@ -88,10 +109,12 @@ public class PlayerMovementController : MonoBehaviour
         m_moveAction = m_playerInput.actions["Move"];
         m_dashAction = m_playerInput.actions["Dash"];
         
+        m_isChargingDash = false;
         m_isDashing = false;
         m_isBeingPushed = false;
 
-        m_dashAction.performed += OnDash;
+        m_dashAction.performed += OnDashButtonHeld;
+        m_dashAction.canceled += OnDashButtonReleased;
 
         m_initialized = true;
         
@@ -107,46 +130,127 @@ public class PlayerMovementController : MonoBehaviour
     {
         m_initialized = false;
 
-        m_dashAction.performed -= OnDash;
+        m_dashAction.performed -= OnDashButtonHeld;
+        m_dashAction.canceled -= OnDashButtonReleased;
     }
 
-    private void OnDash(InputAction.CallbackContext ctx)
+    public bool IsOccupied()
     {
-        if (m_initialized && !m_isDashing && !m_isThrowing && m_playerGoldController.m_goldCarried == 0)
+        return m_isDashing || m_isBeingPushed || m_isChargingDash;
+    }
+    
+    private void OnDashButtonHeld(InputAction.CallbackContext ctx)
+    {
+        if (m_initialized && !IsOccupied() && !m_playerGoldController.IsOccupied() && m_playerGoldController.m_goldCarried == 0)
         {
-            Vector2 movementInput = -m_moveAction.ReadValue<Vector2>();
-            m_dashCoroutine = StartCoroutine(DashCoroutine(movementInput));
+            m_isChargingDash = true;
+            m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());
         }
     }
 
-    private IEnumerator DashCoroutine(Vector2 dashDirection)
+    private IEnumerator DashChargeUpCoroutine()
     {
-        m_isDashing = true;
-        int numLeniencyFramesCounted = 0;
-        while (dashDirection.magnitude == 0)
+        m_dashTargetGameObject.SetActive(true);
+        m_dashTargetGameObject.transform.position = m_feetPosition.position;
+
+
+        Vector2 moveVector = m_moveAction.ReadValue<Vector2>();
+        if (moveVector.magnitude <= 0.01f)
         {
+            moveVector = new Vector2(1f, 0f);
+        }
+        // float heightDeltaWithFloor = transform.position.y;
+        // RaycastHit hit;
+        // if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
+        //         layerMask: ~LayerMask.GetMask(new string[]{"Floor"})))
+        // {
+        //     heightDeltaWithFloor = hit.distance;
+        // }
+        
+        
+        // LineRenderer trajectoryLine = GetComponent<LineRenderer>();
+
+        float t = 0;
+        while (true)
+        {
+            
+            Vector3 initialPos = m_feetPosition.position;
+            Vector3 maxDistancePos = initialPos + new Vector3(moveVector.x, 0, moveVector.y) * m_maxDashDistance;
+
+            t = Mathf.Min(t + Time.deltaTime * m_timeToChargeToMaxDashRange, 1);
+            maxDistancePos = initialPos + new Vector3(moveVector.x, 0, moveVector.y) * m_maxDashDistance;
+            
+            Vector2 newMoveVector = -m_moveAction.ReadValue<Vector2>();
+            if (newMoveVector.magnitude != 0)
+            {
+                moveVector = newMoveVector;
+            }
+            // trajectoryLine.positionCount = m_trajectoryLineResolution;
+
+            Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
+            
+            //need to check if the dash target is in a wall. if so truncate the dash.
+            RaycastHit hit;
+            if (Physics.Raycast(initialPos, (targetPos - initialPos).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: (targetPos - initialPos).magnitude))
+            {
+                targetPos = initialPos + (maxDistancePos - initialPos) * (hit.distance / m_maxDashDistance);
+            }
+            
+            m_dashTargetGameObject.transform.position = targetPos;
+            
+
+            // float currentDistance = ((maxDistancePos - initialPos) * t).magnitude;
+            
+            // List<Vector3> linePositions = new List<Vector3>();
+            // for (int i = 0; i < m_trajectoryLineResolution; i++)
+            // {
+            //     //progress along line
+            //     float t2 = i / (float)m_trajectoryLineResolution;
+            //     float currentHeight = -(t2 * currentDistance - currentDistance) * (t2 * currentDistance + (heightDeltaWithFloor / currentDistance));
+            //     Vector3 currentPositionAlongLine = initialPos + (targetPos - initialPos) * t2;
+            //     linePositions.Add(new Vector3(currentPositionAlongLine.x, currentHeight, currentPositionAlongLine.z));
+            // }
+            //
+            // trajectoryLine.SetPositions(linePositions.ToArray());
+            
             yield return null;
-            numLeniencyFramesCounted++;
-            if (numLeniencyFramesCounted > m_numLeniencyFramesOnDashMovementInput)
+        }    
+    }
+
+    private void OnDashButtonReleased(InputAction.CallbackContext ctx)
+    {
+        if (m_isChargingDash && m_dashChargeUpCoroutine != null)
+        {
+            StopCoroutine(m_dashChargeUpCoroutine);
+            
+            m_dashTargetGameObject.SetActive(false);
+            
+            Vector3 endPosition = m_dashTargetGameObject.transform.position;
+            if ((endPosition - m_feetPosition.position).magnitude > m_minDashDistance)
+            {
+                m_dashCoroutine = StartCoroutine(DashCoroutine(endPosition));
+            }
+            else
             {
                 m_isDashing = false;
-                yield break;
             }
-            dashDirection = -m_moveAction.ReadValue<Vector2>();
+            m_isChargingDash = false;
         }
+    }
+    
+    private IEnumerator DashCoroutine(Vector3 endPos)
+    {
+        m_isDashing = true;
+        Vector3 initialPos = transform.position;
 
-        Vector3 initial = transform.position;
-        Vector2 dashVector = dashDirection.normalized * m_dashDistance;
-        Vector3 final = new Vector3(initial.x + dashVector.x, initial.y, initial.z + dashVector.y);
-        
-        float finalDistance = m_dashDistance;
+        // float finalDistance = (endPos - initialPos).magnitude;
         
         //do a raycast, see if we need to stop early because we're hitting a wall.
-        RaycastHit hit;
-        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: m_dashDistance))
-        {
-            finalDistance = hit.distance;
-        }
+        // RaycastHit hit;
+        // if (Physics.Raycast(initialPos, (endPos - initialPos).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: finalDistance))
+        // {
+        //     finalDistance = hit.distance;
+        // }
         
         Vector3 pos;
         for (float t = 0; t < 1; t += Time.deltaTime / m_dashDuration)
@@ -154,13 +258,8 @@ public class PlayerMovementController : MonoBehaviour
             yield return new WaitForFixedUpdate();
 
             float progress = Mathf.Pow(t, 1f / 3f);
-            pos = initial + (final - initial) * progress - transform.position;
+            pos = initialPos + (endPos - initialPos) * progress - transform.position;
             m_characterController.Move(new Vector3(pos.x, 0, pos.z));
-
-            if (progress * m_dashDistance >= finalDistance)
-            {
-                break;
-            }
         }
 
         m_isDashing = false;
@@ -194,11 +293,12 @@ public class PlayerMovementController : MonoBehaviour
 
     public void GetPushed(Vector2 dashDirection)
     {
-        if (m_playerGoldController.m_goldCarried > 0)
+        if (m_isChargingDash)
         {
-            m_playerGoldController.SpawnLooseGold(false);
+            //if attacked while charging a dash, stop charging and get pushed.
+            StopCoroutine(m_dashChargeUpCoroutine);
+            m_isChargingDash = false;
         }
-        m_playerGoldController.DropAllGold();
         
         if (m_isDashing)
         {
@@ -211,8 +311,11 @@ public class PlayerMovementController : MonoBehaviour
         {
             StopCoroutine(m_beingPushedCoroutine);
         }
+        
         m_beingPushedCoroutine = StartCoroutine(GetPushedCoroutine(dashDirection));
         m_isBeingPushed = true;
+
+        m_onPlayerGetPushed();
     }
 
     private IEnumerator GetPushedCoroutine(Vector2 dashDirection)
