@@ -58,7 +58,7 @@ public class PlayerGoldController : MonoBehaviour
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
     }
     
-    void OnGameStart()
+    public void OnGameStart()
     {   
         //Assigning Callbacks
         m_goldCarried = 0;
@@ -78,6 +78,13 @@ public class PlayerGoldController : MonoBehaviour
         m_throwing = false;
 
         m_rigidbody = GetComponent<Rigidbody>();
+    }
+
+    public void OnGameStop()
+    {
+        m_interactAction.performed -= OnInteractButtonPressed;
+        m_throwAction.performed -= OnThrowButtonHeld;
+        m_throwAction.canceled -= OnThrowButtonReleased;
     }
 
     private void OnInteractButtonPressed(InputAction.CallbackContext ctx)

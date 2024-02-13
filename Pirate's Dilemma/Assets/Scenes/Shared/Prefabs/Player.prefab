@@ -165,16 +165,16 @@ MonoBehaviour:
     m_ActionName: InGame/Dash[/XInputControllerWindows/buttonEast]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: f85a0d33-9db8-4d25-a57c-6c834ac62edb
-    m_ActionName: CharacterSelect/ReadyUp[/XInputControllerWindows/buttonSouth]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 32e1f21a-7e05-40ed-869a-8bd29e6ef232
-    m_ActionName: CharacterSelect/Join[/XInputControllerWindows/start]
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: ace547a2-e929-4c3a-a4fe-9ed4ff7a9437
     m_ActionName: InGame/Throw[/Keyboard/space,/DualShock4GamepadHID/buttonSouth,/XInputControllerWindows/buttonSouth,/DualShock4GamepadHID1/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9a027261-c551-4004-b35b-058000f7c83a
+    m_ActionName: InGame/ReadyUp[/Keyboard/n]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 45e605d1-29fa-4050-9edd-524907b79f02
+    m_ActionName: CharacterSelect/Join[/Keyboard/enter]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: CharacterSelect
@@ -215,8 +215,6 @@ MonoBehaviour:
   m_maxThrowDistance: 5
   m_timeToGetMaxThrowRange: 2
   m_looseGoldPrefab: {fileID: 4714602978416047080, guid: ea421fdecbc4cef428b431abf643e362,
-    type: 3}
-  m_airbornLooseGoldPrefab: {fileID: 7732494119034234731, guid: afd43b0fab985744caf3c4180c389a66,
     type: 3}
   m_goldThrowingAirTime: 2
   m_goldThrowingPeakHeight: 4

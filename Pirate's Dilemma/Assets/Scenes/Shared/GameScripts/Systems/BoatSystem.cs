@@ -29,8 +29,7 @@ public class BoatSystem : GameSystem
     [SerializeField] private int m_boatMinTimeToLive;
     [SerializeField] private int m_boatMaxTimeToLive;
 
-    [SerializeField] private int m_boatMinCapacity;
-    [SerializeField] private int m_boatMaxCapacity;
+    [SerializeField] private int m_boatCapacity = 3;
 
     [SerializeField] private List<GameObject> m_boatPrefabsPerTeam;
     
@@ -133,7 +132,7 @@ public class BoatSystem : GameSystem
         boatData.m_teamNum = teamNum;
         boatData.m_boatNum = boatNum;
         boatData.m_timeToLive = new System.Random().Next(m_boatMinTimeToLive, m_boatMaxTimeToLive);
-        boatData.m_goldCapacity = new System.Random().Next(m_boatMinCapacity, m_boatMaxCapacity);
+        boatData.m_goldCapacity = m_boatCapacity;
         
         BoatGoldController boatGoldController = newBoat.GetComponent<BoatGoldController>();
         boatGoldController.m_onBoatSink += OnBoatSink;

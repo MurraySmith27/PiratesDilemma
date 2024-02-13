@@ -13,8 +13,6 @@ public class CharacterSelectUI : UIBase
     [SerializeField] private UIDocument m_screenSpaceUIDoc;
     private VisualElement m_root;
 
-    public string m_gameSceneToLoadName;
-
     [SerializeField] private VisualTreeAsset m_readyUpHover;
 
     private List<VisualElement> m_pressToJoinElements;
@@ -31,7 +29,6 @@ public class CharacterSelectUI : UIBase
     private List<InputAction> m_readyUpActions;
 
     private Coroutine m_startGameCountdownCoroutine;
-    [SerializeField] private float m_startGameCountdownSeconds = 3f;
     
     protected override void Awake()
     {
@@ -69,6 +66,7 @@ public class CharacterSelectUI : UIBase
         }
         
         PlayerSystem.Instance.m_onPlayerJoin += OnPlayerJoin;
+        PlayerSystem.Instance.m_onPlayerReadyUpToggle += UpdateReadyUpUI;
     }
 
     void OnPlayerJoin(int newPlayerNum)
@@ -102,21 +100,15 @@ public class CharacterSelectUI : UIBase
             image.sprite = m_keyboardReadyUpIcon;
         }
         
-        m_readyPlayers.Add(true);
-        
         newReadyUpHover.Q<VisualElement>("button-icon").Add(image);
         
-        m_readyUpActions.Add(input.actions["ReadyUp"]);
-
-        m_readyUpActions[newPlayerNum - 1].performed += ctx => { PlayerReadyUpToggle(newPlayerNum); };
-        PlayerReadyUpToggle(newPlayerNum);
+        UpdateReadyUpUI(newPlayerNum, false);
     }
 
-    private void PlayerReadyUpToggle(int playerNum)
+    private void UpdateReadyUpUI(int playerNum, bool isReady)
     {
-        m_readyPlayers[playerNum - 1] = !m_readyPlayers[playerNum - 1];
         Color color;
-        if (m_readyPlayers[playerNum - 1])
+        if (isReady)
         {
             color = Color.green;
         }
@@ -125,34 +117,5 @@ public class CharacterSelectUI : UIBase
             color = Color.red;
         }
         m_readyUpHoverElements[playerNum - 1].Q<VisualElement>("root").style.backgroundColor = new StyleColor(color);
-
-        bool startGame = true;
-        foreach (bool isPlayerReady in m_readyPlayers)
-        {
-            if (!isPlayerReady)
-            {
-                startGame = false;
-                break;
-            }
-        }
-
-        if (startGame)
-        {
-            m_startGameCountdownCoroutine = StartCoroutine(StartGameCountdown());
-        }
-        else
-        {
-            if (m_startGameCountdownCoroutine != null)
-            {
-                StopCoroutine(m_startGameCountdownCoroutine);
-                m_startGameCountdownCoroutine = null;
-            }
-        }
-    }
-
-    private IEnumerator StartGameCountdown()
-    {
-        yield return new WaitForSeconds(m_startGameCountdownSeconds);
-        SceneManager.LoadScene(m_gameSceneToLoadName);
     }
 }

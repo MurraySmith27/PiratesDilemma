@@ -36,7 +36,9 @@ public class PlayerMovementController : MonoBehaviour
 
     private PlayerData m_playerData;
 
-    private bool m_intialized;
+    private bool m_initialized;
+
+    private float m_initialHeightFromFloor;
     
     private void Awake()
     {
@@ -44,20 +46,28 @@ public class PlayerMovementController : MonoBehaviour
 
         m_playerData = GetComponent<PlayerData>();
         
-        m_intialized = false;
+        m_initialized = false;
     }
     
     private void FixedUpdate()
     {
-        if (m_intialized && !m_isDashing && !m_isBeingPushed)
+        if (m_initialized && !m_isDashing && !m_isBeingPushed)
         {
             float speed = m_speed * ((100 - 2 * m_playerGoldController.m_goldCarried) / 100f);
             Vector2 moveVector = -m_moveAction.ReadValue<Vector2>().normalized * (speed * Time.deltaTime);
-            m_rigidbody.MovePosition(transform.position + new Vector3(moveVector.x, 0f, moveVector.y));
+            float heightDeltaWithFloor = m_initialHeightFromFloor;
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
+                    layerMask: ~LayerMask.GetMask(new string[]{"Floor"})))
+            {
+                heightDeltaWithFloor = hit.distance;
+            }
+            
+            m_rigidbody.MovePosition(transform.position + new Vector3(moveVector.x, heightDeltaWithFloor - m_initialHeightFromFloor, moveVector.y));
         }
     }
 
-    private void OnGameStart()
+    public void OnGameStart()
     {
         m_playerGoldController = GetComponent<PlayerGoldController>();
         m_playerInput = GetComponent<PlayerInput>();
@@ -70,12 +80,26 @@ public class PlayerMovementController : MonoBehaviour
 
         m_dashAction.performed += OnDash;
 
-        m_intialized = true;
+        m_initialized = true;
+        
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
+                layerMask: ~LayerMask.GetMask(new string[]{"Floor"})))
+        {
+            m_initialHeightFromFloor = hit.distance;
+        }
+    }
+
+    public void OnGameStop()
+    {
+        m_initialized = false;
+
+        m_dashAction.performed -= OnDash;
     }
 
     private void OnDash(InputAction.CallbackContext ctx)
     {
-        if (!m_isDashing && m_playerGoldController.m_goldCarried == 0)
+        if (m_initialized && !m_isDashing && m_playerGoldController.m_goldCarried == 0)
         {
             Vector2 movementInput = -m_moveAction.ReadValue<Vector2>();
             m_dashCoroutine = StartCoroutine(DashCoroutine(movementInput));
