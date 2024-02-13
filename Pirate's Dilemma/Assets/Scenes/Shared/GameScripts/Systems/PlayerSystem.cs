@@ -164,14 +164,14 @@ public class PlayerSystem : GameSystem
         List<Vector3> finalPlayerPositions = new List<Vector3>();
         List<float> playerTravelDistances = new List<float>();
         List<float> playerHeightDeltasWithFloor = new List<float>();
-        List<Rigidbody> playerRbs = new List<Rigidbody>();
+        List<CharacterController> playerCharacterControllers = new List<CharacterController>();
         
         for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
         {
             initialPlayerPositions.Add(PlayerSystem.Instance.m_players[i].transform.position);
             finalPlayerPositions.Add(PlayerSystem.Instance.m_playerSpawnPositions[i].transform.position);
             playerTravelDistances.Add((finalPlayerPositions[i] - initialPlayerPositions[i]).magnitude);
-            playerRbs.Add(m_players[i].GetComponent<Rigidbody>());
+            playerCharacterControllers.Add(m_players[i].GetComponent<CharacterController>());
 
             playerHeightDeltasWithFloor.Add(0.5f);
             
@@ -199,7 +199,7 @@ public class PlayerSystem : GameSystem
                 newPos.y = -(t * distance - distance) *
                            (t * distance + (playerHeightDeltasWithFloor[i] / distance));
 
-                playerRbs[i].MovePosition(newPos);
+                playerCharacterControllers[i].Move(newPos - m_players[i].transform.position);
             }
             yield return new WaitForFixedUpdate();
         }
@@ -219,7 +219,7 @@ public class PlayerSystem : GameSystem
         {
             if (device.deviceId == ctx.control.device.deviceId)
             {
-                Debug.Log("already connected with this device. Returning early");
+                //already connected to annother player on this device. Return early.
                 return;
             }
         }
@@ -384,11 +384,7 @@ public class PlayerSystem : GameSystem
         m_players[playerNum - 1].GetComponent<PlayerGoldController>().enabled = true;
         m_players[playerNum - 1].GetComponent<Collider>().enabled = true;
 
-        m_players[playerNum - 1].transform.position = m_playerSpawnPositions[playerNum - 1].position;
-
-        Rigidbody rb = m_players[playerNum - 1].GetComponent<Rigidbody>();
-        rb.velocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        m_players[playerNum - 1].GetComponent<PlayerMovementController>().WarpToPosition(m_playerSpawnPositions[playerNum - 1].position);
 
         if (m_onPlayerRespawn != null && m_onPlayerRespawn.GetInvocationList().Length > 0)
         {
@@ -403,11 +399,13 @@ public class PlayerSystem : GameSystem
         Vector3 initial = m_players[playerNum - 1].transform.position;
         Vector3 final = initial + new Vector3(0, -m_deathAnimationDistance, 0);
         Vector3 pos;
+        PlayerMovementController playerMovementController =
+            m_players[playerNum - 1].GetComponent<PlayerMovementController>();
         for (float t = 0; t < 1; t += Time.deltaTime / m_deathAnimationDuration)
         {
             yield return new WaitForFixedUpdate();
             pos = initial + (final - initial) * (Mathf.Sin(-(1.5f * Mathf.PI * t)) * t);
-            m_players[playerNum-1].transform.position = pos;
+            playerMovementController.WarpToPosition(pos);;
         }
     }
 
@@ -537,7 +535,7 @@ public class PlayerSystem : GameSystem
             {
                 GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
 
-                m_players[i].transform.position = spawnPos.transform.position;
+                m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
                 m_players[i].transform.localScale = spawnPos.transform.localScale;
                 m_players[i].transform.rotation = spawnPos.transform.rotation;
                 

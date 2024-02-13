@@ -67,7 +67,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 847724434146542986}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000000017562215, y: 0.8656075, z: -0.5007231, w: 0.000000030360063}
+  m_LocalRotation: {x: -0.0000000054838005, y: 0.86560756, z: -0.5007231, w: -0.000000009479926}
   m_LocalPosition: {x: 1.91, y: 25.62, z: 17.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1097,7 +1097,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1, y: 1, z: 3.99}
-  m_LocalScale: {x: 1, y: 1, z: 0.6}
+  m_LocalScale: {x: 1, y: 2, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7580684644525770009}
@@ -1314,7 +1314,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2723
+  m_VersionIndex: 2726
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1914,7 +1914,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1, y: 1, z: 2}
-  m_LocalScale: {x: 1, y: 1, z: 0.20689274}
+  m_LocalScale: {x: 1, y: 2, z: 0.20689274}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7580684644525770009}
@@ -2131,7 +2131,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2723
+  m_VersionIndex: 2726
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5003,7 +5003,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1, y: 1, z: -2.25}
-  m_LocalScale: {x: 2, y: 1, z: 0.3275957}
+  m_LocalScale: {x: 2, y: 2, z: 0.3275957}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7580684644525770009}
@@ -5220,7 +5220,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2723
+  m_VersionIndex: 2726
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []

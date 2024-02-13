@@ -9,8 +9,6 @@ public class PlayerMovementController : MonoBehaviour
 {
     public PlayerDieEvent m_onPlayerDie;
     
-    [SerializeField] private Rigidbody m_rigidbody;
-    
     [SerializeField] private float m_speed;
     
     // For dashing
@@ -38,32 +36,47 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool m_initialized;
 
+    public bool m_isThrowing;
+
     private float m_initialHeightFromFloor;
+    
+    private CharacterController m_characterController;
     
     private void Awake()
     {
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
 
         m_playerData = GetComponent<PlayerData>();
+
+        m_characterController = GetComponent<CharacterController>();
         
         m_initialized = false;
     }
     
     private void FixedUpdate()
     {
-        if (m_initialized && !m_isDashing && !m_isBeingPushed)
+        if (m_initialized && !m_isDashing && !m_isBeingPushed && !m_isThrowing)
         {
             float speed = m_speed * ((100 - 2 * m_playerGoldController.m_goldCarried) / 100f);
             Vector2 moveVector = -m_moveAction.ReadValue<Vector2>().normalized * (speed * Time.deltaTime);
-            float heightDeltaWithFloor = m_initialHeightFromFloor;
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
-                    layerMask: ~LayerMask.GetMask(new string[]{"Floor"})))
+            m_characterController.Move(new Vector3(moveVector.x, 0, moveVector.y));
+
+            if (!m_characterController.isGrounded)
             {
-                heightDeltaWithFloor = hit.distance;
+                //cast ray to ground from bottom of capsule, move down by ray result
+
+                float distanceToMoveDown = 9.81f * Time.deltaTime;
+                RaycastHit hit;
+                if (Physics.Raycast(
+                        transform.position - new Vector3(0,
+                            m_characterController.center.y + m_characterController.height / 2, 0), Vector3.down,
+                        out hit, maxDistance: 0f, layerMask: ~LayerMask.GetMask("Floor")))
+                {
+                    distanceToMoveDown = hit.distance;
+                }
+
+                m_characterController.Move(new Vector3(0, -distanceToMoveDown, 0));
             }
-            
-            m_rigidbody.MovePosition(transform.position + new Vector3(moveVector.x, heightDeltaWithFloor - m_initialHeightFromFloor, moveVector.y));
         }
     }
 
@@ -99,7 +112,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnDash(InputAction.CallbackContext ctx)
     {
-        if (m_initialized && !m_isDashing && m_playerGoldController.m_goldCarried == 0)
+        if (m_initialized && !m_isDashing && !m_isThrowing && m_playerGoldController.m_goldCarried == 0)
         {
             Vector2 movementInput = -m_moveAction.ReadValue<Vector2>();
             m_dashCoroutine = StartCoroutine(DashCoroutine(movementInput));
@@ -141,8 +154,8 @@ public class PlayerMovementController : MonoBehaviour
             yield return new WaitForFixedUpdate();
 
             float progress = Mathf.Pow(t, 1f / 3f);
-            pos = initial + (final - initial) * progress;
-            m_rigidbody.MovePosition(pos);
+            pos = initial + (final - initial) * progress - transform.position;
+            m_characterController.Move(new Vector3(pos.x, 0, pos.z));
 
             if (progress * m_dashDistance >= finalDistance)
             {
@@ -223,7 +236,7 @@ public class PlayerMovementController : MonoBehaviour
 
             float progress = Mathf.Pow(t, 1f / 3f);
             pos = initial + (final - initial) * progress;
-            m_rigidbody.MovePosition(pos);
+            m_characterController.Move(pos - transform.position);
 
             if (progress * m_pushDistance >= finalDistance)
             {
@@ -232,6 +245,13 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         m_isBeingPushed = false;
+    }
+
+    public void WarpToPosition(Vector3 position)
+    {
+        m_characterController.enabled = false;
+        transform.position = position;
+        m_characterController.enabled = true;
     }
 
 

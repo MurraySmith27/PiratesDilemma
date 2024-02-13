@@ -37,6 +37,7 @@ public class PlayerGoldController : MonoBehaviour
     private GameObject m_heldGoldInstance;
     
     private PlayerInput m_playerInput;
+    private PlayerMovementController m_playerMovementController;
     
     private InputAction m_interactAction;
     private InputAction m_throwAction;
@@ -46,8 +47,6 @@ public class PlayerGoldController : MonoBehaviour
 
     private bool m_inGoldDropZone = false;
     private bool m_inGoldPickupZone = false;
-
-    private Rigidbody m_rigidbody;
 
     private Coroutine m_throwingCoroutine;
     
@@ -64,6 +63,7 @@ public class PlayerGoldController : MonoBehaviour
         m_goldCarried = 0;
         m_playerInput = GetComponent<PlayerInput>();
         m_playerData = GetComponent<PlayerData>();
+        m_playerMovementController = GetComponent<PlayerMovementController>();
 
         m_interactAction = m_playerInput.actions["Interact"];
         m_interactAction.performed += OnInteractButtonPressed;
@@ -76,8 +76,6 @@ public class PlayerGoldController : MonoBehaviour
         m_moveAction = m_playerInput.actions["Move"];
         
         m_throwing = false;
-
-        m_rigidbody = GetComponent<Rigidbody>();
     }
 
     public void OnGameStop()
@@ -141,7 +139,7 @@ public class PlayerGoldController : MonoBehaviour
         {
             m_throwing = true;
             //freeze player while charging throw
-            m_rigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+            m_playerMovementController.m_isThrowing = true;
             LineRenderer trajectoryLine = GetComponent<LineRenderer>();
             trajectoryLine.enabled = true;
             m_throwingCoroutine = StartCoroutine(ExtendLandingPositionCoroutine());
@@ -191,7 +189,7 @@ public class PlayerGoldController : MonoBehaviour
             DropAllGold();
             
             //unlock player 
-            m_rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+            m_playerMovementController.m_isThrowing = false;
         }
 
     }
@@ -350,7 +348,8 @@ public class PlayerGoldController : MonoBehaviour
     {
         m_heldGoldGameObject.SetActive(false);
         m_goldCarried = 0;
-        
+
+        m_throwing = false;
         m_interactAction.Enable();
         m_throwAction.Disable();
     }

@@ -96,8 +96,8 @@ GameObject:
   - component: {fileID: -3620577596029504757}
   - component: {fileID: 3806193576749118782}
   - component: {fileID: 8159576825246783168}
+  - component: {fileID: 499935073571530274}
   - component: {fileID: 4657405196688796297}
-  - component: {fileID: 4268078201383633483}
   - component: {fileID: 2835345827739117067}
   - component: {fileID: 3788934220506126850}
   m_Layer: 8
@@ -231,7 +231,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e41d529fd4a209a4c9c4fd9de2581fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_rigidbody: {fileID: 4268078201383633483}
   m_speed: 10
   m_dashDistance: 5
   m_dashDuration: 0.3
@@ -239,6 +238,33 @@ MonoBehaviour:
   m_pushDistance: 5
   m_pushDuration: 0.3
   m_isDashing: 0
+  m_isThrowing: 0
+--- !u!143 &499935073571530274
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3528894974979799562}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 4.55
+  m_Radius: 1.29
+  m_SlopeLimit: 10
+  m_StepOffset: 0
+  m_SkinWidth: 0.17
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!82 &4657405196688796297
 AudioSource:
   m_ObjectHideFlags: 0
@@ -335,33 +361,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!54 &4268078201383633483
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3528894974979799562}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 10
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 116
-  m_CollisionDetection: 0
 --- !u!136 &2835345827739117067
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -379,7 +378,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -617,7 +616,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 6483d0bcc1aee0e42a05e294b2e38481,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.68
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6483d0bcc1aee0e42a05e294b2e38481,
         type: 3}
