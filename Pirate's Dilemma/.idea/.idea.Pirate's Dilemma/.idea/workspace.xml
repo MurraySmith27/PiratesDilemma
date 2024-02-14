@@ -6,30 +6,21 @@
   <component name="ChangeListManager">
     <list default="true" id="2fa9daa2-90f4-44c3-9351-b9e137dd4c15" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level_Map.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level_Map.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Team1Mat.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Team1Mat.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Team2Mat.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Team2Mat.mat.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatGoldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatGoldController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/CharacterTestRenderTexture.renderTexture" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/CharacterTestRenderTexture.renderTexture" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/PressToJoinTexture1.renderTexture" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/PressToJoinTexture1.renderTexture" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/PressToJoinTexture2.renderTexture" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/PressToJoinTexture2.renderTexture" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/PressToJoinTexture3.renderTexture" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/PressToJoinTexture3.renderTexture" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/PressToJoinTexture4.renderTexture" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/UI/PressToJoinTexture4.renderTexture" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/LooseGoldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/LooseGoldController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerMovementController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerMovementController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/BoatSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/BoatSystem.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/GameSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/GameSystem.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/GameTimerSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/GameTimerSystem.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/ScoreSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/ScoreSystem.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Boat.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Boat.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/BoatDropZone.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/BoatDropZone.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/LooseGold.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/LooseGold.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Player.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team1Boat.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team1Boat.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team2Boat.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team2Boat.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/DashIndicator/arrow-head.png" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/DashIndicator/arrow-head.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team1Player1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team1Player1.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team2Player1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team2Player1.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameHoversUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameHoversUI.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/UIBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/UIBase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +61,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "XThreadsFramesViewSplitterKey": "0.63188976",
-    "git-widget-placeholder": "ui-polish",
+    "git-widget-placeholder": "bug-fixes-polish",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -114,10 +105,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="8608">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="8608" />
+      <option name="pid" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -147,7 +138,7 @@
       <workItem from="1707684479742" duration="8953000" />
       <workItem from="1707768301974" duration="7486000" />
       <workItem from="1707831684734" duration="4591000" />
-      <workItem from="1707918905674" duration="25489000" />
+      <workItem from="1707918905674" duration="26927000" />
     </task>
     <servers />
   </component>

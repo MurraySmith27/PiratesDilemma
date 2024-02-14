@@ -31,14 +31,12 @@ public class InGameHoversUI : UIBase
 
     protected override void Awake()
     {
-        Debug.Log("in game hovers awake");
         base.Awake();
     }
     
 
     protected override void SetUpUI()
     {
-        Debug.Log("setting up hovers UI");
         m_boatTimerLabelCoroutines = new List<List<Coroutine>>();
 
         m_boatElements = new List<List<VisualElement>>();

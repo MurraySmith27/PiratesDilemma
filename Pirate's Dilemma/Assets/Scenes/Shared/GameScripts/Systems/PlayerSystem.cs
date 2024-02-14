@@ -307,8 +307,6 @@ public class PlayerSystem : GameSystem
 
     void OnReadyUpButtonPressed(int playerNum)
     {
-
-        Debug.Log($"on ready up for player: {playerNum}");
         m_readyPlayers[playerNum - 1] = !m_readyPlayers[playerNum - 1];
         
         bool startGame = true;
