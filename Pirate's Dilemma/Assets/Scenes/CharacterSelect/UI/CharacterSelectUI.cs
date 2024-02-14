@@ -52,12 +52,12 @@ public class CharacterSelectUI : UIBase
             float quadToCameraDistance =
                 Vector3.Distance(m_renderTextureQuads[i].transform.position, cameraPos);
             float quadHeightScale = 2f * Mathf.Tan(0.5f * Camera.main.fieldOfView * Mathf.Deg2Rad) *
-                                      quadToCameraDistance;
+                                      quadToCameraDistance / 2f;
             float quadWidthScale = quadHeightScale * Camera.main.aspect / PlayerSystem.Instance.m_maxNumPlayers;
             
             m_renderTextureQuads[i].transform.localScale = new Vector3(quadWidthScale, quadHeightScale, 1);
             Vector3 currentPos = m_renderTextureQuads[i].transform.position;
-            m_renderTextureQuads[i].transform.position = new Vector3(quadWidthScale * (i - 1.5f), currentPos.y, currentPos.z);
+            m_renderTextureQuads[i].transform.position = new Vector3(quadWidthScale * ((i % 2) - 1.5f), quadHeightScale * (int)(i / 2), currentPos.z);
             
             m_docs.Add(m_renderTextureQuads[i].GetComponent<UIDocument>());
             
