@@ -119,12 +119,12 @@ public class PlayerSystem : GameSystem
         DontDestroyOnLoad(this.gameObject);    
     }
 
-    protected override void Start()
+    void Start()
     {
         SetPlayerSpawnPositions();
         SceneManager.sceneLoaded += OnGameSceneLoaded;
 
-        base.Start();
+        base.SystemReady();
     }
 
     private void SetPlayerSpawnPositions()
@@ -170,18 +170,11 @@ public class PlayerSystem : GameSystem
         {
             initialPlayerPositions.Add(PlayerSystem.Instance.m_players[i].transform.position);
             finalPlayerPositions.Add(PlayerSystem.Instance.m_playerSpawnPositions[i].transform.position);
-            playerTravelDistances.Add((finalPlayerPositions[i] - initialPlayerPositions[i]).magnitude);
+            playerTravelDistances.Add((new Vector3(finalPlayerPositions[i].x, 0, finalPlayerPositions[i].z) - new Vector3(initialPlayerPositions[i].x, 0, initialPlayerPositions[i].z)).magnitude);
             playerCharacterControllers.Add(m_players[i].GetComponent<CharacterController>());
 
-            playerHeightDeltasWithFloor.Add(0.5f);
-            
-            RaycastHit hit;
-
-            if (Physics.Raycast(initialPlayerPositions[i], new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
-                    layerMask: ~~LayerMask.GetMask(new string[]{"Floor"})))
-            {
-                playerHeightDeltasWithFloor[i] = hit.distance;
-            }
+            playerHeightDeltasWithFloor.Add(m_players[i].transform.position.y - 
+                                            m_players[i].GetComponent<PlayerMovementController>().m_feetPosition.transform.position.y);
         }
         
         for (float t = 0; t < 1; t += Time.fixedDeltaTime / m_playerAirbornOnKrakenArrivalDuration)

@@ -18,14 +18,10 @@ public class BoatGoldController : MonoBehaviour
     public BoatSailEvent m_onBoatSail;
 
     private BoatData m_boatData;
-    private BoatTimerController m_boatTimerController;
 
     void Start() 
     {
         m_boatData = GetComponent<BoatData>();
-        m_boatTimerController = GetComponent<BoatTimerController>();
-
-        m_boatTimerController.m_onBoatSail += OnBoatSail;
 
         m_acceptingGold = true;
     }

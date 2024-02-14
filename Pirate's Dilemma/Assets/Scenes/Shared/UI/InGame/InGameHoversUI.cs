@@ -31,12 +31,14 @@ public class InGameHoversUI : UIBase
 
     protected override void Awake()
     {
+        Debug.Log("in game hovers awake");
         base.Awake();
     }
     
 
     protected override void SetUpUI()
     {
+        Debug.Log("setting up hovers UI");
         m_boatTimerLabelCoroutines = new List<List<Coroutine>>();
 
         m_boatElements = new List<List<VisualElement>>();
@@ -49,7 +51,7 @@ public class InGameHoversUI : UIBase
 
         m_deadPlayers = new List<bool>();
         
-        BoatSystem.Instance.m_onSpawnBoat += NewBoatSpawned;
+        BoatSystem.Instance.m_onResetBoat += NewBoatSpawned;
         BoatSystem.Instance.m_onDeleteBoat += BoatDeleted;
         BoatSystem.Instance.m_onGoldAddedToBoat += GoldAddedToBoat;
 
@@ -64,7 +66,7 @@ public class InGameHoversUI : UIBase
             m_currentPlayerLabels.Add("");
             m_deadPlayers.Add(false);
         }
-        
+
         for (int teamNum = 1; teamNum <= PlayerSystem.Instance.m_numTeams; teamNum++)
         {
             m_boatElements.Add(new List<VisualElement>());

@@ -53,7 +53,7 @@ public class GameTimerSystem : GameSystem
         DontDestroyOnLoad(this.gameObject);
     }
 
-    protected override void Start()
+    void Start()
     {
         
         //idea here is that the scene manager only wants to register the callback if loading into player select screen.
@@ -66,8 +66,7 @@ public class GameTimerSystem : GameSystem
             SceneManager.sceneLoaded += StartGame;
         }
         
-        
-        base.Start();
+        base.SystemReady();
     }
 
     public void StartGame(Scene scene, LoadSceneMode mode)

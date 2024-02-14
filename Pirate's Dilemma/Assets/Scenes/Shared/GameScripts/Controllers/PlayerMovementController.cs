@@ -14,6 +14,8 @@ public class PlayerMovementController : MonoBehaviour
     public PlayerGetPushedEvent m_onPlayerGetPushed;
     
     [SerializeField] private float m_speed;
+
+    [SerializeField] private float m_onCollideWithGoldForce = 1f;
     
     // For dashing
     [SerializeField] private GameObject m_dashTargetGameObject;
@@ -22,14 +24,14 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float m_maxDashDistance;
     [SerializeField] private float m_dashDuration;
     [SerializeField] private float m_chargeDashMoveSpeed;
-    [SerializeField] private Transform m_dashIndicatorArrowHeadTransform;
-    [SerializeField] private Transform m_dashIndicatorArrowBodyTransform;
+    [SerializeField] private GameObject m_dashIndicatorArrowBodyGameObject;
     
     // For when you get pushed
     [SerializeField] private float m_pushDistance;
     [SerializeField] private float m_pushDuration;
     
-    [SerializeField] private Transform m_feetPosition;
+    public Transform m_feetPosition;
+    
     
     private bool m_isChargingDash;
     
@@ -50,8 +52,6 @@ public class PlayerMovementController : MonoBehaviour
     private PlayerData m_playerData;
 
     private bool m_initialized;
-
-    private float m_initialHeightFromFloor;
     
     private CharacterController m_characterController;
 
@@ -71,6 +71,7 @@ public class PlayerMovementController : MonoBehaviour
     
     private void FixedUpdate()
     {
+        Vector2 moveInput = -m_moveAction.ReadValue<Vector2>().normalized;
         if (m_initialized && !m_isDashing && !m_isBeingPushed && !m_playerGoldController.IsOccupied())
         {
             float speed = m_speed;
@@ -79,7 +80,7 @@ public class PlayerMovementController : MonoBehaviour
                 speed = m_chargeDashMoveSpeed;
             }
             
-            Vector2 moveVector = -m_moveAction.ReadValue<Vector2>().normalized * (speed * Time.deltaTime);
+            Vector2 moveVector = moveInput * (speed * Time.deltaTime);
             m_characterController.Move(new Vector3(moveVector.x, 0, moveVector.y));
 
             if (!m_characterController.isGrounded)
@@ -99,6 +100,11 @@ public class PlayerMovementController : MonoBehaviour
                 m_characterController.Move(new Vector3(0, -distanceToMoveDown, 0));
             }
         }
+
+        if (moveInput.magnitude != 0 && !m_isDashing && !m_isBeingPushed)
+        {
+            transform.LookAt(transform.position + new Vector3(moveInput.x, 0, moveInput.y));
+        }
     }
 
     public void OnGameStart()
@@ -117,13 +123,6 @@ public class PlayerMovementController : MonoBehaviour
         m_dashAction.canceled += OnDashButtonReleased;
 
         m_initialized = true;
-        
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
-                layerMask: ~LayerMask.GetMask(new string[]{"Floor"})))
-        {
-            m_initialHeightFromFloor = hit.distance;
-        }
     }
 
     public void OnGameStop()
@@ -153,40 +152,17 @@ public class PlayerMovementController : MonoBehaviour
         m_dashTargetGameObject.SetActive(true);
         m_dashTargetGameObject.transform.position = m_feetPosition.position;
 
-
-        Vector2 moveVector = m_moveAction.ReadValue<Vector2>();
-        if (moveVector.magnitude <= 0.01f)
-        {
-            moveVector = new Vector2(1f, 0f);
-        }
-        // float heightDeltaWithFloor = transform.position.y;
-        // RaycastHit hit;
-        // if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
-        //         layerMask: ~LayerMask.GetMask(new string[]{"Floor"})))
-        // {
-        //     heightDeltaWithFloor = hit.distance;
-        // }
-        
-        
-        // LineRenderer trajectoryLine = GetComponent<LineRenderer>();
+        m_dashIndicatorArrowBodyGameObject.SetActive(true);
 
         float t = 0;
         while (true)
         {
             
             Vector3 initialPos = m_feetPosition.position;
-            Vector3 maxDistancePos = initialPos + new Vector3(moveVector.x, 0, moveVector.y) * m_maxDashDistance;
+            Vector3 maxDistancePos = initialPos + transform.forward * m_maxDashDistance;
 
             t = Mathf.Min(t + Time.deltaTime * m_timeToChargeToMaxDashRange, 1);
-            maxDistancePos = initialPos + new Vector3(moveVector.x, 0, moveVector.y) * m_maxDashDistance;
             
-            Vector2 newMoveVector = -m_moveAction.ReadValue<Vector2>();
-            if (newMoveVector.magnitude != 0)
-            {
-                moveVector = newMoveVector;
-            }
-            // trajectoryLine.positionCount = m_trajectoryLineResolution;
-
             Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
             
             //need to check if the dash target is in a wall. if so truncate the dash.
@@ -197,21 +173,15 @@ public class PlayerMovementController : MonoBehaviour
             }
             
             m_dashTargetGameObject.transform.position = targetPos;
-            
 
-            // float currentDistance = ((maxDistancePos - initialPos) * t).magnitude;
+            m_dashIndicatorArrowBodyGameObject.transform.localScale = new Vector3(
+                m_dashIndicatorArrowBodyGameObject.transform.localScale.x, 
+                m_dashTargetGameObject.transform.localPosition.z - 0.25f, 
+                m_dashIndicatorArrowBodyGameObject.transform.localScale.z
+            );
+            m_dashIndicatorArrowBodyGameObject.transform.localPosition =
+                new Vector3(0, 0, (m_dashTargetGameObject.transform.localPosition.z / 2f));
             
-            // List<Vector3> linePositions = new List<Vector3>();
-            // for (int i = 0; i < m_trajectoryLineResolution; i++)
-            // {
-            //     //progress along line
-            //     float t2 = i / (float)m_trajectoryLineResolution;
-            //     float currentHeight = -(t2 * currentDistance - currentDistance) * (t2 * currentDistance + (heightDeltaWithFloor / currentDistance));
-            //     Vector3 currentPositionAlongLine = initialPos + (targetPos - initialPos) * t2;
-            //     linePositions.Add(new Vector3(currentPositionAlongLine.x, currentHeight, currentPositionAlongLine.z));
-            // }
-            //
-            // trajectoryLine.SetPositions(linePositions.ToArray());
             
             yield return null;
         }    
@@ -224,6 +194,7 @@ public class PlayerMovementController : MonoBehaviour
             StopCoroutine(m_dashChargeUpCoroutine);
             
             m_dashTargetGameObject.SetActive(false);
+            m_dashIndicatorArrowBodyGameObject.SetActive(false);
             
             Vector3 endPosition = m_dashTargetGameObject.transform.position;
             if ((endPosition - m_feetPosition.position).magnitude > m_minDashDistance)
@@ -242,15 +213,6 @@ public class PlayerMovementController : MonoBehaviour
     {
         m_isDashing = true;
         Vector3 initialPos = transform.position;
-
-        // float finalDistance = (endPos - initialPos).magnitude;
-        
-        //do a raycast, see if we need to stop early because we're hitting a wall.
-        // RaycastHit hit;
-        // if (Physics.Raycast(initialPos, (endPos - initialPos).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: finalDistance))
-        // {
-        //     finalDistance = hit.distance;
-        // }
         
         Vector3 pos;
         for (float t = 0; t < 1; t += Time.deltaTime / m_dashDuration)
@@ -264,23 +226,7 @@ public class PlayerMovementController : MonoBehaviour
 
         m_isDashing = false;
     }
-
     
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player") && m_isDashing)
-        {
-            PlayerMovementController otherPlayerMovement = collision.gameObject.GetComponent<PlayerMovementController>();
-
-            if (otherPlayerMovement != null)
-            {
-                Vector3 direction = collision.transform.position - transform.position;
-                direction.y = 0;
-                Vector2 dashDirection = new Vector2(direction.x, direction.z).normalized;
-                otherPlayerMovement.GetPushed(dashDirection);
-            }
-        } 
-    }
 
     private void OnTriggerStay(Collider otherCollider)
     {
@@ -289,6 +235,28 @@ public class PlayerMovementController : MonoBehaviour
             //player dies.
             m_onPlayerDie(m_playerData.m_playerNum);
         }
+    }
+
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.layer == LayerMask.NameToLayer("LooseGold"))
+        {
+            hit.rigidbody.AddForceAtPosition((hit.gameObject.transform.position - transform.position).normalized *
+                                   m_onCollideWithGoldForce * m_characterController.velocity.magnitude, transform.position, ForceMode.Impulse);
+        }
+        else if (hit.gameObject.layer == LayerMask.NameToLayer("Player") && m_isDashing)
+        {
+            PlayerMovementController otherPlayerMovement = hit.gameObject.GetComponent<PlayerMovementController>();
+
+            if (otherPlayerMovement != null)
+            {
+                Vector3 direction = hit.transform.position - transform.position;
+                direction.y = 0;
+                Vector2 dashDirection = new Vector2(direction.x, direction.z).normalized;
+                otherPlayerMovement.GetPushed(dashDirection);
+            }
+        } 
     }
 
     public void GetPushed(Vector2 dashDirection)

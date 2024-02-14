@@ -34,6 +34,11 @@ public class BoatData : MonoBehaviour
     public AudioSource m_sailAudioSource;
     private void Awake()
     {
+        ClearGoldStored();
+    }
+
+    public void ClearGoldStored()
+    {
         m_currentGoldStored = new List<int>();
 
         for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
