@@ -10,7 +10,9 @@ using Debug = UnityEngine.Debug;
 
 public delegate void PlayerDieEvent(int playerNum);
 public delegate void PlayerRespawnEvent(int playerNum);
-public delegate void OnPlayerJoin(int newPlayerNum);
+public delegate void PlayerJoinEvent(int newPlayerNum);
+
+public delegate void PlayerReadyUpToggleEvent(int playerNum, bool isReady);
 
 //The purpose of this class to to store data that persists between scenes about players.
 public class PlayerSystem : GameSystem
@@ -38,8 +40,12 @@ public class PlayerSystem : GameSystem
     [SerializeField] private float m_deathAnimationDuration = 2f;
 
     [SerializeField] private float m_playerAirbornOnKrakenArrivalDuration = 1f;
+    
     private List<bool> m_isPlayerDying;
 
+    //used in character select screen to determine which players have readied up.
+    public List<bool> m_readyPlayers;
+    
     [HideInInspector]
     public List<PlayerInput> m_playerInputObjects
     {
@@ -58,16 +64,28 @@ public class PlayerSystem : GameSystem
     [SerializeField] private float m_playerRespawnTime = 3f;
 
     private List<PlayerControlSchemes> m_playerControlSchemesList;
+
+    private Dictionary<int, InputDevice> m_assignedPlayerDevices;
     
     [HideInInspector] public List<int> m_playerTeamAssignments;
-    
-    public OnPlayerJoin m_onPlayerJoin;
     
     public PlayerDieEvent m_onPlayerDie;
 
     public PlayerRespawnEvent m_onPlayerRespawn;
+    
+    public PlayerJoinEvent m_onPlayerJoin;
+
+    public PlayerReadyUpToggleEvent m_onPlayerReadyUpToggle;
 
     public InputActionAsset m_actions;
+    
+    [SerializeField] private float m_startGameCountdownSeconds = 3f;
+    
+    [SerializeField] private string m_gameSceneToLoadName;
+
+    private Coroutine m_startGameCountdownCoroutine;
+
+    private List<GameObject> m_visualStandIns;
     
     private void Awake()
     {
@@ -81,6 +99,7 @@ public class PlayerSystem : GameSystem
         }
 
         m_playerControlSchemesList = new List<PlayerControlSchemes>();
+        m_assignedPlayerDevices = new Dictionary<int, InputDevice>();
 
         for (int i = 0; i < m_maxNumPlayers; i++)
         {
@@ -94,16 +113,18 @@ public class PlayerSystem : GameSystem
         m_playersParents = new List<Transform>();
         m_playerTeamAssignments = new List<int>();
         m_isPlayerDying = new List<bool>();
+        m_readyPlayers = new List<bool>();
+        m_visualStandIns = new List<GameObject>();
         
         DontDestroyOnLoad(this.gameObject);    
     }
 
-    protected override void Start()
+    void Start()
     {
         SetPlayerSpawnPositions();
         SceneManager.sceneLoaded += OnGameSceneLoaded;
 
-        base.Start();
+        base.SystemReady();
     }
 
     private void SetPlayerSpawnPositions()
@@ -143,24 +164,17 @@ public class PlayerSystem : GameSystem
         List<Vector3> finalPlayerPositions = new List<Vector3>();
         List<float> playerTravelDistances = new List<float>();
         List<float> playerHeightDeltasWithFloor = new List<float>();
-        List<Rigidbody> playerRbs = new List<Rigidbody>();
+        List<CharacterController> playerCharacterControllers = new List<CharacterController>();
         
         for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
         {
             initialPlayerPositions.Add(PlayerSystem.Instance.m_players[i].transform.position);
             finalPlayerPositions.Add(PlayerSystem.Instance.m_playerSpawnPositions[i].transform.position);
-            playerTravelDistances.Add((finalPlayerPositions[i] - initialPlayerPositions[i]).magnitude);
-            playerRbs.Add(m_players[i].GetComponent<Rigidbody>());
+            playerTravelDistances.Add((new Vector3(finalPlayerPositions[i].x, 0, finalPlayerPositions[i].z) - new Vector3(initialPlayerPositions[i].x, 0, initialPlayerPositions[i].z)).magnitude);
+            playerCharacterControllers.Add(m_players[i].GetComponent<CharacterController>());
 
-            playerHeightDeltasWithFloor.Add(0.5f);
-            
-            RaycastHit hit;
-
-            if (Physics.Raycast(initialPlayerPositions[i], new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
-                    layerMask: ~~LayerMask.GetMask(new string[]{"Floor"})))
-            {
-                playerHeightDeltasWithFloor[i] = hit.distance;
-            }
+            playerHeightDeltasWithFloor.Add(m_players[i].transform.position.y - 
+                                            m_players[i].GetComponent<PlayerMovementController>().m_feetPosition.transform.position.y);
         }
         
         for (float t = 0; t < 1; t += Time.fixedDeltaTime / m_playerAirbornOnKrakenArrivalDuration)
@@ -178,7 +192,7 @@ public class PlayerSystem : GameSystem
                 newPos.y = -(t * distance - distance) *
                            (t * distance + (playerHeightDeltasWithFloor[i] / distance));
 
-                playerRbs[i].MovePosition(newPos);
+                playerCharacterControllers[i].Move(newPos - m_players[i].transform.position);
             }
             yield return new WaitForFixedUpdate();
         }
@@ -191,9 +205,18 @@ public class PlayerSystem : GameSystem
         }
     }
 
-    
+
     public void OnJoinButtonPressed(InputAction.CallbackContext ctx)
     {
+        foreach (InputDevice device in m_assignedPlayerDevices.Values)
+        {
+            if (device.deviceId == ctx.control.device.deviceId)
+            {
+                //already connected to annother player on this device. Return early.
+                return;
+            }
+        }
+        
         int playerNum, teamNum;
         (playerNum, teamNum) = this.AddPlayer();
         if (playerNum == -1)
@@ -207,12 +230,12 @@ public class PlayerSystem : GameSystem
         {
             numPlayersPerTeam.Add(0);
         }
-        
+
         foreach (int playerTeamAssignment in m_playerTeamAssignments)
         {
             numPlayersPerTeam[playerTeamAssignment - 1]++;
         }
-        
+
         GameObject playerPrefab;
         if (teamNum == 1)
         {
@@ -222,23 +245,24 @@ public class PlayerSystem : GameSystem
         {
             playerPrefab = m_team2playerPrefabs[numPlayersPerTeam[teamNum - 1] - 1];
         }
-        
-        
+
+
         GameObject newPlayerInstance = Instantiate(playerPrefab,
             m_playerSpawnPositions[playerNum - 1].position, Quaternion.identity);
-
-        newPlayerInstance.transform.position = m_playerSpawnPositions[playerNum - 1].position;
         
         newPlayerInstance.GetComponentInChildren<PlayerMovementController>().m_onPlayerDie += OnPlayerDie;
 
         PlayerData playerData = newPlayerInstance.GetComponentInChildren<PlayerData>();
-        
+
         playerData.m_playerNum = playerNum;
         playerData.m_teamNum = m_playerTeamAssignments[playerNum - 1];
 
+        m_players.Add(playerData.gameObject);
+        m_players[playerNum - 1].transform.localScale = m_playerSpawnPositions[playerNum - 1].localScale;
+        m_players[playerNum - 1].transform.rotation = m_playerSpawnPositions[playerNum - 1].rotation;
+
         PlayerInput playerInput = newPlayerInstance.GetComponentInChildren<PlayerInput>();
         
-        Debug.Log($"device: {ctx.control.device}");
         RegisterDeviceWithPlayer(playerNum, playerInput, ctx.control.device);
 
         if (playerNum < m_maxNumPlayers)
@@ -247,22 +271,87 @@ public class PlayerSystem : GameSystem
             m_playerControlSchemesList[playerNum].FindAction("Join").performed += OnJoinButtonPressed;
             m_playerControlSchemesList[playerNum].FindAction("Join").Enable();
         }
-        m_playerControlSchemesList[playerNum-1].FindAction("Join").Disable();
-
-        m_players.Add(playerData.gameObject);
+        
+        playerInput.actions.FindAction("Join").performed -= OnJoinButtonPressed;
+        playerInput.actions.FindAction("Join").Disable();
+        
+        //after player joins, we also enable the in-game action map so they can test out the controls and ready up
+        SwitchToActionMapForPlayer(playerNum, "InGame");
+        
+        playerInput.actions.FindAction("ReadyUp").performed += (ctx => OnReadyUpButtonPressed(playerNum));
         
         m_playersParents.Add(newPlayerInstance.transform);
+        
+        //make the purely visual version of the mesh visible and move it to the right location.
+        for (int i = 0; i < newPlayerInstance.transform.childCount; i++)
+        {
+            Transform child = newPlayerInstance.transform.GetChild(i);
+            if (child.CompareTag("VisualStandIn"))
+            {
+                m_visualStandIns.Add(child.gameObject);
+                child.gameObject.SetActive(true);
+                child.gameObject.transform.position =
+                    GameObject.FindGameObjectWithTag($"P{playerNum}CharacterSelectSpawn").transform.position;
+            }
+        }
+        
+        //then start game for player scripts so we can test out movement in character select.
+        m_players[playerNum - 1].GetComponent<PlayerMovementController>().OnGameStart();
+        m_players[playerNum - 1].GetComponent<PlayerGoldController>().OnGameStart();
+        
+        m_readyPlayers.Add(false);
         
         DontDestroyOnLoad(newPlayerInstance);
         m_onPlayerJoin(playerNum);
     }
 
+    void OnReadyUpButtonPressed(int playerNum)
+    {
+
+        Debug.Log($"on ready up for player: {playerNum}");
+        m_readyPlayers[playerNum - 1] = !m_readyPlayers[playerNum - 1];
+        
+        bool startGame = true;
+        foreach (bool isPlayerReady in m_readyPlayers)
+        {
+            if (!isPlayerReady)
+            {
+                startGame = false;
+                break;
+            }
+        }
+
+        if (startGame)
+        {
+            m_startGameCountdownCoroutine = StartCoroutine(StartGameCountdown());
+        }
+        else
+        {
+            if (m_startGameCountdownCoroutine != null)
+            {
+                StopCoroutine(m_startGameCountdownCoroutine);
+                m_startGameCountdownCoroutine = null;
+            }
+        }
+
+        m_onPlayerReadyUpToggle(playerNum, m_readyPlayers[playerNum - 1]);
+    }
+    
+    private IEnumerator StartGameCountdown()
+    {
+        yield return new WaitForSeconds(m_startGameCountdownSeconds);
+        SceneManager.LoadScene(m_gameSceneToLoadName);
+    }
+    
     public void OnPlayerDie(int playerNum)
     {
         if (!m_isPlayerDying[playerNum - 1])
         {
             StartCoroutine(WaitForRespawn(playerNum));
-            m_onPlayerDie(playerNum);
+            if (m_onPlayerDie != null && m_onPlayerDie.GetInvocationList().Length > 0)
+            {
+                m_onPlayerDie(playerNum);
+            }
         }
     }
 
@@ -288,13 +377,13 @@ public class PlayerSystem : GameSystem
         m_players[playerNum - 1].GetComponent<PlayerGoldController>().enabled = true;
         m_players[playerNum - 1].GetComponent<Collider>().enabled = true;
 
-        m_players[playerNum - 1].transform.position = m_playerSpawnPositions[playerNum - 1].position;
+        m_players[playerNum - 1].GetComponent<PlayerMovementController>().WarpToPosition(m_playerSpawnPositions[playerNum - 1].position);
 
-        Rigidbody rb = m_players[playerNum - 1].GetComponent<Rigidbody>();
-        rb.velocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        if (m_onPlayerRespawn != null && m_onPlayerRespawn.GetInvocationList().Length > 0)
+        {
+            m_onPlayerRespawn(playerNum);
+        }
 
-        m_onPlayerRespawn(playerNum);
         m_isPlayerDying[playerNum - 1] = false;
     }
 
@@ -303,14 +392,15 @@ public class PlayerSystem : GameSystem
         Vector3 initial = m_players[playerNum - 1].transform.position;
         Vector3 final = initial + new Vector3(0, -m_deathAnimationDistance, 0);
         Vector3 pos;
+        PlayerMovementController playerMovementController =
+            m_players[playerNum - 1].GetComponent<PlayerMovementController>();
         for (float t = 0; t < 1; t += Time.deltaTime / m_deathAnimationDuration)
         {
             yield return new WaitForFixedUpdate();
             pos = initial + (final - initial) * (Mathf.Sin(-(1.5f * Mathf.PI * t)) * t);
-            m_players[playerNum-1].transform.position = pos;
+            playerMovementController.WarpToPosition(pos);;
         }
     }
-    
 
     (int, int) AddPlayer()
     {
@@ -362,17 +452,17 @@ public class PlayerSystem : GameSystem
             throw new ArgumentException($"Cannot change device for player number {playerNum}. " +
                                         $"There are only {m_numPlayers} players registered.");
         }
-
-        m_playerControlSchemesList[playerNum - 1].devices = new[] { device };
-
         string controlScheme = "Keyboard";
         if (device is Gamepad)
         {
             controlScheme = "Gamepad";
         }
 
+        m_playerControlSchemesList[playerNum - 1].devices = new[] { device };
+        
         playerInput.SwitchCurrentControlScheme(controlScheme, new[] { device });
-
+        
+        m_assignedPlayerDevices.Add(playerNum, device);
     }
 
     public void DeregisterDeviceFromPlayer(int playerNum, PlayerInput playerInput, InputDevice device)
@@ -397,7 +487,7 @@ public class PlayerSystem : GameSystem
     public void SwitchToActionMapForPlayer(int playerNum, string actionMapName)
     {
         m_playerControlSchemesList[playerNum - 1].CharacterSelect.Disable();
-        m_playerInputObjects[playerNum - 1].actions.Disable();
+        m_playerInputObjects[playerNum - 1].actions.Enable();
         
         m_playerInputObjects[playerNum - 1].actions.FindActionMap(actionMapName).Enable();
     }
@@ -420,7 +510,7 @@ public class PlayerSystem : GameSystem
             playerInput.actions.Disable();
         }
         
-        m_actions.FindActionMap("CharacterSelect").Enable();
+        m_actions.FindActionMap("CharacterSelect").Disable();
     }
 
     private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -438,9 +528,11 @@ public class PlayerSystem : GameSystem
             {
                 GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
 
-                m_players[i].transform.position = spawnPos.transform.position;
+                m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
                 m_players[i].transform.localScale = spawnPos.transform.localScale;
                 m_players[i].transform.rotation = spawnPos.transform.rotation;
+                
+                m_visualStandIns[i].SetActive(false);
                 
                 SwitchToActionMapForPlayer(i + 1, "InGame");
             }

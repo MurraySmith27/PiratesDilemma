@@ -29,14 +29,14 @@ public class ScoreSystem : GameSystem
         }
     }
 
-    protected override void Start()
+    void Start()
     {
         m_playerScores = new List<int>();
         for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
             m_playerScores.Add(0);
         }
-        base.Start();
+        base.SystemReady();
     }
 
     public void UpdateScore(List<int> scoreDelta)

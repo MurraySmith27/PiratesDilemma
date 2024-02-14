@@ -4,25 +4,40 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
+public delegate void PlayerGetPushedEvent();
+
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData), typeof(PlayerGoldController))]
 public class PlayerMovementController : MonoBehaviour
 {
     public PlayerDieEvent m_onPlayerDie;
-    
-    [SerializeField] private Rigidbody m_rigidbody;
+
+    public PlayerGetPushedEvent m_onPlayerGetPushed;
     
     [SerializeField] private float m_speed;
+
+    [SerializeField] private float m_onCollideWithGoldForce = 1f;
     
     // For dashing
-    [SerializeField] private float m_dashDistance;
+    [SerializeField] private GameObject m_dashTargetGameObject;
+    [SerializeField] private float m_timeToChargeToMaxDashRange;
+    [SerializeField] private float m_minDashDistance;
+    [SerializeField] private float m_maxDashDistance;
     [SerializeField] private float m_dashDuration;
-    [SerializeField] private int m_numLeniencyFramesOnDashMovementInput = 6;
+    [SerializeField] private float m_chargeDashMoveSpeed;
+    [SerializeField] private GameObject m_dashIndicatorArrowBodyGameObject;
     
     // For when you get pushed
     [SerializeField] private float m_pushDistance;
     [SerializeField] private float m_pushDuration;
     
-    [SerializeField] private bool m_isDashing;
+    public Transform m_feetPosition;
+    
+    
+    private bool m_isChargingDash;
+    
+    private bool m_isDashing;
+    
+
     private bool m_isBeingPushed;
     
     private Coroutine m_dashCoroutine;
@@ -36,28 +51,63 @@ public class PlayerMovementController : MonoBehaviour
 
     private PlayerData m_playerData;
 
-    private bool m_intialized;
+    private bool m_initialized;
+    
+    private CharacterController m_characterController;
+
+    private Coroutine m_dashChargeUpCoroutine;
+
     
     private void Awake()
     {
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
 
         m_playerData = GetComponent<PlayerData>();
+
+        m_characterController = GetComponent<CharacterController>();
         
-        m_intialized = false;
+        m_initialized = false;
     }
     
     private void FixedUpdate()
     {
-        if (m_intialized && !m_isDashing && !m_isBeingPushed)
+        Vector2 moveInput = -m_moveAction.ReadValue<Vector2>().normalized;
+        if (m_initialized && !m_isDashing && !m_isBeingPushed && !m_playerGoldController.IsOccupied())
         {
-            float speed = m_speed * ((100 - 2 * m_playerGoldController.m_goldCarried) / 100f);
-            Vector2 moveVector = -m_moveAction.ReadValue<Vector2>().normalized * (speed * Time.deltaTime);
-            m_rigidbody.MovePosition(transform.position + new Vector3(moveVector.x, 0f, moveVector.y));
+            float speed = m_speed;
+            if (m_isChargingDash)
+            {
+                speed = m_chargeDashMoveSpeed;
+            }
+            
+            Vector2 moveVector = moveInput * (speed * Time.deltaTime);
+            m_characterController.Move(new Vector3(moveVector.x, 0, moveVector.y));
+
+            if (!m_characterController.isGrounded)
+            {
+                //cast ray to ground from bottom of capsule, move down by ray result
+
+                float distanceToMoveDown = 9.81f * Time.deltaTime;
+                RaycastHit hit;
+                if (Physics.Raycast(
+                        transform.position - new Vector3(0,
+                            m_characterController.center.y + m_characterController.height / 2, 0), Vector3.down,
+                        out hit, maxDistance: 0f, layerMask: ~LayerMask.GetMask("Floor")))
+                {
+                    distanceToMoveDown = hit.distance;
+                }
+
+                m_characterController.Move(new Vector3(0, -distanceToMoveDown, 0));
+            }
+        }
+
+        if (moveInput.magnitude != 0 && !m_isDashing && !m_isBeingPushed)
+        {
+            transform.LookAt(transform.position + new Vector3(moveInput.x, 0, moveInput.y));
         }
     }
 
-    private void OnGameStart()
+    public void OnGameStart()
     {
         m_playerGoldController = GetComponent<PlayerGoldController>();
         m_playerInput = GetComponent<PlayerInput>();
@@ -65,51 +115,104 @@ public class PlayerMovementController : MonoBehaviour
         m_moveAction = m_playerInput.actions["Move"];
         m_dashAction = m_playerInput.actions["Dash"];
         
+        m_isChargingDash = false;
         m_isDashing = false;
         m_isBeingPushed = false;
 
-        m_dashAction.performed += OnDash;
+        m_dashAction.performed += OnDashButtonHeld;
+        m_dashAction.canceled += OnDashButtonReleased;
 
-        m_intialized = true;
+        m_initialized = true;
     }
 
-    private void OnDash(InputAction.CallbackContext ctx)
+    public void OnGameStop()
     {
-        if (!m_isDashing && m_playerGoldController.m_goldCarried == 0)
+        m_initialized = false;
+
+        m_dashAction.performed -= OnDashButtonHeld;
+        m_dashAction.canceled -= OnDashButtonReleased;
+    }
+
+    public bool IsOccupied()
+    {
+        return m_isDashing || m_isBeingPushed || m_isChargingDash;
+    }
+    
+    private void OnDashButtonHeld(InputAction.CallbackContext ctx)
+    {
+        if (m_initialized && !IsOccupied() && !m_playerGoldController.IsOccupied() && m_playerGoldController.m_goldCarried == 0)
         {
-            Vector2 movementInput = -m_moveAction.ReadValue<Vector2>();
-            m_dashCoroutine = StartCoroutine(DashCoroutine(movementInput));
+            m_isChargingDash = true;
+            m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());
         }
     }
 
-    private IEnumerator DashCoroutine(Vector2 dashDirection)
+    private IEnumerator DashChargeUpCoroutine()
     {
-        m_isDashing = true;
-        int numLeniencyFramesCounted = 0;
-        while (dashDirection.magnitude == 0)
+        m_dashTargetGameObject.SetActive(true);
+        m_dashTargetGameObject.transform.position = m_feetPosition.position;
+
+        m_dashIndicatorArrowBodyGameObject.SetActive(true);
+
+        float t = 0;
+        while (true)
         {
+            
+            Vector3 initialPos = m_feetPosition.position;
+            Vector3 maxDistancePos = initialPos + transform.forward * m_maxDashDistance;
+
+            t = Mathf.Min(t + Time.deltaTime * m_timeToChargeToMaxDashRange, 1);
+            
+            Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
+            
+            //need to check if the dash target is in a wall. if so truncate the dash.
+            RaycastHit hit;
+            if (Physics.Raycast(initialPos, (targetPos - initialPos).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: (targetPos - initialPos).magnitude))
+            {
+                targetPos = initialPos + (maxDistancePos - initialPos) * (hit.distance / m_maxDashDistance);
+            }
+            
+            m_dashTargetGameObject.transform.position = targetPos;
+
+            m_dashIndicatorArrowBodyGameObject.transform.localScale = new Vector3(
+                m_dashIndicatorArrowBodyGameObject.transform.localScale.x, 
+                m_dashTargetGameObject.transform.localPosition.z - 0.25f, 
+                m_dashIndicatorArrowBodyGameObject.transform.localScale.z
+            );
+            m_dashIndicatorArrowBodyGameObject.transform.localPosition =
+                new Vector3(0, 0, (m_dashTargetGameObject.transform.localPosition.z / 2f));
+            
+            
             yield return null;
-            numLeniencyFramesCounted++;
-            if (numLeniencyFramesCounted > m_numLeniencyFramesOnDashMovementInput)
+        }    
+    }
+
+    private void OnDashButtonReleased(InputAction.CallbackContext ctx)
+    {
+        if (m_isChargingDash && m_dashChargeUpCoroutine != null)
+        {
+            StopCoroutine(m_dashChargeUpCoroutine);
+            
+            m_dashTargetGameObject.SetActive(false);
+            m_dashIndicatorArrowBodyGameObject.SetActive(false);
+            
+            Vector3 endPosition = m_dashTargetGameObject.transform.position;
+            if ((endPosition - m_feetPosition.position).magnitude > m_minDashDistance)
+            {
+                m_dashCoroutine = StartCoroutine(DashCoroutine(endPosition));
+            }
+            else
             {
                 m_isDashing = false;
-                yield break;
             }
-            dashDirection = -m_moveAction.ReadValue<Vector2>();
+            m_isChargingDash = false;
         }
-
-        Vector3 initial = transform.position;
-        Vector2 dashVector = dashDirection.normalized * m_dashDistance;
-        Vector3 final = new Vector3(initial.x + dashVector.x, initial.y, initial.z + dashVector.y);
-        
-        float finalDistance = m_dashDistance;
-        
-        //do a raycast, see if we need to stop early because we're hitting a wall.
-        RaycastHit hit;
-        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: m_dashDistance))
-        {
-            finalDistance = hit.distance;
-        }
+    }
+    
+    private IEnumerator DashCoroutine(Vector3 endPos)
+    {
+        m_isDashing = true;
+        Vector3 initialPos = transform.position;
         
         Vector3 pos;
         for (float t = 0; t < 1; t += Time.deltaTime / m_dashDuration)
@@ -117,34 +220,13 @@ public class PlayerMovementController : MonoBehaviour
             yield return new WaitForFixedUpdate();
 
             float progress = Mathf.Pow(t, 1f / 3f);
-            pos = initial + (final - initial) * progress;
-            m_rigidbody.MovePosition(pos);
-
-            if (progress * m_dashDistance >= finalDistance)
-            {
-                break;
-            }
+            pos = initialPos + (endPos - initialPos) * progress - transform.position;
+            m_characterController.Move(new Vector3(pos.x, 0, pos.z));
         }
 
         m_isDashing = false;
     }
-
     
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player") && m_isDashing)
-        {
-            PlayerMovementController otherPlayerMovement = collision.gameObject.GetComponent<PlayerMovementController>();
-
-            if (otherPlayerMovement != null)
-            {
-                Vector3 direction = collision.transform.position - transform.position;
-                direction.y = 0;
-                Vector2 dashDirection = new Vector2(direction.x, direction.z).normalized;
-                otherPlayerMovement.GetPushed(dashDirection);
-            }
-        } 
-    }
 
     private void OnTriggerStay(Collider otherCollider)
     {
@@ -155,13 +237,36 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.layer == LayerMask.NameToLayer("LooseGold"))
+        {
+            hit.rigidbody.AddForceAtPosition((hit.gameObject.transform.position - transform.position).normalized *
+                                   m_onCollideWithGoldForce * m_characterController.velocity.magnitude, transform.position, ForceMode.Impulse);
+        }
+        else if (hit.gameObject.layer == LayerMask.NameToLayer("Player") && m_isDashing)
+        {
+            PlayerMovementController otherPlayerMovement = hit.gameObject.GetComponent<PlayerMovementController>();
+
+            if (otherPlayerMovement != null)
+            {
+                Vector3 direction = hit.transform.position - transform.position;
+                direction.y = 0;
+                Vector2 dashDirection = new Vector2(direction.x, direction.z).normalized;
+                otherPlayerMovement.GetPushed(dashDirection);
+            }
+        } 
+    }
+
     public void GetPushed(Vector2 dashDirection)
     {
-        if (m_playerGoldController.m_goldCarried > 0)
+        if (m_isChargingDash)
         {
-            m_playerGoldController.SpawnLooseGold(false);
+            //if attacked while charging a dash, stop charging and get pushed.
+            StopCoroutine(m_dashChargeUpCoroutine);
+            m_isChargingDash = false;
         }
-        m_playerGoldController.DropAllGold();
         
         if (m_isDashing)
         {
@@ -174,8 +279,11 @@ public class PlayerMovementController : MonoBehaviour
         {
             StopCoroutine(m_beingPushedCoroutine);
         }
+        
         m_beingPushedCoroutine = StartCoroutine(GetPushedCoroutine(dashDirection));
         m_isBeingPushed = true;
+
+        m_onPlayerGetPushed();
     }
 
     private IEnumerator GetPushedCoroutine(Vector2 dashDirection)
@@ -199,7 +307,7 @@ public class PlayerMovementController : MonoBehaviour
 
             float progress = Mathf.Pow(t, 1f / 3f);
             pos = initial + (final - initial) * progress;
-            m_rigidbody.MovePosition(pos);
+            m_characterController.Move(pos - transform.position);
 
             if (progress * m_pushDistance >= finalDistance)
             {
@@ -208,6 +316,13 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         m_isBeingPushed = false;
+    }
+
+    public void WarpToPosition(Vector3 position)
+    {
+        m_characterController.enabled = false;
+        transform.position = position;
+        m_characterController.enabled = true;
     }
 
 

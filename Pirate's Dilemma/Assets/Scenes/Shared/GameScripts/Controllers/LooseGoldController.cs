@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,6 @@ public class LooseGoldController : MonoBehaviour
     void Start()
     {
         StartCoroutine(DespawnAfterSeconds());
-        Debug.Log($"layer on creation: {gameObject.layer}");
     }
 
     IEnumerator DespawnAfterSeconds()
@@ -19,15 +19,29 @@ public class LooseGoldController : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    private void OnTriggerEnter(Collider collider)
+    {
+        
+        if (collider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
+        {
+            //landed in drop zone, score for team. 
+            GameObject boat = collider.gameObject.GetComponent<GoldDropZoneData>().m_boat;
+            BoatGoldController boatGoldController = boat.GetComponent<BoatGoldController>();
+            if (boatGoldController.m_acceptingGold)
+            {
+                boatGoldController.AddGold(1, boat.GetComponent<BoatData>().m_teamNum);
+            }
+            Destroy(this.gameObject);
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(
-            $"collided with object: {collision.gameObject.name}, layer: {collision.gameObject.layer}. Current layer: {gameObject.layer}");
         if (collision.gameObject.layer != LayerMask.NameToLayer("Player"))
         {
+            Debug.Log($"loose gold colliding. object: {collision.gameObject.name}");
             if (m_onLooseGoldCollision.GetInvocationList().Length > 0)
             {
-                Debug.Log("stopping flight!");
                 m_onLooseGoldCollision();
             }
         }

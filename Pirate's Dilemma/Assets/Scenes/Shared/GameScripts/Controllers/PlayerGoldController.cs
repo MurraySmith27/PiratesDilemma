@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
@@ -14,8 +15,6 @@ public class PlayerGoldController : MonoBehaviour
     
     [SerializeField] public int m_goldCapacity = 3;
 
-    [SerializeField] float m_goldPrefabScaleIncreaseFactor = 1.1f;
-    
     [SerializeField] private AudioSource m_goldPickupAudioSource;
 
     [SerializeField] private GameObject m_heldGoldGameObject;
@@ -27,43 +26,48 @@ public class PlayerGoldController : MonoBehaviour
     [SerializeField] private float m_timeToGetMaxThrowRange;
 
     [SerializeField] private GameObject m_looseGoldPrefab;
+
+    [SerializeField] private float m_looseGoldPickupRadius;
     
     [SerializeField] private float m_goldThrowingAirTime;
     
     [SerializeField] private float m_goldThrowingPeakHeight;
 
     [SerializeField] private int m_trajectoryLineResolution = 10;
-    
-    private GameObject m_heldGoldInstance;
+
+    [SerializeField] private Transform m_feetPosition;
     
     private PlayerInput m_playerInput;
+    private PlayerMovementController m_playerMovementController;
     
     private InputAction m_interactAction;
     private InputAction m_throwAction;
-    private InputAction m_moveAction;
 
     private PlayerData m_playerData;
 
     private bool m_inGoldDropZone = false;
+    private GameObject m_currentGoldDropzone;
     private bool m_inGoldPickupZone = false;
 
-    private Rigidbody m_rigidbody;
-
     private Coroutine m_throwingCoroutine;
-    
+
     private bool m_throwing;
+
+    private bool m_readyToThrow;
 
     void Awake()
     {
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
     }
     
-    void OnGameStart()
+    public void OnGameStart()
     {   
         //Assigning Callbacks
         m_goldCarried = 0;
         m_playerInput = GetComponent<PlayerInput>();
         m_playerData = GetComponent<PlayerData>();
+        m_playerMovementController = GetComponent<PlayerMovementController>();
+        m_playerMovementController.m_onPlayerGetPushed += OnGetPushed;
 
         m_interactAction = m_playerInput.actions["Interact"];
         m_interactAction.performed += OnInteractButtonPressed;
@@ -71,29 +75,43 @@ public class PlayerGoldController : MonoBehaviour
         m_throwAction = m_playerInput.actions["Throw"];
         m_throwAction.performed += OnThrowButtonHeld;
         m_throwAction.canceled += OnThrowButtonReleased;
-        m_throwAction.Disable(); //starts disabled until we pick up gold.
-
-        m_moveAction = m_playerInput.actions["Move"];
+        m_readyToThrow = false;
+        if (m_throwingCoroutine != null)
+        {
+            StopCoroutine(m_throwingCoroutine);
+        }
         
         m_throwing = false;
+        m_heldGoldGameObject.SetActive(false);
 
-        m_rigidbody = GetComponent<Rigidbody>();
+        m_inGoldPickupZone = false;
+        m_inGoldDropZone = false;
+    }
+
+    public void OnGameStop()
+    {
+        m_interactAction.performed -= OnInteractButtonPressed;
+        m_throwAction.performed -= OnThrowButtonHeld;
+        m_throwAction.canceled -= OnThrowButtonReleased;
+    }
+
+    public bool IsOccupied()
+    {
+        return m_throwing;
     }
 
     private void OnInteractButtonPressed(InputAction.CallbackContext ctx)
     {
-        if (m_goldCarried < m_goldCapacity && m_inGoldPickupZone)
-        {
-            PickupGold();
-        }
-        else if (m_goldCarried < m_goldCapacity)
+        m_readyToThrow = true;
+        bool pickedUpGold = false;
+        if (m_goldCarried < m_goldCapacity)
         {
             List<GameObject> looseGoldInScene = GameObject.FindGameObjectsWithTag("LooseGold").ToList();
-            bool pickedUpGold = false;
             foreach (GameObject looseGold in looseGoldInScene)
             {
-                if ((looseGold.transform.position - transform.position).magnitude < 2f)
+                if ((looseGold.transform.position - transform.position).magnitude < m_looseGoldPickupRadius)
                 {
+                    
                     PickupGold();
                     pickedUpGold = true;
                     Destroy(looseGold);
@@ -101,10 +119,14 @@ public class PlayerGoldController : MonoBehaviour
                 }
             }
 
-            if (!pickedUpGold)
+            if (!pickedUpGold && m_inGoldDropZone)
             {
                 BoardBoat();
             }
+        }
+        if (m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpGold)
+        {
+            PickupGold();
         }
         else if (m_goldCarried != 0 && m_inGoldDropZone)
         {
@@ -114,7 +136,7 @@ public class PlayerGoldController : MonoBehaviour
 
     private void BoardBoat()
     {
-        GameObject boat = MaybeFindNearestBoat();
+        GameObject boat = m_currentGoldDropzone.GetComponent<GoldDropZoneData>().m_boat;
         if (boat != null)
         {
             BoatData boatData = boat.GetComponent<BoatData>();
@@ -130,11 +152,10 @@ public class PlayerGoldController : MonoBehaviour
     }
     private void OnThrowButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_goldCarried > 0)
+        if (m_goldCarried > 0 && !m_playerMovementController.IsOccupied() && m_readyToThrow)
         {
             m_throwing = true;
             //freeze player while charging throw
-            m_rigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
             LineRenderer trajectoryLine = GetComponent<LineRenderer>();
             trajectoryLine.enabled = true;
             m_throwingCoroutine = StartCoroutine(ExtendLandingPositionCoroutine());
@@ -156,7 +177,6 @@ public class PlayerGoldController : MonoBehaviour
 
     private void OnThrowButtonReleased(InputAction.CallbackContext ctx)
     {
-        
         if (m_throwingCoroutine != null && m_throwing)
         {
             StopCoroutine(m_throwingCoroutine);
@@ -166,6 +186,7 @@ public class PlayerGoldController : MonoBehaviour
             
             
             Vector3 targetPos = m_throwingTargetGameObject.transform.position;
+            
             GameObject looseGold = SpawnLooseGold(true);
             
             Coroutine throwGoldCoroutine = StartCoroutine(ThrowGoldCoroutine(targetPos, looseGold));
@@ -174,7 +195,7 @@ public class PlayerGoldController : MonoBehaviour
                 () =>
                 {
                     looseGold.GetComponent<Rigidbody>().isKinematic = false;
-                    StopCoroutine(throwGoldCoroutine); 
+                    StopCoroutine(throwGoldCoroutine);
                 };
             
             m_throwingTargetGameObject.SetActive(false);
@@ -182,53 +203,33 @@ public class PlayerGoldController : MonoBehaviour
             m_throwing = false;
 
             DropAllGold();
-            
-            //unlock player 
-            m_rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
         }
 
     }
 
     private IEnumerator ExtendLandingPositionCoroutine()
     {
-        m_throwingTargetGameObject.SetActive(true);
-        m_throwingTargetGameObject.transform.position = transform.position;
+        m_throwingTargetGameObject.transform.position = m_feetPosition.position;
 
         Vector3 initialPos = m_throwingTargetGameObject.transform.position;
+        
+        Vector3 maxDistancePos = initialPos + transform.forward * m_maxThrowDistance;
 
-        Vector2 moveVector = m_moveAction.ReadValue<Vector2>();
-        if (moveVector.magnitude <= 0.01f)
-        {
-            moveVector = new Vector2(1f, 0f);
-        }
-        Vector3 maxDistancePos = initialPos + new Vector3(moveVector.x, 0, moveVector.y) * m_maxThrowDistance;
-        
-        float heightDeltaWithFloor = transform.position.y;
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
-                layerMask: ~LayerMask.GetMask(new string[]{"Floor"})))
-        {
-            heightDeltaWithFloor = hit.distance;
-        }
-        
+        float heightDeltaWithFloor = transform.position.y - m_feetPosition.position.y;
         
         LineRenderer trajectoryLine = GetComponent<LineRenderer>();
 
+        CharacterController targetCharacterController = m_throwingTargetGameObject.GetComponent<CharacterController>();
         float t = 0;
         while (true)
         {
             t = Mathf.Min(t + Time.deltaTime * m_timeToGetMaxThrowRange, 1);
-            maxDistancePos = initialPos + new Vector3(moveVector.x, 0, moveVector.y) * m_maxThrowDistance;
-            
-            Vector2 newMoveVector = -m_moveAction.ReadValue<Vector2>();
-            if (newMoveVector.magnitude != 0)
-            {
-                moveVector = newMoveVector;
-            }
+            maxDistancePos = initialPos + transform.forward * m_maxThrowDistance;
+          
             trajectoryLine.positionCount = m_trajectoryLineResolution;
             
             Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
-            m_throwingTargetGameObject.transform.position = targetPos;
+            targetCharacterController.Move(targetPos - m_throwingTargetGameObject.transform.position);
 
             float currentDistance = ((maxDistancePos - initialPos) * t).magnitude;
             
@@ -245,6 +246,10 @@ public class PlayerGoldController : MonoBehaviour
             trajectoryLine.SetPositions(linePositions.ToArray());
             
             yield return null;
+            if (!m_throwingTargetGameObject.activeInHierarchy)
+            {
+                m_throwingTargetGameObject.SetActive(true);
+            }
         }
     }
 
@@ -255,14 +260,13 @@ public class PlayerGoldController : MonoBehaviour
 
         m_heldGoldGameObject.SetActive(true);
 
-        m_interactAction.Disable();
         
-        m_throwAction.Enable();
+        m_readyToThrow = false;
     }
     
     private void DropGold()
     {
-        GameObject boat = MaybeFindNearestBoat();
+        GameObject boat = m_currentGoldDropzone.GetComponent<GoldDropZoneData>().m_boat;
         
         if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
         {
@@ -273,23 +277,18 @@ public class PlayerGoldController : MonoBehaviour
 
     private IEnumerator ThrowGoldCoroutine(Vector3 finalPos, GameObject looseGold)
     {
-        Vector3 initialPos = transform.position;
+        Vector3 initialPos = m_feetPosition.position;
         
-        float initialHeight = initialPos.y;
-        RaycastHit hit;
-        float heightDeltaWithFloor = initialHeight;
-        if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), maxDistance: 0f, hitInfo: out hit,
-                layerMask: ~LayerMask.GetMask(new string[]{"Floor"})))
-        {
-            heightDeltaWithFloor = hit.distance;
-        }
+        float heightDeltaWithFloor = transform.position.y - m_feetPosition.position.y;
 
-        float distance = (new Vector3(finalPos.x, 0, finalPos.z) - new Vector3(initialPos.x, 0, initialPos.z)).magnitude;
+        float finalPosHeightDeltaWithFloor = finalPos.y - m_feetPosition.position.y;
+
+        float horizontalDistance = (new Vector3(finalPos.x, 0, finalPos.z) - new Vector3(initialPos.x, 0, initialPos.z)).magnitude;
             
         Rigidbody looseGoldRb = looseGold.GetComponent<Rigidbody>();
         looseGoldRb.isKinematic = true;
         
-        float throwGoldTime = m_goldThrowingAirTime * (distance / m_maxThrowDistance);
+        float throwGoldTime = m_goldThrowingAirTime * (horizontalDistance / m_maxThrowDistance);
         
         for (float t = 0; t < 1; t += Time.fixedDeltaTime / throwGoldTime)
         {
@@ -301,11 +300,11 @@ public class PlayerGoldController : MonoBehaviour
             float progress = Mathf.Asin(2f * t - 1f) / Mathf.PI + 0.5f;
             Vector3 newPos = initialPos + (finalPos - initialPos) * progress;
 
-            if (distance == 0)
+            if (horizontalDistance == 0)
             {
                 break;
             }
-            newPos.y = -(progress * distance - distance) * (progress*distance + (heightDeltaWithFloor / distance));
+            newPos.y = -(progress * horizontalDistance - horizontalDistance) * (progress*horizontalDistance + ((heightDeltaWithFloor - finalPosHeightDeltaWithFloor) / horizontalDistance)) + finalPosHeightDeltaWithFloor;
             
             looseGoldRb.MovePosition(newPos);
         }
@@ -318,47 +317,36 @@ public class PlayerGoldController : MonoBehaviour
         }
 
     }
-    
-    private GameObject MaybeFindNearestBoat()
+
+    private void OnGetPushed()
     {
-        GameObject nearestDropZoneBoat = null;
-        float nearestDropZoneDistance = float.MaxValue;
-        List<GameObject> allBoats = GameObject.FindGameObjectsWithTag($"Team1Boat")
-            .Concat(GameObject.FindGameObjectsWithTag($"Team2Boat")).ToList();
-        foreach (GameObject boat in allBoats)
+        if (m_throwing)
         {
-            Transform dropZoneTransform = boat.GetComponent<BoatGoldController>().m_goldDropZone.transform;
-            float distanceToDropZone = (this.transform.position - dropZoneTransform.position).magnitude;
-            if (distanceToDropZone < 10 && distanceToDropZone < nearestDropZoneDistance)
-            {
-                nearestDropZoneBoat = boat;
-                nearestDropZoneDistance = distanceToDropZone;
-            }
+            StopCoroutine(m_throwingCoroutine);
+            m_throwing = false;
         }
         
-        return nearestDropZoneBoat;
+        if (m_goldCarried > 0)
+        {
+            SpawnLooseGold(false);
+        }
+        DropAllGold();
     }
     
     public void DropAllGold()
     {
         m_heldGoldGameObject.SetActive(false);
         m_goldCarried = 0;
-        
-        m_interactAction.Enable();
-        m_throwAction.Disable();
+
+        m_throwing = false;
     }
 
     void OnTriggerEnter(Collider otherCollider)
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
         {
-            if (m_goldCarried > 0)
-            {
-                m_interactAction.Enable();
-                m_throwAction.Disable();
-            }
-
             m_inGoldDropZone = true;
+            m_currentGoldDropzone = otherCollider.gameObject;
         }
         
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
@@ -371,13 +359,8 @@ public class PlayerGoldController : MonoBehaviour
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
         {
-            if (m_goldCarried > 0)
-            {
-                m_interactAction.Disable();
-                m_throwAction.Enable();
-            }
-
             m_inGoldDropZone = false;
+            m_currentGoldDropzone = null;
         }
         
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
