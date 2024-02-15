@@ -247,6 +247,7 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (hit.gameObject.layer == LayerMask.NameToLayer("Player") && m_isDashing)
         {
+            Debug.Log("hit player!");
             PlayerMovementController otherPlayerMovement = hit.gameObject.GetComponent<PlayerMovementController>();
 
             if (otherPlayerMovement != null)
@@ -275,15 +276,13 @@ public class PlayerMovementController : MonoBehaviour
             m_isDashing = false;
         }
 
-        if (m_isBeingPushed)
+        if (!m_isBeingPushed)
         {
-            StopCoroutine(m_beingPushedCoroutine);
-        }
-        
-        m_beingPushedCoroutine = StartCoroutine(GetPushedCoroutine(dashDirection));
-        m_isBeingPushed = true;
+            m_beingPushedCoroutine = StartCoroutine(GetPushedCoroutine(dashDirection));
+            m_isBeingPushed = true;
 
-        m_onPlayerGetPushed();
+            m_onPlayerGetPushed();
+        }
     }
 
     private IEnumerator GetPushedCoroutine(Vector2 dashDirection)

@@ -371,12 +371,12 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6483d0bcc1aee0e42a05e294b2e38481,
         type: 3}
       propertyPath: m_Name
-      value: SixToes_FixedNormals_NoSolidify (1)
+      value: VisualStandIn
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 6483d0bcc1aee0e42a05e294b2e38481,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 6483d0bcc1aee0e42a05e294b2e38481,
         type: 3}
@@ -565,7 +565,7 @@ PrefabInstance:
     - target: {fileID: 158331875879287249, guid: b72a50d36c35bc349ad35366a561bbeb,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 161797337925279553, guid: b72a50d36c35bc349ad35366a561bbeb,
         type: 3}

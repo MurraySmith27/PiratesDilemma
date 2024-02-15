@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.DualShock;
 using UnityEngine.SceneManagement;
 
 public class CharacterSelectUI : UIBase
@@ -19,9 +20,11 @@ public class CharacterSelectUI : UIBase
     private List<VisualElement> m_readyUpHoverElements;
 
     [SerializeField] private List<GameObject> m_renderTextureQuads;
+    [SerializeField] private GameObject m_gameTestScreen;
     private List<UIDocument> m_docs;
 
-    [SerializeField] private Sprite m_controllerReadyUpIcon;
+    [SerializeField] private Sprite m_playstationControllerReadyUpIcon;
+    [SerializeField] private Sprite m_xboxControllerReadyUpIcon;
     [SerializeField] private Sprite m_keyboardReadyUpIcon;
 
     private List<bool> m_readyPlayers;
@@ -45,25 +48,31 @@ public class CharacterSelectUI : UIBase
         m_readyUpActions = new List<InputAction>();
         m_readyPlayers = new List<bool>();
         
+        //resize the render texture quads to fit the screen properly
+        Vector3 cameraPos = Camera.main.transform.position;
+        float quadToCameraDistance =
+            Vector3.Distance(m_renderTextureQuads[0].transform.position, cameraPos);
+        // uncomment for perspective camera:
+        // float quadHeightScale = 2f * Mathf.Tan(0.5f * Camera.main.fieldOfView * Mathf.Deg2Rad) *
+        //                         quadToCameraDistance; 
+        float quadHeightScale = Camera.main.orthographicSize * 2;
+        float quadWidthScale = quadHeightScale * Camera.main.aspect / PlayerSystem.Instance.m_maxNumPlayers;
+        
         for (int i = 0; i < PlayerSystem.Instance.m_maxNumPlayers; i++)
         {
-            //resize the render texture quads to fit the screen properly
-            Vector3 cameraPos = Camera.main.transform.position;
-            float quadToCameraDistance =
-                Vector3.Distance(m_renderTextureQuads[i].transform.position, cameraPos);
-            float quadHeightScale = 2f * Mathf.Tan(0.5f * Camera.main.fieldOfView * Mathf.Deg2Rad) *
-                                      quadToCameraDistance / 2f;
-            float quadWidthScale = quadHeightScale * Camera.main.aspect / PlayerSystem.Instance.m_maxNumPlayers;
             
-            m_renderTextureQuads[i].transform.localScale = new Vector3(quadWidthScale, quadHeightScale, 1);
+            m_renderTextureQuads[i].transform.localScale = new Vector3(quadWidthScale, quadHeightScale / 2f, 1);
             Vector3 currentPos = m_renderTextureQuads[i].transform.position;
-            m_renderTextureQuads[i].transform.position = new Vector3(quadWidthScale * ((i % 2) - 1.5f), quadHeightScale * (int)(i / 2), currentPos.z);
+            m_renderTextureQuads[i].transform.position = new Vector3(-quadWidthScale * ((i % 2) - 1.5f), currentPos.y - (2 * (int)(i/2)-1) * quadHeightScale / 4f, currentPos.z);
             
             m_docs.Add(m_renderTextureQuads[i].GetComponent<UIDocument>());
             
             m_pressToJoinElements.Add(m_docs[i].rootVisualElement);
             m_pressToJoinElements[i].Q<Label>("player-label").text = $"Player {i + 1}";
         }
+
+        m_gameTestScreen.transform.localScale = new Vector3(quadWidthScale * 2f, quadHeightScale, 1);
+        m_gameTestScreen.transform.position += new Vector3(-quadWidthScale, 0, 0);
         
         PlayerSystem.Instance.m_onPlayerJoin += OnPlayerJoin;
         PlayerSystem.Instance.m_onPlayerReadyUpToggle += UpdateReadyUpUI;
@@ -80,20 +89,21 @@ public class CharacterSelectUI : UIBase
         
         Vector3 screen = Camera.main.WorldToScreenPoint(m_renderTextureQuads[newPlayerNum - 1].transform.position);
         newReadyUpHover.style.left =
-            screen.x;// - (newReadyUpHover.Q<VisualElement>("root").layout.width / 2);
-        newReadyUpHover.style.top = (Screen.height - screen.y);// + 200;
-
-        PlayerInput input = PlayerSystem.Instance.m_playerInputObjects[newPlayerNum - 1];
+            screen.x - 75;
+        newReadyUpHover.style.top = (Screen.height - screen.y) + (Screen.height * 0.15f);
 
         PlayerSystem.Instance.SwitchToActionMapForPlayer(newPlayerNum, "CharacterSelect");
 
         InputDevice device = PlayerSystem.Instance.m_playerInputObjects[newPlayerNum - 1].devices[0];
         
-        
         Image image = new Image();
-        if (device is Gamepad)
+        if (device is DualShockGamepad)
         {
-            image.sprite = m_controllerReadyUpIcon;
+            image.sprite = m_playstationControllerReadyUpIcon;
+        }
+        else if (device is Gamepad)
+        {
+            image.sprite = m_xboxControllerReadyUpIcon;
         }
         else
         {
