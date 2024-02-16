@@ -157,11 +157,10 @@ public class PlayerMovementController : MonoBehaviour
         float t = 0;
         while (true)
         {
-            
+        
             Vector3 initialPos = m_feetPosition.position;
             Vector3 maxDistancePos = initialPos + transform.forward * m_maxDashDistance;
-
-            t = Mathf.Min(t + Time.deltaTime * m_timeToChargeToMaxDashRange, 1);
+            t = Mathf.Min(t + Time.deltaTime / m_timeToChargeToMaxDashRange, 1);
             
             Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
             

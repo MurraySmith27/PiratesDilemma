@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Scenes/Shared/UI/InGame/GenericIndicatorHover/GenericIndicatorHover.uss?fileID=7433441132597879392&amp;guid=dcb0da926b0a33947a6088fec33abf1d&amp;type=3#GenericIndicatorHover" />
     <ui:VisualElement name="root" style="flex-grow: 1;">
-        <ui:VisualElement name="generic-icon" style="flex-grow: 2;" />
-        <ui:VisualElement name="triangle" class="triangle" style="flex-grow: 1;" />
+        <ui:VisualElement name="generic-icon" style="flex-grow: 2; background-image: none; width: 100%;" />
+        <ui:VisualElement name="triangle" class="triangle" style="flex-grow: 1; background-image: url(&apos;project://database/Assets/Art/Sprites/UI/Icons/triangle_down.png?fileID=2800000&amp;guid=370460f60a0701d4daa679ab7205ea46&amp;type=3#triangle_down&apos;);" />
     </ui:VisualElement>
 </ui:UXML>

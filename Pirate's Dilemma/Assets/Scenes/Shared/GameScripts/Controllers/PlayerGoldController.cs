@@ -25,6 +25,8 @@ public class PlayerGoldController : MonoBehaviour
     
     [SerializeField] private float m_timeToGetMaxThrowRange;
 
+    [SerializeField] private float m_throwHeightDecreaseFactor = 1f;
+
     [SerializeField] private GameObject m_looseGoldPrefab;
 
     [SerializeField] private float m_looseGoldPickupRadius;
@@ -231,7 +233,7 @@ public class PlayerGoldController : MonoBehaviour
             Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
             targetCharacterController.Move(targetPos - m_throwingTargetGameObject.transform.position);
 
-            float currentDistance = ((maxDistancePos - initialPos) * t).magnitude;
+            float currentDistance = ((maxDistancePos - initialPos) * t).magnitude / m_throwHeightDecreaseFactor;
             
             List<Vector3> linePositions = new List<Vector3>();
             for (int i = 0; i < m_trajectoryLineResolution; i++)
@@ -283,7 +285,7 @@ public class PlayerGoldController : MonoBehaviour
 
         float finalPosHeightDeltaWithFloor = finalPos.y - m_feetPosition.position.y;
 
-        float horizontalDistance = (new Vector3(finalPos.x, 0, finalPos.z) - new Vector3(initialPos.x, 0, initialPos.z)).magnitude;
+        float horizontalDistance = (new Vector3(finalPos.x, 0, finalPos.z) - new Vector3(initialPos.x, 0, initialPos.z)).magnitude / m_throwHeightDecreaseFactor;
             
         Rigidbody looseGoldRb = looseGold.GetComponent<Rigidbody>();
         looseGoldRb.isKinematic = true;

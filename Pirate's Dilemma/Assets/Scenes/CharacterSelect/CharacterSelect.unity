@@ -123,6 +123,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!20 &112641124 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2990761216771767662, guid: fa837950df16ae74c966d0e174bf7d67,
+    type: 3}
+  m_PrefabInstance: {fileID: 1933291251}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &207221949
 GameObject:
   m_ObjectHideFlags: 0
@@ -434,6 +440,16 @@ MonoBehaviour:
   m_screenSpaceUIDoc: {fileID: 310474083}
   m_readyUpHover: {fileID: 9197481963319205126, guid: c53cdccbf2a72f449aed808be412b57f,
     type: 3}
+  m_playerHoverPrefabs:
+  - {fileID: 7234308871107947966, guid: 5f887912b3ddbb345b3ed945a66680aa, type: 3}
+  - {fileID: 7234308871107947966, guid: e76dad437d26cf84da3ab8d9ac6d56d7, type: 3}
+  - {fileID: 7234308871107947966, guid: 3fc106eea43a6c145ade9a82ee92794a, type: 3}
+  - {fileID: 7234308871107947966, guid: ea9c0667bc9ce344ca4f7d4ff167a134, type: 3}
+  m_playerNumberIcons:
+  - {fileID: 21300000, guid: 1b84e7364ec6e1c4d89aa17f681e74a5, type: 3}
+  - {fileID: 21300000, guid: b7531e48de0d2174f82a1b9bcae8c0f6, type: 3}
+  - {fileID: 21300000, guid: ae9f05c41eb3f0f4db3cba2dfacdb1de, type: 3}
+  - {fileID: 21300000, guid: 98b1b30edb7403043b44fcb4a45e3d22, type: 3}
   m_renderTextureQuads:
   - {fileID: 1841775409}
   - {fileID: 1011835505}
@@ -446,6 +462,7 @@ MonoBehaviour:
     type: 3}
   m_keyboardReadyUpIcon: {fileID: 21300000, guid: c1a84c25a17dc7048ad83e597fd1a8f2,
     type: 3}
+  m_testControlsCamera: {fileID: 112641124}
 --- !u!43 &379967812
 Mesh:
   m_ObjectHideFlags: 0
@@ -840,7 +857,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_gameTimerSeconds: 120
   m_characterSelectSceneName: CharacterSelect
-  m_krakenArrivalTimeRemaining: 118
+  m_krakenArrivalTimeRemaining: 60
   m_levelSceneNames:
   - 2v2Level
 --- !u!4 &1660667910
@@ -1364,12 +1381,12 @@ PrefabInstance:
     - target: {fileID: 4264240050300890443, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.0000000222575
+      value: 0.000000022257515
       objectReference: {fileID: 0}
     - target: {fileID: 4264240050300890443, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.00000001306665
+      value: 0.000000013066657
       objectReference: {fileID: 0}
     - target: {fileID: 4264240050300890443, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
@@ -1514,12 +1531,12 @@ PrefabInstance:
     - target: {fileID: 8619921798994050774, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.0000000222575
+      value: 0.000000022257515
       objectReference: {fileID: 0}
     - target: {fileID: 8619921798994050774, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.00000001306665
+      value: 0.000000013066657
       objectReference: {fileID: 0}
     - target: {fileID: 8619921798994050774, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}

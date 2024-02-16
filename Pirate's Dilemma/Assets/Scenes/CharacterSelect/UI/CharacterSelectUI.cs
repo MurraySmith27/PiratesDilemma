@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
@@ -16,6 +17,10 @@ public class CharacterSelectUI : UIBase
 
     [SerializeField] private VisualTreeAsset m_readyUpHover;
 
+    [SerializeField] private List<GameObject> m_playerHoverPrefabs;
+
+    [SerializeField] private List<Sprite> m_playerNumberIcons;
+
     private List<VisualElement> m_pressToJoinElements;
     private List<VisualElement> m_readyUpHoverElements;
 
@@ -26,6 +31,8 @@ public class CharacterSelectUI : UIBase
     [SerializeField] private Sprite m_playstationControllerReadyUpIcon;
     [SerializeField] private Sprite m_xboxControllerReadyUpIcon;
     [SerializeField] private Sprite m_keyboardReadyUpIcon;
+
+    [SerializeField] private Camera m_testControlsCamera;
 
     private List<bool> m_readyPlayers;
 
@@ -111,7 +118,36 @@ public class CharacterSelectUI : UIBase
         }
         
         newReadyUpHover.Q<VisualElement>("button-icon").Add(image);
+
+        GameObject genericIndicatorInstance = Instantiate(m_playerHoverPrefabs[newPlayerNum - 1], new Vector3(0, 0, 0),
+            Quaternion.identity);
+
+        int teamAssignment = PlayerSystem.Instance.m_playerTeamAssignments[newPlayerNum - 1];
         
+        genericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(3f, 
+            PlayerSystem.Instance.m_teamColors[teamAssignment - 1],
+            hoverIcon: m_playerNumberIcons[newPlayerNum - 1], 
+            objectToTrack: PlayerSystem.Instance.m_players[newPlayerNum - 1],
+            scaleFactor: 2f,
+            camera: m_testControlsCamera);
+
+        for (int i = 0; i < PlayerSystem.Instance.m_playersParents[newPlayerNum - 1].transform.childCount; i++)
+        {
+            Transform child = PlayerSystem.Instance.m_playersParents[newPlayerNum - 1].transform.GetChild(i);
+            if (child.gameObject.tag == "VisualStandIn")
+            {
+                GameObject visualStandInGenericIndicatorInstance = Instantiate(m_playerHoverPrefabs[newPlayerNum - 1],
+                    new Vector3(0, 0, 0),
+                    Quaternion.identity);
+
+                visualStandInGenericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(3f,
+                    PlayerSystem.Instance.m_teamColors[teamAssignment - 1],
+                    hoverIcon: m_playerNumberIcons[newPlayerNum - 1],
+                    objectToTrack: child.gameObject,
+                    camera: Camera.main);
+            }
+        }
+
         UpdateReadyUpUI(newPlayerNum, false);
     }
 
