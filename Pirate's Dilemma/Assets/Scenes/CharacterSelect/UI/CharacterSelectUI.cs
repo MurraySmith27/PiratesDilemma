@@ -97,7 +97,7 @@ public class CharacterSelectUI : UIBase
         Vector3 screen = Camera.main.WorldToScreenPoint(m_renderTextureQuads[newPlayerNum - 1].transform.position);
         newReadyUpHover.style.left =
             screen.x - 75;
-        newReadyUpHover.style.top = (Screen.height - screen.y) + (Screen.height * 0.15f);
+        newReadyUpHover.style.top = (Screen.height - screen.y);
 
         PlayerSystem.Instance.SwitchToActionMapForPlayer(newPlayerNum, "CharacterSelect");
 
