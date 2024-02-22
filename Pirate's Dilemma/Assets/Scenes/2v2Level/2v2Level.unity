@@ -1701,6 +1701,16 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1518170340}
+    - target: {fileID: 4264240050300890443, guid: 0c75bc3c573c638498ed00d47b387d22,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.000000021172571
+      objectReference: {fileID: 0}
+    - target: {fileID: 4264240050300890443, guid: 0c75bc3c573c638498ed00d47b387d22,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000000011993388
+      objectReference: {fileID: 0}
     - target: {fileID: 4282465692392426203, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
       propertyPath: m_Mesh
@@ -1746,6 +1756,16 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 238939455}
+    - target: {fileID: 5828749571533095796, guid: 0c75bc3c573c638498ed00d47b387d22,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.000000021172571
+      objectReference: {fileID: 0}
+    - target: {fileID: 5828749571533095796, guid: 0c75bc3c573c638498ed00d47b387d22,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000000011993388
+      objectReference: {fileID: 0}
     - target: {fileID: 5836620839557398406, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
       propertyPath: m_Mesh
@@ -1781,6 +1801,12 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 424080984}
+    - target: {fileID: 6615222257745872006, guid: 0c75bc3c573c638498ed00d47b387d22,
+        type: 3}
+      propertyPath: m_PanelSettings
+      value: 
+      objectReference: {fileID: 11400000, guid: b0fb44281655ddc4986ac7caba6ea893,
+        type: 2}
     - target: {fileID: 6950307759869526491, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
       propertyPath: m_Mesh
@@ -1886,21 +1912,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 539365867}
-    - target: {fileID: 8300077148336485486, guid: 0c75bc3c573c638498ed00d47b387d22,
-        type: 3}
-      propertyPath: m_VersionIndex
-      value: 1746
-      objectReference: {fileID: 0}
     - target: {fileID: 8537747395010675364, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 179205851}
-    - target: {fileID: 8537747395010675364, guid: 0c75bc3c573c638498ed00d47b387d22,
-        type: 3}
-      propertyPath: m_VersionIndex
-      value: 1746
-      objectReference: {fileID: 0}
     - target: {fileID: 8592001308806673754, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
       propertyPath: m_Mesh

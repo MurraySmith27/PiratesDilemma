@@ -157,11 +157,10 @@ public class PlayerMovementController : MonoBehaviour
         float t = 0;
         while (true)
         {
-            
+        
             Vector3 initialPos = m_feetPosition.position;
             Vector3 maxDistancePos = initialPos + transform.forward * m_maxDashDistance;
-
-            t = Mathf.Min(t + Time.deltaTime * m_timeToChargeToMaxDashRange, 1);
+            t = Mathf.Min(t + Time.deltaTime / m_timeToChargeToMaxDashRange, 1);
             
             Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
             
@@ -247,6 +246,7 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (hit.gameObject.layer == LayerMask.NameToLayer("Player") && m_isDashing)
         {
+            Debug.Log("hit player!");
             PlayerMovementController otherPlayerMovement = hit.gameObject.GetComponent<PlayerMovementController>();
 
             if (otherPlayerMovement != null)
@@ -275,15 +275,13 @@ public class PlayerMovementController : MonoBehaviour
             m_isDashing = false;
         }
 
-        if (m_isBeingPushed)
+        if (!m_isBeingPushed)
         {
-            StopCoroutine(m_beingPushedCoroutine);
-        }
-        
-        m_beingPushedCoroutine = StartCoroutine(GetPushedCoroutine(dashDirection));
-        m_isBeingPushed = true;
+            m_beingPushedCoroutine = StartCoroutine(GetPushedCoroutine(dashDirection));
+            m_isBeingPushed = true;
 
-        m_onPlayerGetPushed();
+            m_onPlayerGetPushed();
+        }
     }
 
     private IEnumerator GetPushedCoroutine(Vector2 dashDirection)

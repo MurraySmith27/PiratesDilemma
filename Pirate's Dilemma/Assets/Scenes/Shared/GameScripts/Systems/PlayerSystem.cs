@@ -290,8 +290,10 @@ public class PlayerSystem : GameSystem
             {
                 m_visualStandIns.Add(child.gameObject);
                 child.gameObject.SetActive(true);
-                child.gameObject.transform.position =
-                    GameObject.FindGameObjectWithTag($"P{playerNum}CharacterSelectSpawn").transform.position;
+                GameObject characterSelectSpawn = GameObject.FindGameObjectWithTag($"P{playerNum}CharacterSelectSpawn"); 
+                child.gameObject.transform.position = characterSelectSpawn.transform.position;
+                child.gameObject.transform.rotation = characterSelectSpawn.transform.rotation;
+                child.gameObject.transform.localScale = characterSelectSpawn.transform.localScale;
             }
         }
         
@@ -307,8 +309,6 @@ public class PlayerSystem : GameSystem
 
     void OnReadyUpButtonPressed(int playerNum)
     {
-
-        Debug.Log($"on ready up for player: {playerNum}");
         m_readyPlayers[playerNum - 1] = !m_readyPlayers[playerNum - 1];
         
         bool startGame = true;

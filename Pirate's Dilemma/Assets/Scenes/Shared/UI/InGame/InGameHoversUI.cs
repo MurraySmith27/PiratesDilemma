@@ -31,14 +31,12 @@ public class InGameHoversUI : UIBase
 
     protected override void Awake()
     {
-        Debug.Log("in game hovers awake");
         base.Awake();
     }
     
 
     protected override void SetUpUI()
     {
-        Debug.Log("setting up hovers UI");
         m_boatTimerLabelCoroutines = new List<List<Coroutine>>();
 
         m_boatElements = new List<List<VisualElement>>();
@@ -108,7 +106,17 @@ public class InGameHoversUI : UIBase
         BoatTimerController boatTimerController = boat.GetComponent<BoatTimerController>();
         int initialTimeToLive = boatData.GetComponent<BoatData>().m_timeToLive;
         m_currentBoatLabels[teamNum-1][boatNum-1] = $"{boatData.m_currentTotalGoldStored}/{boatData.m_goldCapacity}";
-        
+
+        GameObject boatModel = null;
+
+        for (int childNum = 0; childNum < boat.transform.childCount; childNum++)
+        {
+            Transform child = boat.transform.GetChild(childNum);
+            if (child.tag == "BoatModel")
+            {
+                boatModel = child.gameObject;
+            }
+        }
         
         m_boatElements[teamNum-1][boatNum-1] = m_boatUIAsset.Instantiate();
         m_root.Add(m_boatElements[teamNum-1][boatNum-1]);
@@ -120,9 +128,11 @@ public class InGameHoversUI : UIBase
 
         while (true)
         {
-            Vector3 screen = Camera.main.WorldToScreenPoint(boat.transform.position);
-            m_boatElements[teamNum - 1][boatNum - 1].style.left = screen.x;
-            m_boatElements[teamNum-1][boatNum-1].style.top = (Screen.height - screen.y) - 50;
+            Vector3 screen = Camera.main.WorldToScreenPoint(boatModel.transform.position);
+            float screenX = Screen.width * screen.x / Camera.main.pixelWidth;
+            float screenY = Screen.height * screen.y / Camera.main.pixelHeight;
+            m_boatElements[teamNum - 1][boatNum - 1].style.left = screenX;
+            m_boatElements[teamNum-1][boatNum-1].style.top = (Screen.height - screenY) - 50;
 
             // timerElement.progress = boatTimerController.m_currentTimeToLive;
 

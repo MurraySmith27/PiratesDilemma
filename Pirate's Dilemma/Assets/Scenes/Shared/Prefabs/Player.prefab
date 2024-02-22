@@ -294,12 +294,13 @@ MonoBehaviour:
   m_goldPickupAudioSource: {fileID: 4657405196688796297}
   m_heldGoldGameObject: {fileID: 108641712032740015}
   m_throwingTargetGameObject: {fileID: 8660961137410361375}
-  m_maxThrowDistance: 5
-  m_timeToGetMaxThrowRange: 2
+  m_maxThrowDistance: 7
+  m_timeToGetMaxThrowRange: 1
+  m_throwHeightDecreaseFactor: 1.4
   m_looseGoldPrefab: {fileID: 4714602978416047080, guid: ea421fdecbc4cef428b431abf643e362,
     type: 3}
   m_looseGoldPickupRadius: 3.2
-  m_goldThrowingAirTime: 2
+  m_goldThrowingAirTime: 1
   m_goldThrowingPeakHeight: 4
   m_trajectoryLineResolution: 10
   m_feetPosition: {fileID: 8814260995174423450}
@@ -318,13 +319,13 @@ MonoBehaviour:
   m_speed: 10
   m_onCollideWithGoldForce: 0.6
   m_dashTargetGameObject: {fileID: 3979000730159853127}
-  m_timeToChargeToMaxDashRange: 2
+  m_timeToChargeToMaxDashRange: 0.3
   m_minDashDistance: 1
-  m_maxDashDistance: 5
+  m_maxDashDistance: 5.5
   m_dashDuration: 0.3
   m_chargeDashMoveSpeed: 5
   m_dashIndicatorArrowBodyGameObject: {fileID: 3470228440124671188}
-  m_pushDistance: 5
+  m_pushDistance: 10
   m_pushDuration: 0.3
   m_feetPosition: {fileID: 8814260995174423450}
 --- !u!143 &499935073571530274

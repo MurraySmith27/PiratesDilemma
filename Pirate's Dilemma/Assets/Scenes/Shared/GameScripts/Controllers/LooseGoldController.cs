@@ -39,7 +39,6 @@ public class LooseGoldController : MonoBehaviour
     {
         if (collision.gameObject.layer != LayerMask.NameToLayer("Player"))
         {
-            Debug.Log($"loose gold colliding. object: {collision.gameObject.name}");
             if (m_onLooseGoldCollision.GetInvocationList().Length > 0)
             {
                 m_onLooseGoldCollision();
