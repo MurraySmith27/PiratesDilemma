@@ -131,23 +131,6 @@ public class CharacterSelectUI : UIBase
             scaleFactor: 2f,
             camera: m_testControlsCamera);
 
-        for (int i = 0; i < PlayerSystem.Instance.m_playersParents[newPlayerNum - 1].transform.childCount; i++)
-        {
-            Transform child = PlayerSystem.Instance.m_playersParents[newPlayerNum - 1].transform.GetChild(i);
-            if (child.gameObject.tag == "VisualStandIn")
-            {
-                GameObject visualStandInGenericIndicatorInstance = Instantiate(m_playerHoverPrefabs[newPlayerNum - 1],
-                    new Vector3(0, 0, 0),
-                    Quaternion.identity);
-
-                visualStandInGenericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(3f,
-                    PlayerSystem.Instance.m_teamColors[teamAssignment - 1],
-                    hoverIcon: m_playerNumberIcons[newPlayerNum - 1],
-                    objectToTrack: child.gameObject,
-                    camera: Camera.main);
-            }
-        }
-
         UpdateReadyUpUI(newPlayerNum, false);
     }
 

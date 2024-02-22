@@ -246,7 +246,6 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (hit.gameObject.layer == LayerMask.NameToLayer("Player") && m_isDashing)
         {
-            Debug.Log("hit player!");
             PlayerMovementController otherPlayerMovement = hit.gameObject.GetComponent<PlayerMovementController>();
 
             if (otherPlayerMovement != null)

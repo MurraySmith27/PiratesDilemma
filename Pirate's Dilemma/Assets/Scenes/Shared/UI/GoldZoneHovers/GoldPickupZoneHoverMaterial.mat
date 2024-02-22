@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Player1HoverMaterial
+  m_Name: GoldPickupZoneHoverMaterial
   m_Shader: {fileID: -6465566751694194690, guid: 800f640de1d6fa14c8e5881ce5bd5f90,
     type: 3}
   m_Parent: {fileID: 0}
@@ -62,7 +62,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _InputTexture:
-        m_Texture: {fileID: 8400000, guid: dddd5e5591ce0c9499051e7626f3170c, type: 2}
+        m_Texture: {fileID: 8400000, guid: 35bf6c1528037ef469650da392996c3d, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:

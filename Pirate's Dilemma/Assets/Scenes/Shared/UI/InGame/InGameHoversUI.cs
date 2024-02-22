@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using MyUILibrary;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.UI;
 using UnityEngine.UIElements;
 
 public class InGameHoversUI : UIBase
@@ -15,6 +16,14 @@ public class InGameHoversUI : UIBase
     [SerializeField] private VisualTreeAsset m_boatUIAsset;
 
     [SerializeField] private VisualTreeAsset m_playerUIAsset;
+    
+    [SerializeField] private List<GameObject> m_playerHoverPrefabs;
+    
+    [SerializeField] private List<Sprite> m_playerNumberIcons;
+
+    [SerializeField] private GameObject m_goldPickupZoneHoverPrefab;
+
+    [SerializeField] private Sprite m_goldPickupZoneHoverIcon;
     
     private List<List<VisualElement>> m_boatElements;
 
@@ -63,6 +72,19 @@ public class InGameHoversUI : UIBase
             m_playerElements.Add(null);
             m_currentPlayerLabels.Add("");
             m_deadPlayers.Add(false);
+            
+            GameObject genericIndicatorInstance = Instantiate(m_playerHoverPrefabs[i], new Vector3(0, 0, 0),
+                Quaternion.identity);
+
+            int teamAssignment = PlayerSystem.Instance.m_playerTeamAssignments[i];
+        
+            genericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(3f,
+                PlayerSystem.Instance.m_teamColors[teamAssignment - 1],
+                hoverIcon: m_playerNumberIcons[i],
+                objectToTrack: PlayerSystem.Instance.m_players[i],
+                scaleFactor: 2f,
+                camera: Camera.main,
+                timeToLive: 10f);
         }
 
         for (int teamNum = 1; teamNum <= PlayerSystem.Instance.m_numTeams; teamNum++)
@@ -78,6 +100,23 @@ public class InGameHoversUI : UIBase
                 m_boatTimerLabelCoroutines[teamNum-1].Add( StartCoroutine(UpdateBoatUI(teamNum, boatNum)));
             }
         }
+
+        foreach (GameObject goldPickupZone in GameObject.FindGameObjectsWithTag("GoldPickupZone"))
+        {
+            Debug.Log("");
+            GameObject genericIndicatorInstance = Instantiate(m_goldPickupZoneHoverPrefab, new Vector3(0, 0, 0),
+                Quaternion.identity);
+
+        
+            genericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(3f,
+                Color.white,
+                hoverIcon: m_goldPickupZoneHoverIcon,
+                objectToTrack: goldPickupZone,
+                scaleFactor: 2f,
+                camera: Camera.main
+                );
+        }
+
         StartCoroutine(UpdatePlayerUIs());
     }
 
