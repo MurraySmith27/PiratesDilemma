@@ -107,14 +107,14 @@ public class InGameHoversUI : UIBase
         int initialTimeToLive = boatData.GetComponent<BoatData>().m_timeToLive;
         m_currentBoatLabels[teamNum-1][boatNum-1] = $"{boatData.m_currentTotalGoldStored}/{boatData.m_goldCapacity}";
 
-        GameObject boatModel = null;
+        GameObject boatHoverTrackLocation = null;
 
         for (int childNum = 0; childNum < boat.transform.childCount; childNum++)
         {
             Transform child = boat.transform.GetChild(childNum);
-            if (child.tag == "BoatModel")
+            if (child.tag == "BoatHoverTrackLocation")
             {
-                boatModel = child.gameObject;
+                boatHoverTrackLocation = child.gameObject;
             }
         }
         
@@ -128,7 +128,7 @@ public class InGameHoversUI : UIBase
 
         while (true)
         {
-            Vector3 screen = Camera.main.WorldToScreenPoint(boatModel.transform.position);
+            Vector3 screen = Camera.main.WorldToScreenPoint(boatHoverTrackLocation.transform.position);
             float screenX = Screen.width * screen.x / Camera.main.pixelWidth;
             float screenY = Screen.height * screen.y / Camera.main.pixelHeight;
             m_boatElements[teamNum - 1][boatNum - 1].style.left = screenX;
