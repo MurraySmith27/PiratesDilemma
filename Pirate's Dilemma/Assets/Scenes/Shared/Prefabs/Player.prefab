@@ -206,6 +206,7 @@ Transform:
   - {fileID: 382947726927451625}
   - {fileID: 6279727065334515979}
   - {fileID: 8814260995174423450}
+  - {fileID: 8840713555309110656}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3147251643471744126
@@ -293,6 +294,8 @@ MonoBehaviour:
   m_goldCapacity: 1
   m_goldPickupAudioSource: {fileID: 4657405196688796297}
   m_heldGoldGameObject: {fileID: 108641712032740015}
+  m_heldBarrelGameObject: {fileID: 6507398230545496937, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+    type: 3}
   m_throwingTargetGameObject: {fileID: 8660961137410361375}
   m_maxThrowDistance: 7
   m_timeToGetMaxThrowRange: 1
@@ -1117,4 +1120,83 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6483d0bcc1aee0e42a05e294b2e38481,
     type: 3}
   m_PrefabInstance: {fileID: 5830242974384227612}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &9175493674777819730
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4313782162737317191}
+    m_Modifications:
+    - target: {fileID: 424852123291197394, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 424852123291197394, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 424852123291197394, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 424852123291197394, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 424852123291197394, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 424852123291197394, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 424852123291197394, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 424852123291197394, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 424852123291197394, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 424852123291197394, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6507398230545496937, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_Name
+      value: Barrel
+      objectReference: {fileID: 0}
+    - target: {fileID: 6507398230545496937, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 57058e2eb6bb7974a9bb6c780e17205a, type: 3}
+--- !u!4 &8840713555309110656 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 424852123291197394, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+    type: 3}
+  m_PrefabInstance: {fileID: 9175493674777819730}
   m_PrefabAsset: {fileID: 0}

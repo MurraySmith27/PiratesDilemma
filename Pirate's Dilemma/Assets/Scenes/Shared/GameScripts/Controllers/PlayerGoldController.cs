@@ -18,6 +18,8 @@ public class PlayerGoldController : MonoBehaviour
     [SerializeField] private AudioSource m_goldPickupAudioSource;
 
     [SerializeField] private GameObject m_heldGoldGameObject;
+    
+    [SerializeField] private GameObject m_heldBarrelGameObject;
 
     [SerializeField] private GameObject m_throwingTargetGameObject;
 
@@ -105,28 +107,59 @@ public class PlayerGoldController : MonoBehaviour
     private void OnInteractButtonPressed(InputAction.CallbackContext ctx)
     {
         m_readyToThrow = true;
-        bool pickedUpGold = false;
+        bool pickedUpItem = false;
+        
+        // List<GameObject> barrelInScene = GameObject.FindGameObjectsWithTag("Barrel").ToList();
+        // Debug.Log(barrelInScene.Count);
+        // foreach (GameObject barrel in barrelInScene)
+        // {
+        //     if ((barrel.transform.position - transform.position).magnitude < m_looseGoldPickupRadius)
+        //     {
+        //         if (!pickedUpItem)
+        //         {
+        //             
+        //         }
+        //     }
+        // }
+        
         if (m_goldCarried < m_goldCapacity)
         {
-            List<GameObject> looseGoldInScene = GameObject.FindGameObjectsWithTag("LooseGold").ToList();
-            foreach (GameObject looseGold in looseGoldInScene)
+            // List<GameObject> looseGoldInScene = GameObject.FindGameObjectsWithTag("LooseGold").ToList();
+            
+            List<GameObject> itemsInScene = GameObject.FindGameObjectsWithTag("LooseGold").ToList();
+            itemsInScene.AddRange(GameObject.FindGameObjectsWithTag("Barrel").ToList()); // Include barrels in the items list.
+
+            foreach (GameObject item in itemsInScene)
             {
-                if ((looseGold.transform.position - transform.position).magnitude < m_looseGoldPickupRadius)
+                // if ((looseGold.transform.position - transform.position).magnitude < m_looseGoldPickupRadius)
+                if ((item.transform.position - transform.position).magnitude < m_looseGoldPickupRadius)
                 {
                     
-                    PickupGold();
-                    pickedUpGold = true;
-                    Destroy(looseGold);
-                    break;
+                    if(item.CompareTag("Barrel"))
+                    {
+                        PickUpBarrel();
+                        Debug.Log("picked up barrel lol");
+                        pickedUpItem = true;
+                        Destroy(item);
+                        break;
+                    }
+                    else
+                    {
+                        PickupGold();
+                        pickedUpItem = true;
+                        Destroy(item);
+                        break;
+                    }
+
                 }
             }
 
-            if (!pickedUpGold && m_inGoldDropZone)
+            if (!pickedUpItem && m_inGoldDropZone)
             {
                 BoardBoat();
             }
         }
-        if (m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpGold)
+        if (m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpItem)
         {
             PickupGold();
         }
@@ -261,7 +294,15 @@ public class PlayerGoldController : MonoBehaviour
         m_goldCarried += 1;
 
         m_heldGoldGameObject.SetActive(true);
+        
+        m_readyToThrow = false;
+    }
+    
+    private void PickUpBarrel()
+    {
+        m_goldPickupAudioSource.Play();
 
+        m_heldBarrelGameObject.SetActive(true);
         
         m_readyToThrow = false;
     }

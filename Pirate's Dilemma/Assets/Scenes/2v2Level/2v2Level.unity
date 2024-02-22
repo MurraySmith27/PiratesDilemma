@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1802838, g: 0.22571403, b: 0.30692294, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028381, g: 0.22571406, b: 0.30692294, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1929,9 +1929,19 @@ PrefabInstance:
       objectReference: {fileID: 403822158}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7580684644525770009, guid: 0c75bc3c573c638498ed00d47b387d22,
+        type: 3}
+      insertIndex: 21
+      addedObject: {fileID: 688358743}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0c75bc3c573c638498ed00d47b387d22, type: 3}
+--- !u!4 &563104843 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7580684644525770009, guid: 0c75bc3c573c638498ed00d47b387d22,
+    type: 3}
+  m_PrefabInstance: {fileID: 563104842}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &584199660
 Mesh:
   m_ObjectHideFlags: 0
@@ -2097,6 +2107,52 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &688358742
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 688358743}
+  - component: {fileID: 688358744}
+  m_Layer: 0
+  m_Name: ItemSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &688358743
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688358742}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 563104843}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &688358744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688358742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de9a80c6fb1941cb83d3ff5349ba7c2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barrelPrefab: {fileID: 6507398230545496937, guid: 57058e2eb6bb7974a9bb6c780e17205a,
+    type: 3}
 --- !u!43 &695544119
 Mesh:
   m_ObjectHideFlags: 0
