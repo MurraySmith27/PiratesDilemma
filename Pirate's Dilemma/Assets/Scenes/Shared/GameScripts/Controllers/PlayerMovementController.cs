@@ -234,6 +234,11 @@ public class PlayerMovementController : MonoBehaviour
             //player dies.
             m_onPlayerDie(m_playerData.m_playerNum);
         }
+        else if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Crab") && !m_isDashing)
+        {
+            //player dies.
+            m_onPlayerDie(m_playerData.m_playerNum);
+        }
     }
 
 
