@@ -61,6 +61,7 @@ public class PlayerMovementController : MonoBehaviour
     private void Awake()
     {
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+        GameTimerSystem.Instance.m_onGameFinish += OnGameStop;
 
         m_playerData = GetComponent<PlayerData>();
 

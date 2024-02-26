@@ -407,20 +407,15 @@ PrefabInstance:
       propertyPath: m_boat
       value: 
       objectReference: {fileID: 8526164350813278977}
-    - target: {fileID: 3340765717700318779, guid: 93cfd41ae9d38364393375946b68f913,
+    - target: {fileID: 2754298981465215887, guid: 93cfd41ae9d38364393375946b68f913,
         type: 3}
-      propertyPath: m_boat
+      propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 8526164350813278977}
+      objectReference: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
     - target: {fileID: 3524880937760009983, guid: 93cfd41ae9d38364393375946b68f913,
         type: 3}
       propertyPath: m_Name
       value: BoatDropZone
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654540451909468714, guid: 93cfd41ae9d38364393375946b68f913,
-        type: 3}
-      propertyPath: m_VersionIndex
-      value: 1740
       objectReference: {fileID: 0}
     - target: {fileID: 6556779491352028293, guid: 93cfd41ae9d38364393375946b68f913,
         type: 3}
@@ -470,6 +465,31 @@ PrefabInstance:
     - target: {fileID: 6556779491352028293, guid: 93cfd41ae9d38364393375946b68f913,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7825151544045727541, guid: 93cfd41ae9d38364393375946b68f913,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0f0329c9a1d4be342a7a54f31db8b411, type: 2}
+    - target: {fileID: 8639610641323846042, guid: 93cfd41ae9d38364393375946b68f913,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8639610641323846042, guid: 93cfd41ae9d38364393375946b68f913,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8639610641323846042, guid: 93cfd41ae9d38364393375946b68f913,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8639610641323846042, guid: 93cfd41ae9d38364393375946b68f913,
+        type: 3}
+      propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

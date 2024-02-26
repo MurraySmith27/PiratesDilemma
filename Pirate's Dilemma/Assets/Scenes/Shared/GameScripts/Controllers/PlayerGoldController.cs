@@ -8,6 +8,10 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 
 
+public delegate void PlayerPickUpGoldEvent(int teamNum, int playerNum);
+public delegate void PlayerDropGoldEvent(int teamNum, int playerNum);
+public delegate void PlayerBoardBoatEvent(int teamNum, int playerNum, int boatNum);
+
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData))]
 public class PlayerGoldController : MonoBehaviour
 {
@@ -38,6 +42,12 @@ public class PlayerGoldController : MonoBehaviour
     [SerializeField] private int m_trajectoryLineResolution = 10;
 
     [SerializeField] private Transform m_feetPosition;
+
+    public PlayerPickUpGoldEvent m_onPlayerPickupGold;
+
+    public PlayerDropGoldEvent m_onPlayerDropGold;
+    
+    public PlayerBoardBoatEvent m_onPlayerBoardBoat;
     
     private PlayerInput m_playerInput;
     private PlayerMovementController m_playerMovementController;
@@ -60,6 +70,7 @@ public class PlayerGoldController : MonoBehaviour
     void Awake()
     {
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+        GameTimerSystem.Instance.m_onGameFinish += OnGameStop;
     }
     
     public void OnGameStart()
@@ -95,6 +106,11 @@ public class PlayerGoldController : MonoBehaviour
         m_interactAction.performed -= OnInteractButtonPressed;
         m_throwAction.performed -= OnThrowButtonHeld;
         m_throwAction.canceled -= OnThrowButtonReleased;
+        
+        if (m_throwingCoroutine != null)
+        {
+            StopCoroutine(m_throwingCoroutine);
+        }
     }
 
     public bool IsOccupied()
@@ -145,11 +161,12 @@ public class PlayerGoldController : MonoBehaviour
             if (boatData.m_numPlayersBoarded < boatData.m_playerBoardedPositions.Count && 
                 boatData.m_currentTotalGoldStored > 0 && boatData.m_teamNum == m_playerData.m_teamNum)
             {
-
                 BoatGoldController boatGoldController = boat.GetComponent<BoatGoldController>();
 
                 boatGoldController.BoardPlayerOnBoat(this.transform);
             }
+
+            m_onPlayerBoardBoat(m_playerData.m_teamNum, m_playerData.m_playerNum, boatData.m_boatNum);
         }
     }
     private void OnThrowButtonHeld(InputAction.CallbackContext ctx)
@@ -262,7 +279,11 @@ public class PlayerGoldController : MonoBehaviour
 
         m_heldGoldGameObject.SetActive(true);
 
-        
+        if (m_onPlayerPickupGold != null && m_onPlayerPickupGold.GetInvocationList().Length > 0)
+        {
+            m_onPlayerPickupGold(m_playerData.m_teamNum, m_playerData.m_playerNum);
+        }
+
         m_readyToThrow = false;
     }
     
@@ -341,6 +362,10 @@ public class PlayerGoldController : MonoBehaviour
         m_goldCarried = 0;
 
         m_throwing = false;
+        if (m_onPlayerDropGold != null && m_onPlayerDropGold.GetInvocationList().Length > 0)
+        {
+            m_onPlayerDropGold(m_playerData.m_teamNum, m_playerData.m_playerNum);
+        }
     }
 
     void OnTriggerEnter(Collider otherCollider)

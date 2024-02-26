@@ -9,6 +9,7 @@ public class InGameUI : UIBase
     
     private Label m_globalTimerLabel;
     private Label m_leaderBoardLabel;
+    private Label m_gameStartTimerLabel;
     
     private List<Label> m_teamScoreLabels;
     
@@ -24,6 +25,7 @@ public class InGameUI : UIBase
 
         m_globalTimerLabel = root.Q<Label>("global-timer");
         m_leaderBoardLabel = root.Q<Label>("score-board-title");
+        m_gameStartTimerLabel = root.Q<Label>("game-start-label");
 
         m_teamScoreLabels = new List<Label>();
 
@@ -41,11 +43,30 @@ public class InGameUI : UIBase
 
         ScoreSystem.Instance.m_onScoreUpdate += UpdateScoreUI;
 
+        GameTimerSystem.Instance.m_onStartGameTimerUpdate += OnStartGameTimerValueChange;
+
         GameTimerSystem.Instance.m_onGameTimerUpdate += OnGameTimerValueChange;
         
         GameTimerSystem.Instance.m_onGameFinish += OnGameFinish;
     }
 
+    void OnStartGameTimerValueChange(int newValueSeconds)
+    {
+        string text = $"{newValueSeconds}";
+        if (newValueSeconds == 0)
+        {
+            text = "GO!";
+        }
+        StartCoroutine(FlashTextOnScreen(text, 1f));
+    }
+
+    IEnumerator FlashTextOnScreen(string text, float timeAliveSeconds)
+    {
+        m_gameStartTimerLabel.text = text;
+        yield return new WaitForSeconds(timeAliveSeconds);
+        m_gameStartTimerLabel.text = "";
+    }
+    
     void OnGameTimerValueChange(int newValueSeconds)
     {
         // Update the UI

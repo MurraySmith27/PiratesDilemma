@@ -1,8 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement name="root" style="flex-grow: 1; align-items: auto;">
+    <ui:VisualElement name="root" style="flex-grow: 1; align-items: center; justify-content: flex-start;">
         <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="global-timer" style="align-items: stretch; align-self: center; height: auto; width: auto; font-size: 50px; color: rgb(0, 0, 0); -unity-font-style: bold; -unity-font: url(&apos;project://database/Assets/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=5ea3ea4c41b25f54698eedd367b0ae67&amp;type=3#NotInter-Regular&apos;); background-color: rgb(255, 255, 255); border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;" />
         <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="score-board" style="align-items: stretch; align-self: flex-end; height: auto; width: auto; font-size: 28px; color: rgb(220, 193, 193); -unity-text-align: upper-left; -unity-font-style: bold; flex-basis: auto; background-color: rgb(255, 255, 255); border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
             <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="score-board-title" style="color: rgb(0, 0, 0);" />
         </ui:Label>
+        <ui:Label tabindex="-1" text="0" parse-escape-sequences="true" display-tooltip-when-elided="true" name="game-start-label" style="position: relative; left: auto; top: auto; -unity-font-style: bold; font-size: 100px; color: rgb(255, 0, 0); -unity-text-align: upper-center; justify-content: flex-start; align-items: center;" />
     </ui:VisualElement>
 </ui:UXML>

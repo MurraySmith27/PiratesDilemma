@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void BoatSailEvent(int teamNum, int boatNum, List<int> goldScoredPerTeam);
 public class BoatTimerController : MonoBehaviour
 {
     public BoatSailEvent m_onBoatSail;

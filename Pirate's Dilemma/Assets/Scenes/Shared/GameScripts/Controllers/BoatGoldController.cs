@@ -6,6 +6,7 @@ using UnityEngine;
 
 
 public delegate void BoatSinkEvent(int teamNum, int boatNum);
+public delegate void BoatSailEvent(int teamNum, int boatNum, List<int> goldScoredPerTeam);
 
 public class BoatGoldController : MonoBehaviour
 {

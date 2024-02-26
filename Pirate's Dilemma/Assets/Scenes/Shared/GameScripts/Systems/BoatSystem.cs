@@ -5,7 +5,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public delegate void DeleteBoatEvent(int teamNum, int boatNum);
 public delegate void ResetBoatEvent(int teamNum, int boatNum);
 public delegate void GoldAddedToBoatEvent(int teamNum, int boatNum, int currentGold, int capacity);
 public class BoatSystem : GameSystem
@@ -17,7 +16,8 @@ public class BoatSystem : GameSystem
         get { return _instance; }
     }
 
-    public DeleteBoatEvent m_onDeleteBoat;
+    public BoatSailEvent m_onSailBoat;
+    public BoatSinkEvent m_onSinkBoat;
     public ResetBoatEvent m_onResetBoat;
     public GoldAddedToBoatEvent m_onGoldAddedToBoat;
 
@@ -143,49 +143,6 @@ public class BoatSystem : GameSystem
         GameObject goldDropZone = boat.GetComponent<BoatGoldController>().m_goldDropZone;
         goldDropZone.transform.position = m_boatGoldDropZoneInitialPositionsPerTeam[teamNum-1][boatNum-1];
     }
-
-    
-    // private void SetBoatSpawnPositions()
-    // {
-    //
-    //     for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
-    //     {
-    //         m_boatSpawnLocationsPerTeam[i] = new List<Transform>();
-    //      
-    //         foreach (GameObject spawnObjects in GameObject.FindGameObjectsWithTag($"Team{i+1}BoatSpawn"))
-    //         {
-    //             m_boatSpawnLocationsPerTeam[i].Add(spawnObjects.transform);
-    //         }
-    //     }
-    // }
-
-    //Spawn a single boat for team teamNum, in that team's "boatNum"th spawn position.
-    // public void SpawnBoat(int teamNum, int boatNum)
-    // {
-    //     
-    //     // GameObject newBoat = Instantiate(m_boatPrefabsPerTeam[teamNum-1], 
-    //     //     m_boatSpawnLocationsPerTeam[teamNum - 1][boatNum - 1].transform.position, 
-    //     //     m_boatSpawnLocationsPerTeam[teamNum - 1][boatNum - 1].transform.rotation);
-    //     // newBoat.transform.localScale = m_boatSpawnLocationsPerTeam[teamNum - 1][boatNum - 1].transform.localScale;
-    //     //
-    //     // m_boatsPerTeam[teamNum - 1][boatNum - 1] = newBoat;
-    //         
-    //     // BoatData boatData = newBoat.GetComponent<BoatData>();
-    //     // boatData.m_teamNum = teamNum;
-    //     // boatData.m_boatNum = boatNum;
-    //     // boatData.m_timeToLive = new System.Random().Next(m_boatMinTimeToLive, m_boatMaxTimeToLive);
-    //     // boatData.m_goldCapacity = m_boatCapacity;
-    //     
-    //     // BoatGoldController boatGoldController = newBoat.GetComponent<BoatGoldController>();
-    //     // boatGoldController.m_onBoatSink += OnBoatSink;
-    //     //here we inject our event callback into each instance of BoatGoldController.
-    //     boatGoldController.m_onGoldAddedToBoat = OnGoldAddedToBoat;
-    //     //the first child of the boat spawn position is the gold drop zone spawn position.
-    //     Transform goldDropZoneSpawn = m_boatSpawnLocationsPerTeam[teamNum - 1][boatNum - 1].GetChild(0).transform;
-    //     boatGoldController.m_goldDropZone.transform.position = goldDropZoneSpawn.position;
-    //     boatGoldController.m_goldDropZone.transform.localScale = goldDropZoneSpawn.localScale;
-    //     boatGoldController.m_onBoatSail += OnBoatSail;
-    // }
     
     private void OnGoldAddedToBoat(int teamNum, int boatNum, int goldTotal, int capacity)
     {
@@ -199,7 +156,7 @@ public class BoatSystem : GameSystem
     
     private IEnumerator SinkBoat(int teamNum, int boatNum)
     {
-        m_onDeleteBoat(teamNum, boatNum);
+        m_onSinkBoat(teamNum, boatNum);
 
         GameObject boat = m_boatsPerTeam[teamNum - 1][boatNum - 1];
         
@@ -246,7 +203,7 @@ public class BoatSystem : GameSystem
     
     IEnumerator SailBoat(int teamNum, int boatNum, List<int> goldScoredPerTeam)
     {
-        m_onDeleteBoat(teamNum, boatNum);
+        m_onSailBoat(teamNum, boatNum, goldScoredPerTeam);
         
         GameObject boat = m_boatsPerTeam[teamNum - 1][boatNum - 1];
         //move the gold drop zone under the level while boat is sailing.
@@ -277,7 +234,7 @@ public class BoatSystem : GameSystem
     {
         while (true)
         {
-            m_boatsPerTeam[teamNum - 1][boatNum - 1].transform.Translate(new Vector3(0, 0, 10) * Time.deltaTime);
+            m_boatsPerTeam[teamNum - 1][boatNum - 1].transform.Translate(new Vector3(-10, 0, 0) * Time.deltaTime);
             yield return null;
         }
     }
