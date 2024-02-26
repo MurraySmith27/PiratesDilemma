@@ -51,6 +51,8 @@ public class PlayerGoldController : MonoBehaviour
     
     public PlayerBoardBoatEvent m_onPlayerBoardBoat;
     
+    public PlayerBoardBoatEvent m_onPlayerGetOffBoat;
+    
     private PlayerInput m_playerInput;
     private PlayerMovementController m_playerMovementController;
 
@@ -134,16 +136,24 @@ public class PlayerGoldController : MonoBehaviour
 
     private void OnMoveActionPerformed(InputAction.CallbackContext ctx)
     {
-        Debug.Log("performed");
-        
-        if (m_isBoardedOnBoat && m_moveAction.ReadValue<Vector2>().y >= m_getOffBoatInputThreshold)
-        {
-            GetComponent<Collider>().enabled = true;
-            m_isBoardedOnBoat = false;
 
-            m_boardedBoat.GetComponent<BoatGoldController>().DismountPlayerFromBoat(this.transform);
-            m_boardedBoat = null;
+        if (m_isBoardedOnBoat)
+        {
+            Vector2 boatDismountDirection =
+                m_boardedBoat.GetComponent<BoatData>().m_boatDismountDirection.normalized;
+            if (Vector2.Dot(boatDismountDirection, m_moveAction.ReadValue<Vector2>()) > m_getOffBoatInputThreshold)
+            {
+
+                m_isBoardedOnBoat = false;
+                int boatNum = m_boardedBoat.GetComponent<BoatData>().m_boatNum;
+                m_boardedBoat.GetComponent<BoatGoldController>().DismountPlayerFromBoat(this.transform);
+                GetComponent<Collider>().enabled = true;
+                m_boardedBoat = null;
+
+                m_onPlayerGetOffBoat(m_playerData.m_teamNum, m_playerData.m_playerNum, boatNum);
+            }
         }
+    
     }
 
     private void OnInteractButtonPressed(InputAction.CallbackContext ctx)

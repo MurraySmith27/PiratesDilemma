@@ -37,6 +37,8 @@ public class InGameHoversUI : UIBase
 
     [SerializeField] private List<Sprite> m_team2BoatBoardingHoverIcons;
 
+    [SerializeField] private float m_hoverIconScaleFactor = 0.1f;
+
     private List<List<Sprite>> m_boardingHoverIconsPerTeam
     {
         get
@@ -101,7 +103,7 @@ public class InGameHoversUI : UIBase
                 PlayerSystem.Instance.m_teamColors[teamAssignment - 1],
                 hoverIcon: m_playerNumberIcons[i],
                 objectToTrack: PlayerSystem.Instance.m_players[i],
-                scaleFactor: 0.1f,
+                scaleFactor: m_hoverIconScaleFactor,
                 camera: Camera.main,
                 timeToLive: 10f);
         }
@@ -138,7 +140,7 @@ public class InGameHoversUI : UIBase
                 Color.black,
                 hoverIcon: m_goldPickupZoneHoverIcon,
                 objectToTrack: goldPickupZone,
-                scaleFactor: 0.1f,
+                scaleFactor: m_hoverIconScaleFactor,
                 camera: Camera.main
                 );
         }
@@ -147,6 +149,7 @@ public class InGameHoversUI : UIBase
         PlayerSystem.Instance.m_onPlayerPickupGold += OnGoldPickedUp;
         PlayerSystem.Instance.m_onPlayerDropGold += OnGoldDropped;
         PlayerSystem.Instance.m_onPlayerBoardBoat += OnPlayerBoardedBoat;
+        PlayerSystem.Instance.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
         
         BoatSystem.Instance.m_onSailBoat += OnSailBoat;
         BoatSystem.Instance.m_onSinkBoat += OnSinkBoat;
@@ -169,7 +172,7 @@ public class InGameHoversUI : UIBase
                         color: PlayerSystem.Instance.m_teamColors[teamNum - 1],
                         hoverIcon: m_goldDropZoneHoverIcon,
                         objectToTrack: goldDropZone,
-                        scaleFactor: 0.1f,
+                        scaleFactor: m_hoverIconScaleFactor,
                         camera: Camera.main
                     );
                     
@@ -209,13 +212,51 @@ public class InGameHoversUI : UIBase
 
     private void OnPlayerBoardedBoat(int teamNum, int playerNum, int boatNum)
     {
-        Debug.Log($"team: {teamNum}, player: {playerNum}, boat: {boatNum}");
-
         playerNum = PlayerSystem.Instance.m_playerNumToTeamPlayerNum[playerNum - 1]; 
         //remove one popup
         if (m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][playerNum - 1] != null)
         {
             Destroy(m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][playerNum - 1]);
+        }
+    }
+
+    private void OnPlayerGetOffBoat(int teamNum, int playerNum, int boatNum)
+    {
+        Debug.Log("player get off boat");
+        playerNum = PlayerSystem.Instance.m_playerNumToTeamPlayerNum[playerNum - 1];
+
+        int numGoldOnBoat = BoatSystem.Instance.m_boats[boatNum - 1].GetComponent<BoatData>().m_currentTotalGoldStored;
+
+        int numPlayersOnThisTeam = PlayerSystem.Instance.m_numPlayersPerTeam[teamNum - 1];
+
+        GameObject boatObject = BoatSystem.Instance.m_boats[boatNum - 1];
+        
+        GameObject boatModelObject = null;
+        for (int i = 0; i < boatObject.transform.childCount; i++)
+        {
+            Transform child = boatObject.transform.GetChild(i);
+            if (child.CompareTag("BoatModel"))
+            {
+                boatModelObject = child.gameObject;
+                break;
+            }
+        }
+        
+        if (m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][playerNum - 1] == null && numGoldOnBoat > 0)
+        {
+            //create a new popup.
+            GameObject newHover = Instantiate(m_boatBoardingHoverPrefabs[playerNum-1], Vector3.zero, Quaternion.identity);
+
+            newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
+                color: Color.white,
+                hoverIcon: m_boardingHoverIconsPerTeam[teamNum - 1][playerNum - 1],
+                horizontalOffset: 0.3f * (0.5f + playerNum - numPlayersOnThisTeam / 2f) * m_hoverIconScaleFactor,
+                objectToTrack: boatModelObject,
+                scaleFactor: m_hoverIconScaleFactor,
+                camera: Camera.main
+            );
+
+            m_boatBoardingHoversPerBoatPerTeam[teamNum-1][boatNum-1][playerNum-1] = newHover;
         }
     }
 
@@ -270,7 +311,7 @@ public class InGameHoversUI : UIBase
         }
         
         int numPlayersOnThisTeam = PlayerSystem.Instance.m_numPlayersPerTeam[teamNum - 1];
-        float scaleFactor = 0.1f;
+        
         //add a hover to tell players to get on the boat (if there isn't one already)
         for (int playerNum = 1; playerNum <= numPlayersOnThisTeam; playerNum++)
         {
@@ -283,9 +324,9 @@ public class InGameHoversUI : UIBase
                 newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
                     color: Color.white,
                     hoverIcon: m_boardingHoverIconsPerTeam[teamNum - 1][playerNum - 1],
-                    horizontalOffset: 0.3f * (0.5f + playerNum - numPlayersOnThisTeam / 2f) * scaleFactor,
+                    horizontalOffset: 0.3f * (0.5f + playerNum - numPlayersOnThisTeam / 2f) * m_hoverIconScaleFactor,
                     objectToTrack: boatModelObject,
-                    scaleFactor: scaleFactor,
+                    scaleFactor: m_hoverIconScaleFactor,
                     camera: Camera.main
                 );
 

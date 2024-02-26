@@ -90,6 +90,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[4]
       value: 
       objectReference: {fileID: 2100000, guid: 93647188261b84546b4afe80ca24db68, type: 2}
+    - target: {fileID: 3828140360316964538, guid: 76f82890dad807b4f850ba162fcda141,
+        type: 3}
+      propertyPath: m_boatDismountDirection.y
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 4672226536977636026, guid: 76f82890dad807b4f850ba162fcda141,
         type: 3}
       propertyPath: m_LocalRotation.w

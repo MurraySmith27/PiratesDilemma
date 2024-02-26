@@ -153,6 +153,8 @@ public class PlayerSystem : GameSystem
 
     public PlayerBoardBoatEvent m_onPlayerBoardBoat;
 
+    public PlayerBoardBoatEvent m_onPlayerGetOffBoat;
+
     public InputActionAsset m_actions;
     
     [SerializeField] private float m_startGameCountdownSeconds = 3f;
@@ -493,6 +495,11 @@ public class PlayerSystem : GameSystem
     {
         m_onPlayerBoardBoat(teamNum, playerNum, boatNum);
     }
+    
+    private void OnPlayerGetOffBoat(int teamNum, int playerNum, int boatNum)
+    {
+        m_onPlayerGetOffBoat(teamNum, playerNum, boatNum);
+    }
 
     (int, int) AddPlayer()
     {
@@ -629,6 +636,7 @@ public class PlayerSystem : GameSystem
                 playerGoldController.m_onPlayerPickupGold += OnPlayerPickUpGold;
                 playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
                 playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
+                playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
                 
                 m_visualStandIns[i].SetActive(false);
                 
