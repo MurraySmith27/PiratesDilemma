@@ -222,14 +222,14 @@ public class InGameHoversUI : UIBase
 
     private void OnPlayerGetOffBoat(int teamNum, int playerNum, int boatNum)
     {
-        Debug.Log("player get off boat");
-        playerNum = PlayerSystem.Instance.m_playerNumToTeamPlayerNum[playerNum - 1];
-
-        int numGoldOnBoat = BoatSystem.Instance.m_boats[boatNum - 1].GetComponent<BoatData>().m_currentTotalGoldStored;
+        int teamPlayerNum = PlayerSystem.Instance.m_playerNumToTeamPlayerNum[playerNum - 1];
+        int globalBoatNum = BoatSystem.Instance.m_teamBoatNumToBoatNum[teamNum-1][boatNum - 1];
+        
+        GameObject boatObject = BoatSystem.Instance.m_boats[globalBoatNum - 1];
+        int numGoldOnBoat = boatObject.GetComponent<BoatData>().m_currentTotalGoldStored;
 
         int numPlayersOnThisTeam = PlayerSystem.Instance.m_numPlayersPerTeam[teamNum - 1];
 
-        GameObject boatObject = BoatSystem.Instance.m_boats[boatNum - 1];
         
         GameObject boatModelObject = null;
         for (int i = 0; i < boatObject.transform.childCount; i++)
@@ -242,21 +242,21 @@ public class InGameHoversUI : UIBase
             }
         }
         
-        if (m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][playerNum - 1] == null && numGoldOnBoat > 0)
+        if (m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][teamPlayerNum - 1] == null && numGoldOnBoat > 0)
         {
             //create a new popup.
             GameObject newHover = Instantiate(m_boatBoardingHoverPrefabs[playerNum-1], Vector3.zero, Quaternion.identity);
 
             newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
                 color: Color.white,
-                hoverIcon: m_boardingHoverIconsPerTeam[teamNum - 1][playerNum - 1],
-                horizontalOffset: 0.3f * (0.5f + playerNum - numPlayersOnThisTeam / 2f) * m_hoverIconScaleFactor,
+                hoverIcon: m_boardingHoverIconsPerTeam[teamNum - 1][teamPlayerNum - 1],
+                horizontalOffset: 0.3f * (0.5f + teamPlayerNum - numPlayersOnThisTeam / 2f) * m_hoverIconScaleFactor,
                 objectToTrack: boatModelObject,
                 scaleFactor: m_hoverIconScaleFactor,
                 camera: Camera.main
             );
 
-            m_boatBoardingHoversPerBoatPerTeam[teamNum-1][boatNum-1][playerNum-1] = newHover;
+            m_boatBoardingHoversPerBoatPerTeam[teamNum-1][boatNum-1][teamPlayerNum-1] = newHover;
         }
     }
 
@@ -315,10 +315,9 @@ public class InGameHoversUI : UIBase
         //add a hover to tell players to get on the boat (if there isn't one already)
         for (int playerNum = 1; playerNum <= numPlayersOnThisTeam; playerNum++)
         {
-            
+            int globalPlayerNum = PlayerSystem.Instance.m_teamPlayerNumToPlayerNum[teamNum-1][playerNum-1];
             if (m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][playerNum-1] == null)
             {
-                int globalPlayerNum = PlayerSystem.Instance.m_teamPlayerNumToPlayerNum[teamNum-1][playerNum-1];
                 GameObject newHover = Instantiate(m_boatBoardingHoverPrefabs[globalPlayerNum-1], Vector3.zero, Quaternion.identity);
 
                 newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.1f,

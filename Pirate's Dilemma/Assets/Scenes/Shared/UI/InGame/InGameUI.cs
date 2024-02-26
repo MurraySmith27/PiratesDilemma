@@ -43,6 +43,8 @@ public class InGameUI : UIBase
 
         ScoreSystem.Instance.m_onScoreUpdate += UpdateScoreUI;
 
+        GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+
         GameTimerSystem.Instance.m_onStartGameTimerUpdate += OnStartGameTimerValueChange;
 
         GameTimerSystem.Instance.m_onGameTimerUpdate += OnGameTimerValueChange;
@@ -73,6 +75,11 @@ public class InGameUI : UIBase
         m_globalTimerLabel.text = $"TIME REMAINING: {newValueSeconds}";
     }
 
+    void OnGameStart()
+    {
+        Camera.main.GetComponent<AudioSource>().Play();
+    }
+    
     void OnGameFinish()
     {
         m_globalTimerLabel.text = "Time's Up!";

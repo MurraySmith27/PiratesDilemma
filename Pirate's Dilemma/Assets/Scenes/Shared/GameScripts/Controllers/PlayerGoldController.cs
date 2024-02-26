@@ -406,7 +406,8 @@ public class PlayerGoldController : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider otherCollider)
+
+    void OnTriggerStay(Collider otherCollider)
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
         {
@@ -418,8 +419,10 @@ public class PlayerGoldController : MonoBehaviour
         {
             m_inGoldPickupZone = true;
         }
-        
-        Debug.Log($"trigger enter! name: {otherCollider.name}");
+    }
+    
+    void OnTriggerEnter(Collider otherCollider)
+    {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Boat") && otherCollider.gameObject.GetComponent<BoatData>().m_currentTotalGoldStored > 0)
         {
             BoardBoat();

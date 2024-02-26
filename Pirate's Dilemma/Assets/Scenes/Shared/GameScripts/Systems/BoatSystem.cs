@@ -20,6 +20,7 @@ public class BoatSystem : GameSystem
     public BoatSinkEvent m_onSinkBoat;
     public ResetBoatEvent m_onResetBoat;
     public GoldAddedToBoatEvent m_onGoldAddedToBoat;
+    
 
     [SerializeField] private AudioSource m_boatSinkSound;
     [SerializeField] private AudioSource m_boatSailSound;
@@ -35,8 +36,55 @@ public class BoatSystem : GameSystem
         get { return m_numBoatsPerTeam.Sum(); }
     }
 
+    [HideInInspector] public List<int> m_boatTeamAssignments;
+
     [HideInInspector] public List<int> m_numBoatsPerTeam;
 
+    [HideInInspector] public List<int> m_boatNumToTeamBoatNum {
+        get
+        {
+            List<int> arr = new();
+
+            List<int> numBoatsSoFarPerTeam = new();
+            for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
+            {
+                numBoatsSoFarPerTeam.Add(0);
+            }
+            for (int i = 0; i < m_boatTeamAssignments.Count; i++)
+            {
+                arr.Add(++numBoatsSoFarPerTeam[m_boatTeamAssignments[i]-1]);
+            }
+
+            return arr;
+        }
+        private set {}
+    }
+
+    [HideInInspector]
+    public List<List<int>> m_teamBoatNumToBoatNum
+    {
+        get
+        {
+            List<List<int>> arr = new();
+
+            for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
+            {
+                List<int> teamToBoatNumForThisTeam = new();
+                int teamNum = i + 1;
+                for (int j = 0; j < m_boatTeamAssignments.Count; j++)
+                {
+                    if (m_boatTeamAssignments[j] == teamNum)
+                    {
+                        teamToBoatNumForThisTeam.Add(j+1);
+                    }
+                }
+                arr.Add(teamToBoatNumForThisTeam);
+            }
+
+            return arr;
+        }
+        private set {}
+    }
 
     public List<GameObject> m_boats
     {
@@ -74,6 +122,7 @@ public class BoatSystem : GameSystem
         m_boatInitialPositionsPerTeam = new List<List<Vector3>>();
         m_boatGoldDropZoneInitialPositionsPerTeam = new List<List<Vector3>>();
         m_boatsPerTeam = new List<List<GameObject>>();
+        m_boatTeamAssignments = new List<int>();
         
         for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
@@ -97,6 +146,8 @@ public class BoatSystem : GameSystem
                 boatGoldController.m_onBoatSink += OnBoatSink;
                 boatGoldController.m_onGoldAddedToBoat = OnGoldAddedToBoat;
                 boatGoldController.m_onBoatSail += OnBoatSail;
+                
+                m_boatTeamAssignments.Add(i+1);
                 
                 m_boatsPerTeam[i].Add(boat);
                 m_boatInitialPositionsPerTeam[i].Add(boat.transform.position);
