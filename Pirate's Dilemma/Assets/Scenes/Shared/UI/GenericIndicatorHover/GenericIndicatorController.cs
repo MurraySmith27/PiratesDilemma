@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Vector2 = UnityEngine.Vector2;
 
 public class GenericIndicatorController : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class GenericIndicatorController : MonoBehaviour
 
     public float m_timeToLive = -1f;
 
+    private float m_horizontalOffset = 0f;
+    
+    private float m_scaleFactor = 1f;
+
     private Coroutine m_hoverCoroutine;
 
     private Camera m_camera;
@@ -21,6 +26,7 @@ public class GenericIndicatorController : MonoBehaviour
 
     public void StartIndicator(float heightAboveToHover, 
         Color color,
+        float horizontalOffset = 0f,
         float scaleFactor = -1f,
         Sprite hoverIcon = null, 
         GameObject objectToTrack = null, 
@@ -49,10 +55,12 @@ public class GenericIndicatorController : MonoBehaviour
             m_camera = camera ;
         }
 
-        if (scaleFactor > 0)
+        if (scaleFactor != -1f)
         {
-            transform.localScale *= scaleFactor;
+            m_scaleFactor = scaleFactor;
         }
+
+        m_horizontalOffset = horizontalOffset; 
 
         m_color = color;
 
@@ -79,6 +87,8 @@ public class GenericIndicatorController : MonoBehaviour
         icon.style.unityBackgroundImageTintColor = new StyleColor(m_color);
         
         root.Q<VisualElement>("triangle").style.unityBackgroundImageTintColor = new StyleColor(m_color);
+
+        Vector3 originalLocalScale = transform.localScale;
         
         for (float t = 0; t < 1; t += Time.deltaTime / m_timeToLive)
         {
@@ -86,22 +96,22 @@ public class GenericIndicatorController : MonoBehaviour
             {
                 t = 0;
             }
+
+            Vector2 screenPos = m_camera.WorldToScreenPoint(m_objectToTrack.transform.position);
+
+            float zDistanceFromTrackingObject =
+                Vector3.Distance(m_objectToTrack.transform.position, m_camera.transform.position) - 15f;
+
+            Vector3 position1UnitAway = m_camera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 1f));
             
-            transform.position = m_objectToTrack.transform.position + new Vector3(0, m_heightAboveToHover, 0);
+            Vector3 screenPosModified = m_camera.WorldToScreenPoint(position1UnitAway + m_camera.transform.up * m_heightAboveToHover + m_camera.transform.right * m_horizontalOffset);
             
-            transform.LookAt(transform.position + m_camera.transform.forward, Vector3.down);
-            // if (m_camera.orthographic)
-            // {
-            //     //image is upside down, so down needs to be up
-            //     transform.LookAt(transform.position + m_camera.transform.forward, Vector3.down);
-            // }
-            // else
-            // {
-            //     //image is upside down, so down needs to be up
-            //     transform.LookAt(-m_camera.transform.position, Vector3.down);
-            // }
+            transform.position = m_camera.ScreenToWorldPoint(new Vector3(screenPosModified.x, screenPosModified.y, zDistanceFromTrackingObject));
+
+            transform.localScale = originalLocalScale * (m_scaleFactor * zDistanceFromTrackingObject);
             
-            
+            transform.LookAt(transform.position + m_camera.transform.forward, Vector3.up);
+
             yield return null;
         }
         

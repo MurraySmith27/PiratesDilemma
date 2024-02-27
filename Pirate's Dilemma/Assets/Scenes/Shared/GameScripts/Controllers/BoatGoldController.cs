@@ -6,6 +6,7 @@ using UnityEngine;
 
 
 public delegate void BoatSinkEvent(int teamNum, int boatNum);
+public delegate void BoatSailEvent(int teamNum, int boatNum, List<int> goldScoredPerTeam);
 
 public class BoatGoldController : MonoBehaviour
 {
@@ -37,15 +38,21 @@ public class BoatGoldController : MonoBehaviour
         m_boatData.m_numPlayersBoarded++;
         playerTransform.localPosition = new Vector3(0, 0, 0);
 
-        playerTransform.GetComponent<PlayerGoldController>().enabled = false;
-        playerTransform.GetComponent<PlayerMovementController>().enabled = false;
-        playerTransform.GetComponent<Collider>().enabled = false;
-
         if (m_boatData.m_numPlayersBoarded == m_boatData.m_playerBoardedPositions.Count)
         {
             m_onBoatSail(m_boatData.m_teamNum, m_boatData.m_boatNum, m_boatData.m_currentGoldStored);
             m_boatData.m_numPlayersBoarded = 0;
         }
+    }
+
+    public void DismountPlayerFromBoat(Transform playerTransform)
+    {
+        playerTransform.parent = null;
+
+        m_boatData.m_numPlayersBoarded--;
+        playerTransform.localPosition = new Vector3(0, 0, 0);
+
+        playerTransform.position = m_goldDropZone.transform.position;
     }
     
 

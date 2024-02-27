@@ -118,10 +118,14 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HorizontalMovementLowerLimit: 0
+    - _HorizontalMovementOffset: 0
+    - _HorizontalMovementUpperLimit: 0
     - _HorizontalStretchLowerLimit: 0.8
     - _HorizontalStretchOffset: 0.3
     - _HorizontalStretchUpperLimit: 1.2
     - _Metallic: 0
+    - _MovementAnimationSpeed: 0.1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
@@ -133,7 +137,12 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
+    - _StretchAnimationSpeed: 1
     - _Surface: 0
+    - _UseStretch: 0
+    - _VerticalMovementLowerLimit: -0.2
+    - _VerticalMovementOffset: 0
+    - _VerticalMovementUpperLimit: 0.2
     - _VerticalStretchLowerLimit: 0.8
     - _VerticalStretchUpperLimit: 1.2
     - _WorkflowMode: 1

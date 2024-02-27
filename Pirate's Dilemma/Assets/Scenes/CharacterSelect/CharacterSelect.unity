@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 717b3c6092a6ef9478196d78e2851006, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1802838, g: 0.22571403, b: 0.30692294, a: 1}
+  m_IndirectSpecularColor: {r: 0.20755446, g: 0.20755446, b: 0.20755446, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -855,6 +855,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0abb24f8d8452154a83decb4b870d4a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_gameStartTimerSeconds: 3
   m_gameTimerSeconds: 120
   m_characterSelectSceneName: CharacterSelect
   m_krakenArrivalTimeRemaining: 60
@@ -1288,6 +1289,11 @@ PrefabInstance:
       propertyPath: m_Lens.ModeOverride
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1713809333328761445, guid: fa837950df16ae74c966d0e174bf7d67,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3a3efd2b0ed975f41953012492d6922f, type: 2}
     - target: {fileID: 1749412273338742061, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1312,6 +1318,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2527431474571323727, guid: fa837950df16ae74c966d0e174bf7d67,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2527431474571323727, guid: fa837950df16ae74c966d0e174bf7d67,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.73
       objectReference: {fileID: 0}
     - target: {fileID: 2586068410007136108, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}

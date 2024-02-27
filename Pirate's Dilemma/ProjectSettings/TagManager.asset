@@ -28,6 +28,7 @@ TagManager:
   - P4CharacterSelectSpawn
   - VisualStandIn
   - BoatModel
+  - BoatHoverTrackLocation
   layers:
   - Default
   - TransparentFX
@@ -45,11 +46,11 @@ TagManager:
   - LooseGold
   - DestroyedDestructable
   - ThrowTarget
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Boat
+  - Team1Impassable
+  - Team2Impassable
+  - Team1Player
+  - Team2Player
   - 
   - 
   - 

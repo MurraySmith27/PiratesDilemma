@@ -61,6 +61,7 @@ public class PlayerMovementController : MonoBehaviour
     private void Awake()
     {
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+        GameTimerSystem.Instance.m_onGameFinish += OnGameStop;
 
         m_playerData = GetComponent<PlayerData>();
 
@@ -163,10 +164,11 @@ public class PlayerMovementController : MonoBehaviour
             t = Mathf.Min(t + Time.deltaTime / m_timeToChargeToMaxDashRange, 1);
             
             Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
-            
+
+            string[] impassableLayers = new string[] { "StaticObstacle", $"Team{m_playerData.m_teamNum}Impassable"};
             //need to check if the dash target is in a wall. if so truncate the dash.
             RaycastHit hit;
-            if (Physics.Raycast(initialPos, (targetPos - initialPos).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: (targetPos - initialPos).magnitude))
+            if (Physics.Raycast(initialPos, (targetPos - initialPos).normalized, out hit, layerMask: LayerMask.GetMask(impassableLayers), maxDistance: (targetPos - initialPos).magnitude))
             {
                 targetPos = initialPos + (maxDistancePos - initialPos) * (hit.distance / m_maxDashDistance);
             }
@@ -246,7 +248,6 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (hit.gameObject.layer == LayerMask.NameToLayer("Player") && m_isDashing)
         {
-            Debug.Log("hit player!");
             PlayerMovementController otherPlayerMovement = hit.gameObject.GetComponent<PlayerMovementController>();
 
             if (otherPlayerMovement != null)
@@ -291,9 +292,11 @@ public class PlayerMovementController : MonoBehaviour
         
         float finalDistance = m_pushDistance;
         
+        string[] impassableLayers = new string[] { "StaticObstacle", $"Team{m_playerData.m_teamNum}Impassable"};
+        
         //do a raycast, see if we need to stop early because we're hitting a wall.
         RaycastHit hit;
-        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: m_pushDistance))
+        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: LayerMask.GetMask(impassableLayers), maxDistance: m_pushDistance))
         {
             finalDistance = hit.distance;
         }

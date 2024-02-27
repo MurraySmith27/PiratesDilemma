@@ -32,6 +32,8 @@ public class BoatData : MonoBehaviour
     public AudioSource m_sinkAudioSource;
     // The sail away audio source.
     public AudioSource m_sailAudioSource;
+
+    public Vector2 m_boatDismountDirection = new Vector2(0, 1);
     private void Awake()
     {
         ClearGoldStored();
