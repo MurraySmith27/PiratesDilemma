@@ -11,6 +11,8 @@ using UnityEngine.InputSystem.Interactions;
 public delegate void PlayerPickUpGoldEvent(int teamNum, int playerNum);
 public delegate void PlayerDropGoldEvent(int teamNum, int playerNum);
 public delegate void PlayerBoardBoatEvent(int teamNum, int playerNum, int boatNum);
+public delegate void PlayerStartedThrowChargeEvent();
+public delegate void PlayerStartedThrowEvent();
 
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData))]
 public class PlayerGoldController : MonoBehaviour
@@ -52,6 +54,11 @@ public class PlayerGoldController : MonoBehaviour
     public PlayerBoardBoatEvent m_onPlayerBoardBoat;
     
     public PlayerBoardBoatEvent m_onPlayerGetOffBoat;
+
+    public PlayerStartedThrowChargeEvent m_onPlayerStartThrowCharge;
+    
+    public PlayerStartedThrowEvent m_onPlayerStartThrow;
+
     
     private PlayerInput m_playerInput;
     private PlayerMovementController m_playerMovementController;
@@ -75,9 +82,9 @@ public class PlayerGoldController : MonoBehaviour
     private bool m_isBoardedOnBoat;
 
     private GameObject m_boardedBoat;
+    
 
-
-    void Awake()
+    void Start()
     {
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
         GameTimerSystem.Instance.m_onGameFinish += OnGameStop;
@@ -216,6 +223,7 @@ public class PlayerGoldController : MonoBehaviour
             LineRenderer trajectoryLine = GetComponent<LineRenderer>();
             trajectoryLine.enabled = true;
             m_throwingCoroutine = StartCoroutine(ExtendLandingPositionCoroutine());
+            m_onPlayerStartThrowCharge();
         }
     }
 
@@ -247,6 +255,8 @@ public class PlayerGoldController : MonoBehaviour
             GameObject looseGold = SpawnLooseGold(true);
             
             Coroutine throwGoldCoroutine = StartCoroutine(ThrowGoldCoroutine(targetPos, looseGold));
+
+            m_onPlayerStartThrow();
 
             looseGold.GetComponent<LooseGoldController>().m_onLooseGoldCollision +=
                 () =>

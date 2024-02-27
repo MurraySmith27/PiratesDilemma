@@ -378,6 +378,7 @@ public class PlayerSystem : GameSystem
         //then start game for player scripts so we can test out movement in character select.
         m_players[playerNum - 1].GetComponent<PlayerMovementController>().OnGameStart();
         m_players[playerNum - 1].GetComponent<PlayerGoldController>().OnGameStart();
+        m_players[playerNum-1].GetComponent<PlayerAnimationController>().OnGameStart();
         
         m_readyPlayers.Add(false);
         

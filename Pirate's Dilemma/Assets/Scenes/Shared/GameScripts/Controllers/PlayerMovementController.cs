@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 
 public delegate void PlayerGetPushedEvent();
+public delegate void PlayerStartDashEvent();
+public delegate void PlayerStartDashChargeEvent();
 
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData), typeof(PlayerGoldController))]
 public class PlayerMovementController : MonoBehaviour
@@ -12,6 +14,10 @@ public class PlayerMovementController : MonoBehaviour
     public PlayerDieEvent m_onPlayerDie;
 
     public PlayerGetPushedEvent m_onPlayerGetPushed;
+    
+    public PlayerStartDashEvent m_onPlayerStartDash;
+        
+    public PlayerStartDashChargeEvent m_onPlayerStartDashCharge;
     
     [SerializeField] private float m_speed;
 
@@ -60,8 +66,6 @@ public class PlayerMovementController : MonoBehaviour
     
     private void Awake()
     {
-        GameTimerSystem.Instance.m_onGameStart += OnGameStart;
-        GameTimerSystem.Instance.m_onGameFinish += OnGameStop;
 
         m_playerData = GetComponent<PlayerData>();
 
@@ -69,6 +73,12 @@ public class PlayerMovementController : MonoBehaviour
         
         m_initialized = false;
     }
+    
+    private void Start() {
+        GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+        GameTimerSystem.Instance.m_onGameFinish += OnGameStop;
+    }
+    
     
     private void FixedUpdate()
     {
@@ -145,6 +155,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             m_isChargingDash = true;
             m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());
+            m_onPlayerStartDashCharge();
         }
     }
 
@@ -201,6 +212,7 @@ public class PlayerMovementController : MonoBehaviour
             if ((endPosition - m_feetPosition.position).magnitude > m_minDashDistance)
             {
                 m_dashCoroutine = StartCoroutine(DashCoroutine(endPosition));
+                m_onPlayerStartDash();
             }
             else
             {
@@ -241,12 +253,18 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        int otherTeamNum = 1;
+        if (m_playerData.m_teamNum == 1)
+        {
+            otherTeamNum = 2;
+        }
+        
         if (hit.gameObject.layer == LayerMask.NameToLayer("LooseGold"))
         {
             hit.rigidbody.AddForceAtPosition((hit.gameObject.transform.position - transform.position).normalized *
                                    m_onCollideWithGoldForce * m_characterController.velocity.magnitude, transform.position, ForceMode.Impulse);
         }
-        else if (hit.gameObject.layer == LayerMask.NameToLayer("Player") && m_isDashing)
+        else if (hit.gameObject.layer == LayerMask.NameToLayer($"Team{otherTeamNum}Player") && m_isDashing)
         {
             PlayerMovementController otherPlayerMovement = hit.gameObject.GetComponent<PlayerMovementController>();
 
