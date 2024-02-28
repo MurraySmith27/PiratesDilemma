@@ -13,8 +13,6 @@ public delegate void PlayerStartedThrowEvent();
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData))]
 public class PlayerGoldController : MonoBehaviour
 {
-    public int m_goldCarried;
-    
     [SerializeField] public int m_goldCapacity = 3;
 
     [SerializeField] private AudioSource m_goldPickupAudioSource;
@@ -89,11 +87,12 @@ public class PlayerGoldController : MonoBehaviour
     public void OnGameStart()
     {   
         //Assigning Callbacks
-        m_goldCarried = 0;
         m_playerInput = GetComponent<PlayerInput>();
         m_playerData = GetComponent<PlayerData>();
         m_playerMovementController = GetComponent<PlayerMovementController>();
         m_playerMovementController.m_onPlayerGetPushed += OnGetPushed;
+        
+        m_playerData.m_goldCarried = 0;
 
         m_interactAction = m_playerInput.actions["Interact"];
         m_interactAction.performed += OnInteractButtonPressed;
@@ -136,10 +135,9 @@ public class PlayerGoldController : MonoBehaviour
     {
         return m_throwing || m_isBoardedOnBoat;
     }
-
+    
     private void OnMoveActionPerformed(InputAction.CallbackContext ctx)
     {
-
         if (m_isBoardedOnBoat)
         {
             Vector2 boatDismountDirection =
@@ -147,13 +145,7 @@ public class PlayerGoldController : MonoBehaviour
             if (Vector2.Dot(boatDismountDirection, m_moveAction.ReadValue<Vector2>()) > m_getOffBoatInputThreshold)
             {
 
-                m_isBoardedOnBoat = false;
-                int boatNum = m_boardedBoat.GetComponent<BoatData>().m_boatNum;
-                m_boardedBoat.GetComponent<BoatGoldController>().DismountPlayerFromBoat(this.transform);
-                GetComponent<Collider>().enabled = true;
-                m_boardedBoat = null;
-
-                m_onPlayerGetOffBoat(m_playerData.m_teamNum, m_playerData.m_playerNum, boatNum);
+                UnboardBoat();
             }
         }
     
@@ -163,7 +155,7 @@ public class PlayerGoldController : MonoBehaviour
     {
         m_readyToThrow = true;
         bool pickedUpGold = false;
-        if (m_goldCarried < m_goldCapacity)
+        if (m_playerData.m_goldCarried < m_goldCapacity)
         {
             List<GameObject> looseGoldInScene = GameObject.FindGameObjectsWithTag("LooseGold").ToList();
             foreach (GameObject looseGold in looseGoldInScene)
@@ -178,11 +170,11 @@ public class PlayerGoldController : MonoBehaviour
                 }
             }
         }
-        if (m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpGold)
+        if (m_playerData.m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpGold)
         {
             PickupGold();
         }
-        else if (m_goldCarried != 0 && m_inGoldDropZone)
+        else if (m_playerData.m_goldCarried != 0 && m_inGoldDropZone)
         {
             DropGold();
         }
@@ -209,9 +201,21 @@ public class PlayerGoldController : MonoBehaviour
             m_onPlayerBoardBoat(m_playerData.m_teamNum, m_playerData.m_playerNum, boatData.m_boatNum);
         }
     }
+
+    public void UnboardBoat()
+    {
+        m_isBoardedOnBoat = false;
+        int boatNum = m_boardedBoat.GetComponent<BoatData>().m_boatNum;
+        m_boardedBoat.GetComponent<BoatGoldController>().DismountPlayerFromBoat(this.transform);
+        GetComponent<Collider>().enabled = true;
+        m_boardedBoat = null;
+
+        m_onPlayerGetOffBoat(m_playerData.m_teamNum, m_playerData.m_playerNum, boatNum);
+    }
+    
     private void OnThrowButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_goldCarried > 0 && !m_playerMovementController.IsOccupied() && m_readyToThrow)
+        if (m_playerData.m_goldCarried > 0 && !m_playerMovementController.IsOccupied() && m_readyToThrow)
         {
             m_throwing = true;
             //freeze player while charging throw
@@ -318,7 +322,7 @@ public class PlayerGoldController : MonoBehaviour
     private void PickupGold()
     {
         m_goldPickupAudioSource.Play();
-        m_goldCarried += 1;
+        m_playerData.m_goldCarried += 1;
 
         m_heldGoldGameObject.SetActive(true);
 
@@ -336,7 +340,7 @@ public class PlayerGoldController : MonoBehaviour
         
         if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
         {
-            boat.GetComponent<BoatGoldController>().AddGold(m_goldCarried, GetComponent<PlayerData>().m_teamNum);
+            boat.GetComponent<BoatGoldController>().AddGold(m_playerData.m_goldCarried, GetComponent<PlayerData>().m_teamNum);
             DropAllGold();
         }
     }
@@ -392,7 +396,7 @@ public class PlayerGoldController : MonoBehaviour
             m_throwing = false;
         }
         
-        if (m_goldCarried > 0)
+        if (m_playerData.m_goldCarried > 0)
         {
             SpawnLooseGold(false);
         }
@@ -402,7 +406,7 @@ public class PlayerGoldController : MonoBehaviour
     public void DropAllGold()
     {
         m_heldGoldGameObject.SetActive(false);
-        m_goldCarried = 0;
+        m_playerData.m_goldCarried = 0;
 
         m_throwing = false;
         if (m_onPlayerDropGold != null && m_onPlayerDropGold.GetInvocationList().Length > 0)

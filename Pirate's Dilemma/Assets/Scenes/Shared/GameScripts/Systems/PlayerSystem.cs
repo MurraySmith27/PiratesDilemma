@@ -227,15 +227,26 @@ public class PlayerSystem : GameSystem
         
         StartCoroutine(ThrowPlayersToSpawnPositions());
     }
+
+    public void LockPlayer(int playerNum)
+    {
+        m_players[playerNum-1].GetComponent<PlayerMovementController>().enabled = false;
+        m_players[playerNum-1].GetComponent<PlayerGoldController>().enabled = false;
+    }
+
+    public void UnlockPlayer(int playerNum)
+    {
+        m_players[playerNum-1].GetComponent<PlayerMovementController>().enabled = true;
+        m_players[playerNum-1].GetComponent<PlayerGoldController>().enabled = true;
+    }
     
     private IEnumerator ThrowPlayersToSpawnPositions()
     {
         
         //disable components of player objects briefly
-        foreach (GameObject player in m_players)
+        for (int i = 1; i <= m_numPlayers; i++)
         {
-            player.GetComponent<PlayerMovementController>().enabled = false;
-            player.GetComponent<PlayerGoldController>().enabled = false;
+            LockPlayer(i);
         }
          
         List<Vector3> initialPlayerPositions = new List<Vector3>();
@@ -276,11 +287,11 @@ public class PlayerSystem : GameSystem
         }
         
         //re-enable components of player objects briefly
-        foreach (GameObject player in m_players)
+        for (int i = 1; i <= m_numPlayers; i++)
         {
-            player.GetComponent<PlayerMovementController>().enabled = true;
-            player.GetComponent<PlayerGoldController>().enabled = true;
+            UnlockPlayer(i);
         }
+        
     }
 
 
@@ -438,11 +449,10 @@ public class PlayerSystem : GameSystem
     private IEnumerator WaitForRespawn(int playerNum)
     {
         m_isPlayerDying[playerNum - 1] = true;
-        m_players[playerNum - 1].GetComponent<PlayerMovementController>().enabled = false;
-        m_players[playerNum - 1].GetComponent<Collider>().enabled = false;
+        
         PlayerGoldController playerGoldController = m_players[playerNum - 1].GetComponent<PlayerGoldController>();
-        playerGoldController.enabled = false;
-        if (playerGoldController.m_goldCarried > 0)
+        LockPlayer(playerNum);
+        if (m_players[playerNum-1].GetComponent<PlayerData>().m_goldCarried > 0)
         {
             playerGoldController.DropAllGold();
         }
@@ -453,9 +463,7 @@ public class PlayerSystem : GameSystem
         //if still running, kill it
         StopCoroutine(deathCoroutine);
         
-        m_players[playerNum - 1].GetComponent<PlayerMovementController>().enabled = true;
-        m_players[playerNum - 1].GetComponent<PlayerGoldController>().enabled = true;
-        m_players[playerNum - 1].GetComponent<Collider>().enabled = true;
+        UnlockPlayer(playerNum);
 
         m_players[playerNum - 1].GetComponent<PlayerMovementController>().WarpToPosition(m_playerSpawnPositions[playerNum - 1].position);
 

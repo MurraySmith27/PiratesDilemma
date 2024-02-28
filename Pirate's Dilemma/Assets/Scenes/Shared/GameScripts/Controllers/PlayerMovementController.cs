@@ -151,7 +151,7 @@ public class PlayerMovementController : MonoBehaviour
     
     private void OnDashButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_initialized && !IsOccupied() && !m_playerGoldController.IsOccupied() && m_playerGoldController.m_goldCarried == 0)
+        if (m_initialized && !IsOccupied() && !m_playerGoldController.IsOccupied() && m_playerData.m_goldCarried == 0)
         {
             m_isChargingDash = true;
             m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());

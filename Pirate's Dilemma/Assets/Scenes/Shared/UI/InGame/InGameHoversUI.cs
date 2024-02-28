@@ -199,8 +199,9 @@ public class InGameHoversUI : UIBase
             bool destroyHovers = true;
             foreach (GameObject player in PlayerSystem.Instance.m_players)
             {
-                if (player.GetComponent<PlayerData>().m_teamNum == teamNum &&
-                    player.GetComponent<PlayerGoldController>().m_goldCarried != 0)
+                PlayerData playerData = player.GetComponent<PlayerData>();
+                if (playerData.m_teamNum == teamNum &&
+                    playerData.m_goldCarried != 0)
                 {
                     //dont destroy hovers
                     destroyHovers = false;
