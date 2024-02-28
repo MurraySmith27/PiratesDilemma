@@ -129,7 +129,23 @@ public class InGameHoversUI : UIBase
                 }
             }
         }
+        
+        
+        //set callback to update tutorial UI when player picks up gold
+        PlayerSystem.Instance.m_onPlayerPickupGold += OnGoldPickedUp;
+        PlayerSystem.Instance.m_onPlayerDropGold += OnGoldDropped;
+        PlayerSystem.Instance.m_onPlayerBoardBoat += OnPlayerBoardedBoat;
+        PlayerSystem.Instance.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
+        
+        BoatSystem.Instance.m_onSailBoat += OnSailBoat;
+        BoatSystem.Instance.m_onSinkBoat += OnSinkBoat;
 
+        GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+
+    }
+
+    void OnGameStart()
+    {
         foreach (GameObject goldPickupZone in GameObject.FindGameObjectsWithTag("GoldPickupZone"))
         {
             GameObject genericIndicatorInstance = Instantiate(m_goldPickupZoneHoverPrefab, Vector3.zero,
@@ -142,18 +158,10 @@ public class InGameHoversUI : UIBase
                 objectToTrack: goldPickupZone,
                 scaleFactor: m_hoverIconScaleFactor,
                 camera: Camera.main
-                );
+            );
+            
+            ClosingCircleSpawner.Instance.CreateClosingCircle(goldPickupZone, Color.white);
         }
-        
-        //set callback to update tutorial UI when player picks up gold
-        PlayerSystem.Instance.m_onPlayerPickupGold += OnGoldPickedUp;
-        PlayerSystem.Instance.m_onPlayerDropGold += OnGoldDropped;
-        PlayerSystem.Instance.m_onPlayerBoardBoat += OnPlayerBoardedBoat;
-        PlayerSystem.Instance.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
-        
-        BoatSystem.Instance.m_onSailBoat += OnSailBoat;
-        BoatSystem.Instance.m_onSinkBoat += OnSinkBoat;
-
     }
 
     void OnGoldPickedUp(int teamNum, int playerNum)
@@ -175,6 +183,8 @@ public class InGameHoversUI : UIBase
                         scaleFactor: m_hoverIconScaleFactor,
                         camera: Camera.main
                     );
+                    
+                    ClosingCircleSpawner.Instance.CreateClosingCircle(goldDropZone, Color.white);
                     
                     m_dropZoneHoversPerTeam[teamNum - 1].Add(newHover);
                 }
@@ -255,6 +265,9 @@ public class InGameHoversUI : UIBase
                 scaleFactor: m_hoverIconScaleFactor,
                 camera: Camera.main
             );
+            
+            
+            ClosingCircleSpawner.Instance.CreateClosingCircle(boatModelObject, Color.white);
 
             m_boatBoardingHoversPerBoatPerTeam[teamNum-1][boatNum-1][teamPlayerNum-1] = newHover;
         }

@@ -649,7 +649,9 @@ public class PlayerSystem : GameSystem
                 m_playerControlSchemesList[m_numPlayers].CharacterSelect.Disable();
             }
         }
-
-        KrakenController.Instance.m_onKrakenEmerge += OnKrakenEmerge;
+        
+        if (KrakenController.Instance != null) {
+            KrakenController.Instance.m_onKrakenEmerge += OnKrakenEmerge;
+        }
     }
 }

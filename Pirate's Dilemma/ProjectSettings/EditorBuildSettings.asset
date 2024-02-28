@@ -12,9 +12,12 @@ EditorBuildSettings:
     path: Assets/Scenes/CharacterSelect/CharacterSelect.unity
     guid: 7ef42d33caca1d145acb877aaeb513a0
   - enabled: 1
-    path: Assets/Scenes/Level1/Level1.unity
-    guid: a851d02360302aa4c9b8b5093cb4da8a
-  - enabled: 1
     path: Assets/Scenes/2v2Level/2v2Level.unity
     guid: 4e21656bfb8f7914ba4fbdeba33f3bc2
+  - enabled: 1
+    path: Assets/Scenes/TutorialLevel/TutorialLevel.unity
+    guid: b09bc0c2362ca51489efd0a06915d50c
+  - enabled: 0
+    path: Assets/Scenes/Level1/Level1.unity
+    guid: a851d02360302aa4c9b8b5093cb4da8a
   m_configObjects: {}

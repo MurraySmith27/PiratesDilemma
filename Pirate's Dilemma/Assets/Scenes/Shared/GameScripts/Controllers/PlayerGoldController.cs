@@ -1,12 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Interactions;
-
 
 public delegate void PlayerPickUpGoldEvent(int teamNum, int playerNum);
 public delegate void PlayerDropGoldEvent(int teamNum, int playerNum);
@@ -192,9 +188,8 @@ public class PlayerGoldController : MonoBehaviour
         }
     }
 
-    public void BoardBoat()
+    public void BoardBoat(GameObject boat)
     {
-        GameObject boat = m_currentGoldDropzone.GetComponent<GoldDropZoneData>().m_boat;
         if (boat != null)
         {
             BoatData boatData = boat.GetComponent<BoatData>();
@@ -435,7 +430,7 @@ public class PlayerGoldController : MonoBehaviour
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Boat") && otherCollider.gameObject.GetComponent<BoatData>().m_currentTotalGoldStored > 0)
         {
-            BoardBoat();
+            BoardBoat(otherCollider.gameObject);
         }
     }
     
