@@ -16,13 +16,13 @@ public class ItemSystem : GameSystem
     
     IEnumerator SpawnItemsWithDelay(int itemCount)  
     {
-        yield return new WaitForSeconds(15f);
+        yield return new WaitForSeconds(1f);
         for (int i = 0; i < itemCount; i++)
         {
             
             SpawnItemRandomizer(); 
 
-            yield return new WaitForSeconds(UnityEngine.Random.Range(40f, 50f));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(20f, 30f));
         }
     }
 

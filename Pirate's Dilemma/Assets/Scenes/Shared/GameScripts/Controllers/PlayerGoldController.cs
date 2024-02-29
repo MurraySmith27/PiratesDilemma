@@ -75,6 +75,10 @@ public class PlayerGoldController : MonoBehaviour
 
     private bool m_readyToThrow;
 
+    private bool m_barrelInHand;
+
+    private bool m_barrelInHand;
+
     private bool m_isBoardedOnBoat;
 
     private GameObject m_boardedBoat;
@@ -114,7 +118,8 @@ public class PlayerGoldController : MonoBehaviour
         
         m_throwing = false;
         m_heldGoldGameObject.SetActive(false);
-
+        m_heldBarrelGameObject.SetActive(false);
+        
         m_isBoardedOnBoat = false;
         
         m_inGoldPickupZone = false;
@@ -219,6 +224,11 @@ public class PlayerGoldController : MonoBehaviour
         else if (m_playerData.m_goldCarried != 0 && m_inGoldDropZone)
         {
             DropGold();
+        }
+        else if (m_barrelInHand && m_inGoldDropZone)
+        {
+            DropBarrel();
+            Debug.Log("fudsafsdflksjdfklj");
         }
     }
 
@@ -373,8 +383,8 @@ public class PlayerGoldController : MonoBehaviour
     
     private void PickUpBarrel()
     {
-        m_goldPickupAudioSource.Play();
-
+        // m_goldPickupAudioSource.Play();
+        m_barrelInHand = true;
         m_heldBarrelGameObject.SetActive(true);
         
         if (m_onPlayerPickupGold != null && m_onPlayerPickupGold.GetInvocationList().Length > 0)
@@ -393,6 +403,18 @@ public class PlayerGoldController : MonoBehaviour
         {
             boat.GetComponent<BoatGoldController>().AddGold(m_playerData.m_goldCarried, GetComponent<PlayerData>().m_teamNum);
             DropAllGold();
+        }
+    }
+    
+    private void DropBarrel()
+    {
+        GameObject boat = m_currentGoldDropzone.GetComponent<GoldDropZoneData>().m_boat;
+        
+        if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
+        {
+            boat.GetComponent<BoatGoldController>().AddGold(1000, GetComponent<PlayerData>().m_teamNum);
+            DropAllGold();
+            m_barrelInHand = false;
         }
     }
 
