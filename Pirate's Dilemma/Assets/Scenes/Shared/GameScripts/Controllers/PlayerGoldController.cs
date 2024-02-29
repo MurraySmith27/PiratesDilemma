@@ -175,13 +175,13 @@ public class PlayerGoldController : MonoBehaviour
         // }
         
         // if (m_goldCarried < m_goldCapacity)
-        bool pickedUpGold = false;
+        // bool pickedUpGold = false;
         if (m_playerData.m_goldCarried < m_goldCapacity)
         {
             // List<GameObject> looseGoldInScene = GameObject.FindGameObjectsWithTag("LooseGold").ToList();
             
             List<GameObject> itemsInScene = GameObject.FindGameObjectsWithTag("LooseGold").ToList();
-            itemsInScene.AddRange(GameObject.FindGameObjectsWithTag("Barrel").ToList()); // Include barrels in the items list.
+            itemsInScene.AddRange(GameObject.FindGameObjectsWithTag("Barrel").ToList()); // Include barrels in the items list
 
             foreach (GameObject item in itemsInScene)
             {
@@ -189,7 +189,7 @@ public class PlayerGoldController : MonoBehaviour
                 if ((item.transform.position - transform.position).magnitude < m_looseGoldPickupRadius)
                 {
                     
-                    if(item.CompareTag("Barrel"))
+                    if(item.CompareTag("Barrel") && m_playerData.m_goldCarried == 0)
                     {
                         PickUpBarrel();
                         Debug.Log("picked up barrel lol");
@@ -208,14 +208,14 @@ public class PlayerGoldController : MonoBehaviour
                 }
             }
 
-            if (!pickedUpItem && m_inGoldDropZone)
-            {
-                // BoardBoat();
-            }
+            // if (!pickedUpItem && m_inGoldDropZone)
+            // {
+            //     BoardBoat();
+            // }
         }
         // if (m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpItem)
         
-        if (m_playerData.m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpGold)
+        if (m_playerData.m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpItem)
         {
             PickupGold();
         }
@@ -384,11 +384,11 @@ public class PlayerGoldController : MonoBehaviour
         // m_goldPickupAudioSource.Play();
         m_barrelInHand = true;
         m_heldBarrelGameObject.SetActive(true);
-        
-        if (m_onPlayerPickupGold != null && m_onPlayerPickupGold.GetInvocationList().Length > 0)
-        {
-            m_onPlayerPickupGold(m_playerData.m_teamNum, m_playerData.m_playerNum);
-        }
+        //
+        // if (m_onPlayerPickupGold != null && m_onPlayerPickupGold.GetInvocationList().Length > 0)
+        // {
+        //     m_onPlayerPickupGold(m_playerData.m_teamNum, m_playerData.m_playerNum);
+        // }
 
         m_readyToThrow = false;
     }
@@ -410,7 +410,7 @@ public class PlayerGoldController : MonoBehaviour
         
         if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
         {
-            boat.GetComponent<BoatGoldController>().AddGold(1000, GetComponent<PlayerData>().m_teamNum);
+            boat.GetComponent<BoatGoldController>().AddGold(1000, GetComponent<PlayerData>().m_teamNum); // sinks with a lot of gold
             DropAllGold();
             m_barrelInHand = false;
         }

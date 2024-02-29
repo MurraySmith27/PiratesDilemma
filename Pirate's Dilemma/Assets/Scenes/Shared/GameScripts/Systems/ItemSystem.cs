@@ -11,7 +11,7 @@ public class ItemSystem : GameSystem
     
     void Start()
     {
-        StartCoroutine(SpawnItemsWithDelay(3));
+        StartCoroutine(SpawnItemsWithDelay(1));
     }
     
     IEnumerator SpawnItemsWithDelay(int itemCount)  
