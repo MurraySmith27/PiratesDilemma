@@ -33,7 +33,7 @@ public class InGameUI : UIBase
         {
             m_teamScoreLabels.Add(m_scoreElementAsset.Instantiate().Q<Label>("score-label"));
             root.Q<VisualElement>("score-board").Add(m_teamScoreLabels[i]);
-            m_teamScoreLabels[i].text = $"P{i}: 0";
+            m_teamScoreLabels[i].text = $"Team {i+1}: 0";
             m_teamScoreLabels[i].style.backgroundColor = PlayerSystem.Instance.m_teamColors[i];
         }
         
@@ -73,6 +73,7 @@ public class InGameUI : UIBase
     {
         int numMinutes = (int)Mathf.Floor(newValueSeconds / 60f);
         
+        Debug.Log("timer update");
         // Update the UI
         m_globalTimerLabel.text = $"{numMinutes}:{newValueSeconds % 60}";
     }

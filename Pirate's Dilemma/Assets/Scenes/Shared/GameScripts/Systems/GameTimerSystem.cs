@@ -105,6 +105,7 @@ public class GameTimerSystem : GameSystem
             m_onGameStart();
         }
         
+        Debug.Log("start game countdown complete!");
         StartCoroutine(GlobalCountdown(GameTimerSystem.Instance.m_gameTimerSeconds));
     }
     

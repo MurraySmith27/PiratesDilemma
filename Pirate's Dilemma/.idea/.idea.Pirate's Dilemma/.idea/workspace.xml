@@ -5,21 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2fa9daa2-90f4-44c3-9351-b9e137dd4c15" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/AnimationStarter.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/AnimationStarter.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Art/Models/Characters/SixtoesIdleAnimationSwingy.fbx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Art/Models/Characters/SixtoesIdleAnimationSwingy.fbx.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Raw_Assets/Sixtoes/SixtoesIdleAnimationSwingy.blend1" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level_Map.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/2v2Level/2v2Level_Map.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatGoldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatGoldController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerMovementController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerMovementController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Player.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team1Player1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team1Player1.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team1Player2.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team1Player2.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team2Player1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team2Player1.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team2Player2.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Team2Player2.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Raw_Assets/Sixtoes/SixtoesIdleAnimationSwingy.blend" beforeDir="false" afterPath="$PROJECT_DIR$/../Raw_Assets/Sixtoes/SixtoesIdleAnimationSwingy.blend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/PlayerControlSchemes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/PlayerControlSchemes.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/BoatSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/BoatSystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/GameTimerSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/GameTimerSystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/PlayerControlSchemes.inputactions" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/PlayerControlSchemes.inputactions" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/BoatBoardingHovers/Team1BoatBoardingHover2Material.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/BoatBoardingHovers/Team1BoatBoardingHover2Material.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameHoversUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameHoversUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/TutorialLevel/TutorialLevel.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/TutorialLevel/TutorialLevel.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.probuilder/Settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.probuilder/Settings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +61,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.63188976&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;visual-updates&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -143,6 +144,10 @@
       <workItem from="1708869164921" duration="20667000" />
       <workItem from="1708976659024" duration="5906000" />
       <workItem from="1709042888143" duration="6609000" />
+      <workItem from="1709218227665" duration="31000" />
+      <workItem from="1709234129058" duration="3159000" />
+      <workItem from="1709238999084" duration="1075000" />
+      <workItem from="1709241442966" duration="4615000" />
     </task>
     <servers />
   </component>

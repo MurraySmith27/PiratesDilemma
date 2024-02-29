@@ -191,6 +191,9 @@ public class BoatSystem : GameSystem
             boat.transform.position = m_boatInitialPositionsPerTeam[teamNum-1][boatNum-1];
         }
         
+        
+        m_boatsPerTeam[teamNum - 1][boatNum - 1].GetComponent<Collider>().enabled = true;
+        
         //unlock each player on the boat
         foreach (Transform boardedPosition in m_boatsPerTeam[teamNum - 1][boatNum - 1].GetComponent<BoatData>()
                      .m_playerBoardedPositions)
@@ -198,8 +201,9 @@ public class BoatSystem : GameSystem
             if (boardedPosition.childCount > 0)
             {
                 GameObject player = boardedPosition.GetChild(0).gameObject;
-                PlayerSystem.Instance.UnlockPlayer(player.GetComponent<PlayerData>().m_playerNum);
-                player.GetComponent<PlayerGoldController>().UnboardBoat();
+                int playerNum = player.GetComponent<PlayerData>().m_playerNum;
+                PlayerSystem.Instance.UnlockPlayer(playerNum);
+                player.GetComponent<PlayerGoldController>().UnboardBoat(PlayerSystem.Instance.m_playersParents[playerNum - 1], m_boatGoldDropZoneInitialPositionsPerTeam[teamNum-1][boatNum-1]);
             }
         }
 
@@ -267,7 +271,8 @@ public class BoatSystem : GameSystem
     IEnumerator SailBoat(int teamNum, int boatNum, List<int> goldScoredPerTeam)
     {
         m_onSailBoat(teamNum, boatNum, goldScoredPerTeam);
-        
+
+        m_boatsPerTeam[teamNum - 1][boatNum - 1].GetComponent<Collider>().enabled = false;
         
         GameObject boat = m_boatsPerTeam[teamNum - 1][boatNum - 1];
 

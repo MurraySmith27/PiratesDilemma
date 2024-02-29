@@ -521,6 +521,17 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1216595977}
+    - target: {fileID: 4002154057946677332, guid: 0c75bc3c573c638498ed00d47b387d22,
+        type: 3}
+      propertyPath: m_goldInteractButtonIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: 90b0d6963c1193142bd595a2ab26ceea,
+        type: 3}
+    - target: {fileID: 4002154057946677332, guid: 0c75bc3c573c638498ed00d47b387d22,
+        type: 3}
+      propertyPath: m_goldInteractHoverPrefabsPerPlayer.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 4028445646425238938, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
       propertyPath: m_Mesh
@@ -529,12 +540,12 @@ PrefabInstance:
     - target: {fileID: 4264240050300890443, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.000000022317325
+      value: -0.000000022317327
       objectReference: {fileID: 0}
     - target: {fileID: 4264240050300890443, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.00000001296421
+      value: -0.000000012964212
       objectReference: {fileID: 0}
     - target: {fileID: 4806163459494047329, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
@@ -574,12 +585,12 @@ PrefabInstance:
     - target: {fileID: 5828749571533095796, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.000000022317325
+      value: -0.000000022317327
       objectReference: {fileID: 0}
     - target: {fileID: 5828749571533095796, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.00000001296421
+      value: -0.000000012964212
       objectReference: {fileID: 0}
     - target: {fileID: 5836620839557398406, guid: 0c75bc3c573c638498ed00d47b387d22,
         type: 3}
@@ -721,31 +732,6 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 659483953}
-    - target: {fileID: 9001304167591846165, guid: 0c75bc3c573c638498ed00d47b387d22,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 12.71
-      objectReference: {fileID: 0}
-    - target: {fileID: 9001304167591846165, guid: 0c75bc3c573c638498ed00d47b387d22,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.0249064
-      objectReference: {fileID: 0}
-    - target: {fileID: 9001304167591846165, guid: 0c75bc3c573c638498ed00d47b387d22,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 12.71
-      objectReference: {fileID: 0}
-    - target: {fileID: 9001304167591846165, guid: 0c75bc3c573c638498ed00d47b387d22,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.49
-      objectReference: {fileID: 0}
-    - target: {fileID: 9001304167591846165, guid: 0c75bc3c573c638498ed00d47b387d22,
-        type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
