@@ -77,8 +77,6 @@ public class PlayerGoldController : MonoBehaviour
 
     private bool m_barrelInHand;
 
-    private bool m_barrelInHand;
-
     private bool m_isBoardedOnBoat;
 
     private GameObject m_boardedBoat;
