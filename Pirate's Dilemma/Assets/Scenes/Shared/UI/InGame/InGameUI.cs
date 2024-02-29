@@ -9,6 +9,7 @@ public class InGameUI : UIBase
     
     private Label m_globalTimerLabel;
     private Label m_leaderBoardLabel;
+    private Label m_gameStartTimerLabel;
     
     private List<Label> m_teamScoreLabels;
     
@@ -20,10 +21,11 @@ public class InGameUI : UIBase
     
     protected override void SetUpUI()
     {
-        VisualElement root = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("root");
+        VisualElement root = GetComponent<UIDocument>().rootVisualElement;
 
         m_globalTimerLabel = root.Q<Label>("global-timer");
         m_leaderBoardLabel = root.Q<Label>("score-board-title");
+        m_gameStartTimerLabel = root.Q<Label>("game-start-label");
 
         m_teamScoreLabels = new List<Label>();
 
@@ -41,27 +43,55 @@ public class InGameUI : UIBase
 
         ScoreSystem.Instance.m_onScoreUpdate += UpdateScoreUI;
 
+        GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+
+        GameTimerSystem.Instance.m_onStartGameTimerUpdate += OnStartGameTimerValueChange;
+
         GameTimerSystem.Instance.m_onGameTimerUpdate += OnGameTimerValueChange;
         
         GameTimerSystem.Instance.m_onGameFinish += OnGameFinish;
     }
 
-    void OnGameTimerValueChange(int newValueSeconds)
+    void OnStartGameTimerValueChange(int newValueSeconds)
     {
-        // Update the UI
-        m_globalTimerLabel.text = $"TIME REMAINING: {newValueSeconds}";
+        string text = $"{newValueSeconds}";
+        if (newValueSeconds == 0)
+        {
+            text = "GO!";
+        }
+        StartCoroutine(FlashTextOnScreen(text, 1f));
     }
 
+    IEnumerator FlashTextOnScreen(string text, float timeAliveSeconds)
+    {
+        m_gameStartTimerLabel.text = text;
+        yield return new WaitForSeconds(timeAliveSeconds);
+        m_gameStartTimerLabel.text = "";
+    }
+    
+    void OnGameTimerValueChange(int newValueSeconds)
+    {
+        int numMinutes = (int)Mathf.Floor(newValueSeconds / 60f);
+        
+        // Update the UI
+        m_globalTimerLabel.text = $"{numMinutes}:{newValueSeconds % 60}";
+    }
+
+    void OnGameStart()
+    {
+        Camera.main.GetComponent<AudioSource>().Play();
+    }
+    
     void OnGameFinish()
     {
-        m_globalTimerLabel.text = "Time's Up!";
+        m_gameStartTimerLabel.text = "Time's Up!";
     }
 
     void UpdateScoreUI(List<int> newScores)
     {
         for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
-            m_teamScoreLabels[i].text = $"P{i}: {newScores[i]}";
+            m_teamScoreLabels[i].text = $"Team {i+1}: {newScores[i]}";
         }
     }
     

@@ -35,6 +35,76 @@ public class PlayerSystem : GameSystem
 
     [HideInInspector] public int m_numPlayers = 0;
 
+    [HideInInspector]
+    public List<int> m_numPlayersPerTeam
+    {
+        get
+        {
+            List<int> arr = new();
+
+            for (int i = 0; i < m_numTeams; i++)
+            {
+                arr.Add(0);
+            }
+
+            foreach (int assignment in m_playerTeamAssignments)
+            {
+                arr[assignment - 1]++;
+            }
+
+            return arr;
+        }
+        private set { }
+    }
+    
+    //maps the player number to the player number within that team
+    public List<int> m_playerNumToTeamPlayerNum
+    {
+        get
+        {
+            List<int> arr = new();
+
+            List<int> numPlayersSoFarPerTeam = new();
+            for (int i = 0; i < m_numTeams; i++)
+            {
+                numPlayersSoFarPerTeam.Add(0);
+            }
+            for (int i = 0; i < m_playerTeamAssignments.Count; i++)
+            {
+                arr.Add(++numPlayersSoFarPerTeam[m_playerTeamAssignments[i]-1]);
+            }
+
+            return arr;
+        }
+        private set {}
+    }
+    
+    //maps the team-specific player num to the global player num, for each team
+    public List<List<int>> m_teamPlayerNumToPlayerNum
+    {
+        get
+        {
+            List<List<int>> arr = new();
+
+            for (int i = 0; i < m_numTeams; i++)
+            {
+                List<int> teamToPlayerNumForThisTeam = new();
+                int teamNum = i + 1;
+                for (int j = 0; j < m_playerTeamAssignments.Count; j++)
+                {
+                    if (m_playerTeamAssignments[j] == teamNum)
+                    {
+                        teamToPlayerNumForThisTeam.Add(j+1);
+                    }
+                }
+                arr.Add(teamToPlayerNumForThisTeam);
+            }
+
+            return arr;
+        }
+        private set {}
+    }
+
     [SerializeField] private float m_deathAnimationDistance = 5f;
 
     [SerializeField] private float m_deathAnimationDuration = 2f;
@@ -76,6 +146,14 @@ public class PlayerSystem : GameSystem
     public PlayerJoinEvent m_onPlayerJoin;
 
     public PlayerReadyUpToggleEvent m_onPlayerReadyUpToggle;
+
+    public PlayerPickUpGoldEvent m_onPlayerPickupGold;
+
+    public PlayerDropGoldEvent m_onPlayerDropGold;
+
+    public PlayerBoardBoatEvent m_onPlayerBoardBoat;
+
+    public PlayerBoardBoatEvent m_onPlayerGetOffBoat;
 
     public InputActionAsset m_actions;
     
@@ -149,15 +227,26 @@ public class PlayerSystem : GameSystem
         
         StartCoroutine(ThrowPlayersToSpawnPositions());
     }
+
+    public void LockPlayer(int playerNum)
+    {
+        m_players[playerNum-1].GetComponent<PlayerMovementController>().enabled = false;
+        m_players[playerNum-1].GetComponent<PlayerGoldController>().enabled = false;
+    }
+
+    public void UnlockPlayer(int playerNum)
+    {
+        m_players[playerNum-1].GetComponent<PlayerMovementController>().enabled = true;
+        m_players[playerNum-1].GetComponent<PlayerGoldController>().enabled = true;
+    }
     
     private IEnumerator ThrowPlayersToSpawnPositions()
     {
         
         //disable components of player objects briefly
-        foreach (GameObject player in m_players)
+        for (int i = 1; i <= m_numPlayers; i++)
         {
-            player.GetComponent<PlayerMovementController>().enabled = false;
-            player.GetComponent<PlayerGoldController>().enabled = false;
+            LockPlayer(i);
         }
          
         List<Vector3> initialPlayerPositions = new List<Vector3>();
@@ -198,11 +287,11 @@ public class PlayerSystem : GameSystem
         }
         
         //re-enable components of player objects briefly
-        foreach (GameObject player in m_players)
+        for (int i = 1; i <= m_numPlayers; i++)
         {
-            player.GetComponent<PlayerMovementController>().enabled = true;
-            player.GetComponent<PlayerGoldController>().enabled = true;
+            UnlockPlayer(i);
         }
+        
     }
 
 
@@ -300,6 +389,7 @@ public class PlayerSystem : GameSystem
         //then start game for player scripts so we can test out movement in character select.
         m_players[playerNum - 1].GetComponent<PlayerMovementController>().OnGameStart();
         m_players[playerNum - 1].GetComponent<PlayerGoldController>().OnGameStart();
+        m_players[playerNum-1].GetComponent<PlayerAnimationController>().OnGameStart();
         
         m_readyPlayers.Add(false);
         
@@ -340,6 +430,7 @@ public class PlayerSystem : GameSystem
     private IEnumerator StartGameCountdown()
     {
         yield return new WaitForSeconds(m_startGameCountdownSeconds);
+        GameTimerSystem.Instance.StopGame();
         SceneManager.LoadScene(m_gameSceneToLoadName);
     }
     
@@ -358,11 +449,10 @@ public class PlayerSystem : GameSystem
     private IEnumerator WaitForRespawn(int playerNum)
     {
         m_isPlayerDying[playerNum - 1] = true;
-        m_players[playerNum - 1].GetComponent<PlayerMovementController>().enabled = false;
-        m_players[playerNum - 1].GetComponent<Collider>().enabled = false;
+        
         PlayerGoldController playerGoldController = m_players[playerNum - 1].GetComponent<PlayerGoldController>();
-        playerGoldController.enabled = false;
-        if (playerGoldController.m_goldCarried > 0)
+        LockPlayer(playerNum);
+        if (m_players[playerNum-1].GetComponent<PlayerData>().m_goldCarried > 0)
         {
             playerGoldController.DropAllGold();
         }
@@ -373,9 +463,7 @@ public class PlayerSystem : GameSystem
         //if still running, kill it
         StopCoroutine(deathCoroutine);
         
-        m_players[playerNum - 1].GetComponent<PlayerMovementController>().enabled = true;
-        m_players[playerNum - 1].GetComponent<PlayerGoldController>().enabled = true;
-        m_players[playerNum - 1].GetComponent<Collider>().enabled = true;
+        UnlockPlayer(playerNum);
 
         m_players[playerNum - 1].GetComponent<PlayerMovementController>().WarpToPosition(m_playerSpawnPositions[playerNum - 1].position);
 
@@ -400,6 +488,26 @@ public class PlayerSystem : GameSystem
             pos = initial + (final - initial) * (Mathf.Sin(-(1.5f * Mathf.PI * t)) * t);
             playerMovementController.WarpToPosition(pos);;
         }
+    }
+
+    private void OnPlayerPickUpGold(int teamNum, int playerNum)
+    {
+        m_onPlayerPickupGold(teamNum, playerNum);
+    }
+
+    private void OnPlayerDropGold(int teamNum, int playerNum)
+    {
+        m_onPlayerDropGold(teamNum, playerNum);
+    }
+
+    private void OnPlayerBoardBoat(int teamNum, int playerNum, int boatNum)
+    {
+        m_onPlayerBoardBoat(teamNum, playerNum, boatNum);
+    }
+    
+    private void OnPlayerGetOffBoat(int teamNum, int playerNum, int boatNum)
+    {
+        m_onPlayerGetOffBoat(teamNum, playerNum, boatNum);
     }
 
     (int, int) AddPlayer()
@@ -531,6 +639,13 @@ public class PlayerSystem : GameSystem
                 m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
                 m_players[i].transform.localScale = spawnPos.transform.localScale;
                 m_players[i].transform.rotation = spawnPos.transform.rotation;
+
+                PlayerGoldController playerGoldController = m_players[i].GetComponent<PlayerGoldController>();
+
+                playerGoldController.m_onPlayerPickupGold += OnPlayerPickUpGold;
+                playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
+                playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
+                playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
                 
                 m_visualStandIns[i].SetActive(false);
                 
@@ -542,7 +657,9 @@ public class PlayerSystem : GameSystem
                 m_playerControlSchemesList[m_numPlayers].CharacterSelect.Disable();
             }
         }
-
-        KrakenController.Instance.m_onKrakenEmerge += OnKrakenEmerge;
+        
+        if (KrakenController.Instance != null) {
+            KrakenController.Instance.m_onKrakenEmerge += OnKrakenEmerge;
+        }
     }
 }

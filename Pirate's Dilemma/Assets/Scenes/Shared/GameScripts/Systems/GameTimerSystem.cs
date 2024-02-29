@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
-using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,6 +22,8 @@ public class GameTimerSystem : GameSystem
         }
     }
     
+    [SerializeField] private int m_gameStartTimerSeconds = 3;
+    
     [SerializeField] private int m_gameTimerSeconds = 120;
 
     [SerializeField] private string m_characterSelectSceneName;
@@ -36,6 +37,7 @@ public class GameTimerSystem : GameSystem
     public GameFinishEvent m_onGameFinish;
     
     public GameTimerUpdateEvent m_onGameTimerUpdate;
+    public GameTimerUpdateEvent m_onStartGameTimerUpdate;
 
     private bool m_krakenArrived = false;
     
@@ -71,6 +73,33 @@ public class GameTimerSystem : GameSystem
 
     public void StartGame(Scene scene, LoadSceneMode mode)
     {
+
+        StartCoroutine(StartGameCountdown());
+    }
+
+    public void StopGame()
+    {
+        if (m_onGameFinish?.GetInvocationList()?.Length > 0)
+        {
+            m_onGameFinish();
+        }
+    }
+
+    private IEnumerator StartGameCountdown()
+    {
+
+        int count = m_gameStartTimerSeconds;
+        m_onStartGameTimerUpdate(count);
+        while (count > 0)
+        {
+            // Wait for one second
+            yield return new WaitForSeconds(1);
+            
+            // Decrease the count
+            count--;
+            m_onStartGameTimerUpdate(count);    
+        }
+        
         if (m_onGameStart?.GetInvocationList()?.Length > 0)
         {
             m_onGameStart();

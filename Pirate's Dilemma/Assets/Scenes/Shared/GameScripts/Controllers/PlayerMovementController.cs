@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 
 public delegate void PlayerGetPushedEvent();
+public delegate void PlayerStartDashEvent();
+public delegate void PlayerStartDashChargeEvent();
 
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData), typeof(PlayerGoldController))]
 public class PlayerMovementController : MonoBehaviour
@@ -12,6 +14,10 @@ public class PlayerMovementController : MonoBehaviour
     public PlayerDieEvent m_onPlayerDie;
 
     public PlayerGetPushedEvent m_onPlayerGetPushed;
+    
+    public PlayerStartDashEvent m_onPlayerStartDash;
+        
+    public PlayerStartDashChargeEvent m_onPlayerStartDashCharge;
     
     [SerializeField] private float m_speed;
 
@@ -60,7 +66,6 @@ public class PlayerMovementController : MonoBehaviour
     
     private void Awake()
     {
-        GameTimerSystem.Instance.m_onGameStart += OnGameStart;
 
         m_playerData = GetComponent<PlayerData>();
 
@@ -68,6 +73,12 @@ public class PlayerMovementController : MonoBehaviour
         
         m_initialized = false;
     }
+    
+    private void Start() {
+        GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+        GameTimerSystem.Instance.m_onGameFinish += OnGameStop;
+    }
+    
     
     private void FixedUpdate()
     {
@@ -140,10 +151,11 @@ public class PlayerMovementController : MonoBehaviour
     
     private void OnDashButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_initialized && !IsOccupied() && !m_playerGoldController.IsOccupied() && m_playerGoldController.m_goldCarried == 0)
+        if (m_initialized && !IsOccupied() && !m_playerGoldController.IsOccupied() && m_playerData.m_goldCarried == 0)
         {
             m_isChargingDash = true;
             m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());
+            m_onPlayerStartDashCharge();
         }
     }
 
@@ -163,10 +175,11 @@ public class PlayerMovementController : MonoBehaviour
             t = Mathf.Min(t + Time.deltaTime / m_timeToChargeToMaxDashRange, 1);
             
             Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
-            
+
+            string[] impassableLayers = new string[] { "StaticObstacle", $"Team{m_playerData.m_teamNum}Impassable"};
             //need to check if the dash target is in a wall. if so truncate the dash.
             RaycastHit hit;
-            if (Physics.Raycast(initialPos, (targetPos - initialPos).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: (targetPos - initialPos).magnitude))
+            if (Physics.Raycast(initialPos, (targetPos - initialPos).normalized, out hit, layerMask: LayerMask.GetMask(impassableLayers), maxDistance: (targetPos - initialPos).magnitude))
             {
                 targetPos = initialPos + (maxDistancePos - initialPos) * (hit.distance / m_maxDashDistance);
             }
@@ -199,6 +212,7 @@ public class PlayerMovementController : MonoBehaviour
             if ((endPosition - m_feetPosition.position).magnitude > m_minDashDistance)
             {
                 m_dashCoroutine = StartCoroutine(DashCoroutine(endPosition));
+                m_onPlayerStartDash();
             }
             else
             {
@@ -239,14 +253,19 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        int otherTeamNum = 1;
+        if (m_playerData.m_teamNum == 1)
+        {
+            otherTeamNum = 2;
+        }
+        
         if (hit.gameObject.layer == LayerMask.NameToLayer("LooseGold"))
         {
             hit.rigidbody.AddForceAtPosition((hit.gameObject.transform.position - transform.position).normalized *
                                    m_onCollideWithGoldForce * m_characterController.velocity.magnitude, transform.position, ForceMode.Impulse);
         }
-        else if (hit.gameObject.layer == LayerMask.NameToLayer("Player") && m_isDashing)
+        else if (hit.gameObject.layer == LayerMask.NameToLayer($"Team{otherTeamNum}Player") && m_isDashing)
         {
-            Debug.Log("hit player!");
             PlayerMovementController otherPlayerMovement = hit.gameObject.GetComponent<PlayerMovementController>();
 
             if (otherPlayerMovement != null)
@@ -291,9 +310,11 @@ public class PlayerMovementController : MonoBehaviour
         
         float finalDistance = m_pushDistance;
         
+        string[] impassableLayers = new string[] { "StaticObstacle", $"Team{m_playerData.m_teamNum}Impassable"};
+        
         //do a raycast, see if we need to stop early because we're hitting a wall.
         RaycastHit hit;
-        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: LayerMask.GetMask(new string[]{"StaticObstacle"}), maxDistance: m_pushDistance))
+        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: LayerMask.GetMask(impassableLayers), maxDistance: m_pushDistance))
         {
             finalDistance = hit.distance;
         }
