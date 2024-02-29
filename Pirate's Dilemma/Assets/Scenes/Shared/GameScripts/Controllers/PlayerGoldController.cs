@@ -171,7 +171,7 @@ public class PlayerGoldController : MonoBehaviour
         //     }
         // }
         
-        if (m_goldCarried < m_goldCapacity)
+        // if (m_goldCarried < m_goldCapacity)
         bool pickedUpGold = false;
         if (m_playerData.m_goldCarried < m_goldCapacity)
         {
@@ -207,11 +207,11 @@ public class PlayerGoldController : MonoBehaviour
 
             if (!pickedUpItem && m_inGoldDropZone)
             {
-                BoardBoat();
+                // BoardBoat();
             }
         }
         // if (m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpItem)
-        }
+        
         if (m_playerData.m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpGold)
         {
             PickupGold();
