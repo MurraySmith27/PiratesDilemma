@@ -190,6 +190,22 @@ public class BoatSystem : GameSystem
         {
             boat.transform.position = m_boatInitialPositionsPerTeam[teamNum-1][boatNum-1];
         }
+        
+        
+        m_boatsPerTeam[teamNum - 1][boatNum - 1].GetComponent<Collider>().enabled = true;
+        
+        //unlock each player on the boat
+        foreach (Transform boardedPosition in m_boatsPerTeam[teamNum - 1][boatNum - 1].GetComponent<BoatData>()
+                     .m_playerBoardedPositions)
+        {
+            if (boardedPosition.childCount > 0)
+            {
+                GameObject player = boardedPosition.GetChild(0).gameObject;
+                int playerNum = player.GetComponent<PlayerData>().m_playerNum;
+                PlayerSystem.Instance.UnlockPlayer(playerNum);
+                player.GetComponent<PlayerGoldController>().UnboardBoat(PlayerSystem.Instance.m_playersParents[playerNum - 1], m_boatGoldDropZoneInitialPositionsPerTeam[teamNum-1][boatNum-1]);
+            }
+        }
 
         GameObject goldDropZone = boat.GetComponent<BoatGoldController>().m_goldDropZone;
         goldDropZone.transform.position = m_boatGoldDropZoneInitialPositionsPerTeam[teamNum-1][boatNum-1];
@@ -255,27 +271,36 @@ public class BoatSystem : GameSystem
     IEnumerator SailBoat(int teamNum, int boatNum, List<int> goldScoredPerTeam)
     {
         m_onSailBoat(teamNum, boatNum, goldScoredPerTeam);
+
+        m_boatsPerTeam[teamNum - 1][boatNum - 1].GetComponent<Collider>().enabled = false;
         
         GameObject boat = m_boatsPerTeam[teamNum - 1][boatNum - 1];
+
+        BoatGoldController boatGoldController = boat.GetComponent<BoatGoldController>();
+            
         //move the gold drop zone under the level while boat is sailing.
-        boat.GetComponent<BoatGoldController>().m_goldDropZone.transform.position += new Vector3(0, -100, 0);
+        boatGoldController.m_goldDropZone.transform.position += new Vector3(0, -100, 0);
         
         boat.GetComponent<BoatData>().m_sailAudioSource.Play();
         
         Coroutine sailAnimationCoroutine = StartCoroutine(SailBoatAnimation(teamNum, boatNum));
         ScoreSystem.Instance.UpdateScore(goldScoredPerTeam);
+       
+        //lock each player on the boat
+        foreach (Transform boardedPosition in m_boatsPerTeam[teamNum - 1][boatNum - 1].GetComponent<BoatData>()
+                     .m_playerBoardedPositions)
+        {
+            if (boardedPosition.childCount > 0)
+            {
+                GameObject player = boardedPosition.GetChild(0).gameObject;
+                PlayerSystem.Instance.LockPlayer(player.GetComponent<PlayerData>().m_playerNum);
+                player.GetComponent<Collider>().enabled = false;
+            }
+        }
 
         yield return new WaitForSeconds(m_boatResetTime);
         StopCoroutine(sailAnimationCoroutine);
         
-        //respawn players that were on boat.
-        foreach (Transform boardedPosition in m_boatsPerTeam[teamNum - 1][boatNum - 1].GetComponent<BoatData>()
-                     .m_playerBoardedPositions)
-        {
-            GameObject player = boardedPosition.GetChild(0).gameObject;
-            player.transform.parent = PlayerSystem.Instance.m_playersParents[player.GetComponent<PlayerData>().m_playerNum - 1];
-            PlayerSystem.Instance.OnPlayerDie(player.GetComponent<PlayerData>().m_playerNum);
-        }
         
         ResetBoat(teamNum, boatNum, true);
         m_onResetBoat(teamNum, boatNum);

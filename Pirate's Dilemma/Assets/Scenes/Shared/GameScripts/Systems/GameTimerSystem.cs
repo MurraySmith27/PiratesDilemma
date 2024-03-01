@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
-using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -106,6 +105,7 @@ public class GameTimerSystem : GameSystem
             m_onGameStart();
         }
         
+        Debug.Log("start game countdown complete!");
         StartCoroutine(GlobalCountdown(GameTimerSystem.Instance.m_gameTimerSeconds));
     }
     

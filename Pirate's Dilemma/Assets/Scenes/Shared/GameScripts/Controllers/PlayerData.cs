@@ -8,4 +8,5 @@ public class PlayerData : MonoBehaviour
 {
     public int m_playerNum;
     public int m_teamNum;
+    public int m_goldCarried;
 }

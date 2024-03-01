@@ -21,7 +21,7 @@ public class InGameUI : UIBase
     
     protected override void SetUpUI()
     {
-        VisualElement root = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("root");
+        VisualElement root = GetComponent<UIDocument>().rootVisualElement;
 
         m_globalTimerLabel = root.Q<Label>("global-timer");
         m_leaderBoardLabel = root.Q<Label>("score-board-title");
@@ -33,7 +33,7 @@ public class InGameUI : UIBase
         {
             m_teamScoreLabels.Add(m_scoreElementAsset.Instantiate().Q<Label>("score-label"));
             root.Q<VisualElement>("score-board").Add(m_teamScoreLabels[i]);
-            m_teamScoreLabels[i].text = $"P{i}: 0";
+            m_teamScoreLabels[i].text = $"Team {i+1}: 0";
             m_teamScoreLabels[i].style.backgroundColor = PlayerSystem.Instance.m_teamColors[i];
         }
         
@@ -71,8 +71,11 @@ public class InGameUI : UIBase
     
     void OnGameTimerValueChange(int newValueSeconds)
     {
+        int numMinutes = (int)Mathf.Floor(newValueSeconds / 60f);
+        
+        Debug.Log("timer update");
         // Update the UI
-        m_globalTimerLabel.text = $"TIME REMAINING: {newValueSeconds}";
+        m_globalTimerLabel.text = $"{numMinutes}:{newValueSeconds % 60}";
     }
 
     void OnGameStart()
@@ -82,14 +85,14 @@ public class InGameUI : UIBase
     
     void OnGameFinish()
     {
-        m_globalTimerLabel.text = "Time's Up!";
+        m_gameStartTimerLabel.text = "Time's Up!";
     }
 
     void UpdateScoreUI(List<int> newScores)
     {
         for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
-            m_teamScoreLabels[i].text = $"P{i}: {newScores[i]}";
+            m_teamScoreLabels[i].text = $"Team {i+1}: {newScores[i]}";
         }
     }
     

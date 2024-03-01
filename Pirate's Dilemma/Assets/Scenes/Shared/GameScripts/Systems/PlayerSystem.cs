@@ -155,6 +155,14 @@ public class PlayerSystem : GameSystem
 
     public PlayerBoardBoatEvent m_onPlayerGetOffBoat;
 
+    public PlayerEnterGoldPickupZoneEvent m_onPlayerEnterGoldPickupZone;
+    
+    public PlayerExitGoldPickupZoneEvent m_onPlayerExitGoldPickupZone;
+    
+    public PlayerEnterGoldDropZoneEvent m_onPlayerEnterGoldDropZone;
+    
+    public PlayerExitGoldDropZoneEvent m_onPlayerExitGoldDropZone;
+
     public InputActionAsset m_actions;
     
     [SerializeField] private float m_startGameCountdownSeconds = 3f;
@@ -227,15 +235,26 @@ public class PlayerSystem : GameSystem
         
         StartCoroutine(ThrowPlayersToSpawnPositions());
     }
+
+    public void LockPlayer(int playerNum)
+    {
+        m_players[playerNum-1].GetComponent<PlayerMovementController>().enabled = false;
+        m_players[playerNum-1].GetComponent<PlayerGoldController>().enabled = false;
+    }
+
+    public void UnlockPlayer(int playerNum)
+    {
+        m_players[playerNum-1].GetComponent<PlayerMovementController>().enabled = true;
+        m_players[playerNum-1].GetComponent<PlayerGoldController>().enabled = true;
+    }
     
     private IEnumerator ThrowPlayersToSpawnPositions()
     {
         
         //disable components of player objects briefly
-        foreach (GameObject player in m_players)
+        for (int i = 1; i <= m_numPlayers; i++)
         {
-            player.GetComponent<PlayerMovementController>().enabled = false;
-            player.GetComponent<PlayerGoldController>().enabled = false;
+            LockPlayer(i);
         }
          
         List<Vector3> initialPlayerPositions = new List<Vector3>();
@@ -276,14 +295,13 @@ public class PlayerSystem : GameSystem
         }
         
         //re-enable components of player objects briefly
-        foreach (GameObject player in m_players)
+        for (int i = 1; i <= m_numPlayers; i++)
         {
-            player.GetComponent<PlayerMovementController>().enabled = true;
-            player.GetComponent<PlayerGoldController>().enabled = true;
+            UnlockPlayer(i);
         }
+        
     }
-
-
+    
     public void OnJoinButtonPressed(InputAction.CallbackContext ctx)
     {
         foreach (InputDevice device in m_assignedPlayerDevices.Values)
@@ -378,6 +396,7 @@ public class PlayerSystem : GameSystem
         //then start game for player scripts so we can test out movement in character select.
         m_players[playerNum - 1].GetComponent<PlayerMovementController>().OnGameStart();
         m_players[playerNum - 1].GetComponent<PlayerGoldController>().OnGameStart();
+        m_players[playerNum-1].GetComponent<PlayerAnimationController>().OnGameStart();
         
         m_readyPlayers.Add(false);
         
@@ -437,11 +456,10 @@ public class PlayerSystem : GameSystem
     private IEnumerator WaitForRespawn(int playerNum)
     {
         m_isPlayerDying[playerNum - 1] = true;
-        m_players[playerNum - 1].GetComponent<PlayerMovementController>().enabled = false;
-        m_players[playerNum - 1].GetComponent<Collider>().enabled = false;
+        
         PlayerGoldController playerGoldController = m_players[playerNum - 1].GetComponent<PlayerGoldController>();
-        playerGoldController.enabled = false;
-        if (playerGoldController.m_goldCarried > 0)
+        LockPlayer(playerNum);
+        if (m_players[playerNum-1].GetComponent<PlayerData>().m_goldCarried > 0)
         {
             playerGoldController.DropAllGold();
         }
@@ -452,9 +470,7 @@ public class PlayerSystem : GameSystem
         //if still running, kill it
         StopCoroutine(deathCoroutine);
         
-        m_players[playerNum - 1].GetComponent<PlayerMovementController>().enabled = true;
-        m_players[playerNum - 1].GetComponent<PlayerGoldController>().enabled = true;
-        m_players[playerNum - 1].GetComponent<Collider>().enabled = true;
+        UnlockPlayer(playerNum);
 
         m_players[playerNum - 1].GetComponent<PlayerMovementController>().WarpToPosition(m_playerSpawnPositions[playerNum - 1].position);
 
@@ -499,6 +515,23 @@ public class PlayerSystem : GameSystem
     private void OnPlayerGetOffBoat(int teamNum, int playerNum, int boatNum)
     {
         m_onPlayerGetOffBoat(teamNum, playerNum, boatNum);
+    }
+
+    private void OnPlayerEnterGoldPickupZone(int teamNum, int playerNum)
+    {
+        m_onPlayerEnterGoldPickupZone(teamNum, playerNum);
+    }
+    private void OnPlayerExitGoldPickupZone(int teamNum, int playerNum)
+    {
+        m_onPlayerExitGoldPickupZone(teamNum, playerNum);
+    }
+    private void OnPlayerEnterGoldDropZone(int teamNum, int playerNum)
+    {
+        m_onPlayerEnterGoldDropZone(teamNum, playerNum);
+    }
+    private void OnPlayerExitGoldDropZone(int teamNum, int playerNum)
+    {
+        m_onPlayerExitGoldDropZone(teamNum, playerNum);
     }
 
     (int, int) AddPlayer()
@@ -637,6 +670,11 @@ public class PlayerSystem : GameSystem
                 playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
                 playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
                 playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
+
+                playerGoldController.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
+                playerGoldController.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
+                playerGoldController.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
+                playerGoldController.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
                 
                 m_visualStandIns[i].SetActive(false);
                 
@@ -648,7 +686,9 @@ public class PlayerSystem : GameSystem
                 m_playerControlSchemesList[m_numPlayers].CharacterSelect.Disable();
             }
         }
-
-        KrakenController.Instance.m_onKrakenEmerge += OnKrakenEmerge;
+        
+        if (KrakenController.Instance != null) {
+            KrakenController.Instance.m_onKrakenEmerge += OnKrakenEmerge;
+        }
     }
 }

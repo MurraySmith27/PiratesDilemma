@@ -1,22 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Interactions;
-
 
 public delegate void PlayerPickUpGoldEvent(int teamNum, int playerNum);
 public delegate void PlayerDropGoldEvent(int teamNum, int playerNum);
 public delegate void PlayerBoardBoatEvent(int teamNum, int playerNum, int boatNum);
+public delegate void PlayerStartedThrowChargeEvent();
+public delegate void PlayerStartedThrowEvent();
+public delegate void PlayerEnterGoldPickupZoneEvent(int teamNum, int playerNum);
+public delegate void PlayerEnterGoldDropZoneEvent(int teamNum, int playerNum);
+public delegate void PlayerExitGoldPickupZoneEvent(int teamNum, int playerNum);
+public delegate void PlayerExitGoldDropZoneEvent(int teamNum, int playerNum);
 
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData))]
 public class PlayerGoldController : MonoBehaviour
 {
-    public int m_goldCarried;
-    
     [SerializeField] public int m_goldCapacity = 3;
 
     [SerializeField] private AudioSource m_goldPickupAudioSource;
@@ -52,6 +52,19 @@ public class PlayerGoldController : MonoBehaviour
     public PlayerBoardBoatEvent m_onPlayerBoardBoat;
     
     public PlayerBoardBoatEvent m_onPlayerGetOffBoat;
+
+    public PlayerStartedThrowChargeEvent m_onPlayerStartThrowCharge;
+    
+    public PlayerStartedThrowEvent m_onPlayerStartThrow;
+
+    public PlayerEnterGoldPickupZoneEvent m_onPlayerEnterGoldPickupZone;
+
+    public PlayerExitGoldPickupZoneEvent m_onPlayerExitGoldPickupZone;
+    
+    public PlayerEnterGoldDropZoneEvent m_onPlayerEnterGoldDropZone;
+    
+    public PlayerExitGoldDropZoneEvent m_onPlayerExitGoldDropZone;
+
     
     private PlayerInput m_playerInput;
     private PlayerMovementController m_playerMovementController;
@@ -76,8 +89,10 @@ public class PlayerGoldController : MonoBehaviour
 
     private GameObject m_boardedBoat;
 
+    private Transform m_playerOriginalParent;
+    
 
-    void Awake()
+    void Start()
     {
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
         GameTimerSystem.Instance.m_onGameFinish += OnGameStop;
@@ -86,11 +101,12 @@ public class PlayerGoldController : MonoBehaviour
     public void OnGameStart()
     {   
         //Assigning Callbacks
-        m_goldCarried = 0;
         m_playerInput = GetComponent<PlayerInput>();
         m_playerData = GetComponent<PlayerData>();
         m_playerMovementController = GetComponent<PlayerMovementController>();
         m_playerMovementController.m_onPlayerGetPushed += OnGetPushed;
+        
+        m_playerData.m_goldCarried = 0;
 
         m_interactAction = m_playerInput.actions["Interact"];
         m_interactAction.performed += OnInteractButtonPressed;
@@ -107,6 +123,8 @@ public class PlayerGoldController : MonoBehaviour
         {
             StopCoroutine(m_throwingCoroutine);
         }
+
+        m_playerOriginalParent = transform.parent;
         
         m_throwing = false;
         m_heldGoldGameObject.SetActive(false);
@@ -133,10 +151,9 @@ public class PlayerGoldController : MonoBehaviour
     {
         return m_throwing || m_isBoardedOnBoat;
     }
-
+    
     private void OnMoveActionPerformed(InputAction.CallbackContext ctx)
     {
-
         if (m_isBoardedOnBoat)
         {
             Vector2 boatDismountDirection =
@@ -144,13 +161,7 @@ public class PlayerGoldController : MonoBehaviour
             if (Vector2.Dot(boatDismountDirection, m_moveAction.ReadValue<Vector2>()) > m_getOffBoatInputThreshold)
             {
 
-                m_isBoardedOnBoat = false;
-                int boatNum = m_boardedBoat.GetComponent<BoatData>().m_boatNum;
-                m_boardedBoat.GetComponent<BoatGoldController>().DismountPlayerFromBoat(this.transform);
-                GetComponent<Collider>().enabled = true;
-                m_boardedBoat = null;
-
-                m_onPlayerGetOffBoat(m_playerData.m_teamNum, m_playerData.m_playerNum, boatNum);
+                UnboardBoat(m_playerOriginalParent, Vector3.zero, useDefaultPosition: true);
             }
         }
     
@@ -160,7 +171,7 @@ public class PlayerGoldController : MonoBehaviour
     {
         m_readyToThrow = true;
         bool pickedUpGold = false;
-        if (m_goldCarried < m_goldCapacity)
+        if (m_playerData.m_goldCarried < m_goldCapacity)
         {
             List<GameObject> looseGoldInScene = GameObject.FindGameObjectsWithTag("LooseGold").ToList();
             foreach (GameObject looseGold in looseGoldInScene)
@@ -175,19 +186,18 @@ public class PlayerGoldController : MonoBehaviour
                 }
             }
         }
-        if (m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpGold)
+        if (m_playerData.m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpGold)
         {
             PickupGold();
         }
-        else if (m_goldCarried != 0 && m_inGoldDropZone)
+        else if (m_playerData.m_goldCarried != 0 && m_inGoldDropZone)
         {
             DropGold();
         }
     }
 
-    public void BoardBoat()
+    public void BoardBoat(GameObject boat)
     {
-        GameObject boat = m_currentGoldDropzone.GetComponent<GoldDropZoneData>().m_boat;
         if (boat != null)
         {
             BoatData boatData = boat.GetComponent<BoatData>();
@@ -207,15 +217,28 @@ public class PlayerGoldController : MonoBehaviour
             m_onPlayerBoardBoat(m_playerData.m_teamNum, m_playerData.m_playerNum, boatData.m_boatNum);
         }
     }
+
+    public void UnboardBoat(Transform newParent, Vector3 playerDismountPosition, bool useDefaultPosition = false)
+    {
+        m_isBoardedOnBoat = false;
+        int boatNum = m_boardedBoat.GetComponent<BoatData>().m_boatNum;
+        m_boardedBoat.GetComponent<BoatGoldController>().DismountPlayerFromBoat(this.transform, newParent, playerDismountPosition, useDefaultPosition);
+        GetComponent<Collider>().enabled = true;
+        m_boardedBoat = null;
+
+        m_onPlayerGetOffBoat(m_playerData.m_teamNum, m_playerData.m_playerNum, boatNum);
+    }
+    
     private void OnThrowButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_goldCarried > 0 && !m_playerMovementController.IsOccupied() && m_readyToThrow)
+        if (m_playerData.m_goldCarried > 0 && !m_playerMovementController.IsOccupied() && m_readyToThrow)
         {
             m_throwing = true;
             //freeze player while charging throw
             LineRenderer trajectoryLine = GetComponent<LineRenderer>();
             trajectoryLine.enabled = true;
             m_throwingCoroutine = StartCoroutine(ExtendLandingPositionCoroutine());
+            m_onPlayerStartThrowCharge();
         }
     }
 
@@ -247,6 +270,8 @@ public class PlayerGoldController : MonoBehaviour
             GameObject looseGold = SpawnLooseGold(true);
             
             Coroutine throwGoldCoroutine = StartCoroutine(ThrowGoldCoroutine(targetPos, looseGold));
+
+            m_onPlayerStartThrow();
 
             looseGold.GetComponent<LooseGoldController>().m_onLooseGoldCollision +=
                 () =>
@@ -313,7 +338,7 @@ public class PlayerGoldController : MonoBehaviour
     private void PickupGold()
     {
         m_goldPickupAudioSource.Play();
-        m_goldCarried += 1;
+        m_playerData.m_goldCarried += 1;
 
         m_heldGoldGameObject.SetActive(true);
 
@@ -331,7 +356,7 @@ public class PlayerGoldController : MonoBehaviour
         
         if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
         {
-            boat.GetComponent<BoatGoldController>().AddGold(m_goldCarried, GetComponent<PlayerData>().m_teamNum);
+            boat.GetComponent<BoatGoldController>().AddGold(m_playerData.m_goldCarried, GetComponent<PlayerData>().m_teamNum);
             DropAllGold();
         }
     }
@@ -387,7 +412,7 @@ public class PlayerGoldController : MonoBehaviour
             m_throwing = false;
         }
         
-        if (m_goldCarried > 0)
+        if (m_playerData.m_goldCarried > 0)
         {
             SpawnLooseGold(false);
         }
@@ -397,7 +422,7 @@ public class PlayerGoldController : MonoBehaviour
     public void DropAllGold()
     {
         m_heldGoldGameObject.SetActive(false);
-        m_goldCarried = 0;
+        m_playerData.m_goldCarried = 0;
 
         m_throwing = false;
         if (m_onPlayerDropGold != null && m_onPlayerDropGold.GetInvocationList().Length > 0)
@@ -411,13 +436,27 @@ public class PlayerGoldController : MonoBehaviour
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
         {
-            m_inGoldDropZone = true;
-            m_currentGoldDropzone = otherCollider.gameObject;
+            if (!m_inGoldDropZone)
+            {
+                m_inGoldDropZone = true;
+                m_currentGoldDropzone = otherCollider.gameObject;
+                if (m_onPlayerEnterGoldDropZone != null && m_onPlayerEnterGoldDropZone.GetInvocationList().Length > 0)
+                {
+                    m_onPlayerEnterGoldDropZone(m_playerData.m_teamNum, m_playerData.m_playerNum);
+                }
+            }
         }
         
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
         {
-            m_inGoldPickupZone = true;
+            if (!m_inGoldPickupZone)
+            {
+                m_inGoldPickupZone = true;
+                if (m_onPlayerEnterGoldPickupZone != null && m_onPlayerEnterGoldPickupZone.GetInvocationList().Length > 0)
+                {
+                    m_onPlayerEnterGoldPickupZone(m_playerData.m_teamNum, m_playerData.m_playerNum);
+                }
+            }
         }
     }
     
@@ -425,7 +464,7 @@ public class PlayerGoldController : MonoBehaviour
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Boat") && otherCollider.gameObject.GetComponent<BoatData>().m_currentTotalGoldStored > 0)
         {
-            BoardBoat();
+            BoardBoat(otherCollider.gameObject);
         }
     }
     
@@ -433,13 +472,27 @@ public class PlayerGoldController : MonoBehaviour
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
         {
-            m_inGoldDropZone = false;
-            m_currentGoldDropzone = null;
+            if (m_inGoldDropZone)
+            {
+                m_inGoldDropZone = false;
+                m_currentGoldDropzone = null;
+                if (m_onPlayerExitGoldDropZone != null && m_onPlayerExitGoldDropZone.GetInvocationList().Length > 0)
+                {
+                    m_onPlayerExitGoldDropZone(m_playerData.m_teamNum, m_playerData.m_playerNum);
+                }
+            }
         }
         
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("GoldPickupZone"))
         {
-            m_inGoldPickupZone = false;
+            if (m_inGoldPickupZone)
+            {
+                m_inGoldPickupZone = false;
+                if (m_onPlayerExitGoldPickupZone != null && m_onPlayerExitGoldPickupZone.GetInvocationList().Length > 0)
+                {
+                    m_onPlayerExitGoldPickupZone(m_playerData.m_teamNum, m_playerData.m_playerNum);
+                }
+            }
         }
     }
     

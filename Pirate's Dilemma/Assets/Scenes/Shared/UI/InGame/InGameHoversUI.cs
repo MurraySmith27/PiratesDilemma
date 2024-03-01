@@ -27,6 +27,8 @@ public class InGameHoversUI : UIBase
 
     [SerializeField] private Sprite m_goldPickupZoneHoverIcon;
 
+    [SerializeField] private Sprite m_goldInteractButtonIcon;
+
     [SerializeField] private List<GameObject> m_goldDropZoneHoverPrefabsPerTeam;
 
     [SerializeField] private Sprite m_goldDropZoneHoverIcon;
@@ -63,6 +65,8 @@ public class InGameHoversUI : UIBase
     private List<List<GameObject>> m_dropZoneHoversPerTeam;
 
     private List<List<List<GameObject>>> m_boatBoardingHoversPerBoatPerTeam;
+
+    private List<GameObject> m_playerIndicators;
     
 
     protected override void Awake()
@@ -85,6 +89,9 @@ public class InGameHoversUI : UIBase
 
         m_boatBoardingHoversPerBoatPerTeam = new List<List<List<GameObject>>>();
         
+        
+        m_playerIndicators = new List<GameObject>();
+        
         m_root = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("root");
         
         BoatSystem.Instance.m_onResetBoat += NewBoatSpawned;
@@ -94,12 +101,12 @@ public class InGameHoversUI : UIBase
         {
             m_playerElements.Add(null);
             
-            GameObject genericIndicatorInstance = Instantiate(m_playerHoverPrefabs[i], new Vector3(0, 0, 0),
-                Quaternion.identity);
+            m_playerIndicators.Add(Instantiate(m_playerHoverPrefabs[i], new Vector3(0, 0, 0),
+                Quaternion.identity));
 
             int teamAssignment = PlayerSystem.Instance.m_playerTeamAssignments[i];
         
-            genericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
+            m_playerIndicators[i].GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
                 PlayerSystem.Instance.m_teamColors[teamAssignment - 1],
                 hoverIcon: m_playerNumberIcons[i],
                 objectToTrack: PlayerSystem.Instance.m_players[i],
@@ -129,7 +136,28 @@ public class InGameHoversUI : UIBase
                 }
             }
         }
+        
+        
+        //set callback to update tutorial UI when player picks up gold
+        PlayerSystem.Instance.m_onPlayerPickupGold += OnGoldPickedUp;
+        PlayerSystem.Instance.m_onPlayerDropGold += OnGoldDropped;
+        PlayerSystem.Instance.m_onPlayerBoardBoat += OnPlayerBoardedBoat;
+        PlayerSystem.Instance.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
 
+        PlayerSystem.Instance.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
+        PlayerSystem.Instance.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
+        PlayerSystem.Instance.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
+        PlayerSystem.Instance.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
+        
+        BoatSystem.Instance.m_onSailBoat += OnSailBoat;
+        BoatSystem.Instance.m_onSinkBoat += OnSinkBoat;
+
+        GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+
+    }
+
+    void OnGameStart()
+    {
         foreach (GameObject goldPickupZone in GameObject.FindGameObjectsWithTag("GoldPickupZone"))
         {
             GameObject genericIndicatorInstance = Instantiate(m_goldPickupZoneHoverPrefab, Vector3.zero,
@@ -142,22 +170,18 @@ public class InGameHoversUI : UIBase
                 objectToTrack: goldPickupZone,
                 scaleFactor: m_hoverIconScaleFactor,
                 camera: Camera.main
-                );
+            );
+            
+            ClosingCircleSpawner.Instance.CreateClosingCircle(goldPickupZone, Color.white);
         }
-        
-        //set callback to update tutorial UI when player picks up gold
-        PlayerSystem.Instance.m_onPlayerPickupGold += OnGoldPickedUp;
-        PlayerSystem.Instance.m_onPlayerDropGold += OnGoldDropped;
-        PlayerSystem.Instance.m_onPlayerBoardBoat += OnPlayerBoardedBoat;
-        PlayerSystem.Instance.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
-        
-        BoatSystem.Instance.m_onSailBoat += OnSailBoat;
-        BoatSystem.Instance.m_onSinkBoat += OnSinkBoat;
-
     }
 
     void OnGoldPickedUp(int teamNum, int playerNum)
     {
+        if (m_playerIndicators[playerNum - 1] != null)
+        {
+            Destroy(m_playerIndicators[playerNum - 1]);
+        }
         //create popups if there isn't one already
         if (m_dropZoneHoversPerTeam[teamNum - 1].Count == 0)
         {
@@ -176,6 +200,8 @@ public class InGameHoversUI : UIBase
                         camera: Camera.main
                     );
                     
+                    ClosingCircleSpawner.Instance.CreateClosingCircle(goldDropZone, Color.white);
+                    
                     m_dropZoneHoversPerTeam[teamNum - 1].Add(newHover);
                 }
             }
@@ -184,13 +210,19 @@ public class InGameHoversUI : UIBase
 
     void OnGoldDropped(int teamNum, int playerNum)
     {
+        if (m_playerIndicators[playerNum - 1] != null)
+        {
+            Destroy(m_playerIndicators[playerNum - 1]);
+        }
+        
         if (m_dropZoneHoversPerTeam[teamNum - 1].Count != 0)
         {
             bool destroyHovers = true;
             foreach (GameObject player in PlayerSystem.Instance.m_players)
             {
-                if (player.GetComponent<PlayerData>().m_teamNum == teamNum &&
-                    player.GetComponent<PlayerGoldController>().m_goldCarried != 0)
+                PlayerData playerData = player.GetComponent<PlayerData>();
+                if (playerData.m_teamNum == teamNum &&
+                    playerData.m_goldCarried != 0)
                 {
                     //dont destroy hovers
                     destroyHovers = false;
@@ -255,8 +287,71 @@ public class InGameHoversUI : UIBase
                 scaleFactor: m_hoverIconScaleFactor,
                 camera: Camera.main
             );
+            
+            
+            ClosingCircleSpawner.Instance.CreateClosingCircle(boatModelObject, Color.white);
 
             m_boatBoardingHoversPerBoatPerTeam[teamNum-1][boatNum-1][teamPlayerNum-1] = newHover;
+        }
+    }
+
+    private void OnPlayerEnterGoldPickupZone(int teamNum, int playerNum)
+    {
+        if (PlayerSystem.Instance.m_players[playerNum - 1].GetComponent<PlayerData>().m_goldCarried == 0)
+        {
+            if (m_playerIndicators[playerNum - 1] != null)
+            {
+                Destroy(m_playerIndicators[playerNum - 1]);
+            }
+
+            m_playerIndicators[playerNum - 1] = Instantiate(m_playerHoverPrefabs[playerNum - 1],
+                new Vector3(0, 0, 0), Quaternion.identity);
+
+            m_playerIndicators[playerNum - 1].GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
+                PlayerSystem.Instance.m_teamColors[teamNum - 1],
+                hoverIcon: m_goldInteractButtonIcon,
+                objectToTrack: PlayerSystem.Instance.m_players[playerNum - 1],
+                scaleFactor: m_hoverIconScaleFactor,
+                camera: Camera.main
+            );
+        }
+    }
+    
+    private void OnPlayerExitGoldPickupZone(int teamNum, int playerNum)
+    {
+        if (m_playerIndicators[playerNum - 1] != null)
+        {
+            Destroy(m_playerIndicators[playerNum - 1]);
+        }
+    }
+    
+    private void OnPlayerEnterGoldDropZone(int teamNum, int playerNum)
+    {
+        if (PlayerSystem.Instance.m_players[playerNum - 1].GetComponent<PlayerData>().m_goldCarried > 0)
+        {
+            if (m_playerIndicators[playerNum - 1] != null)
+            {
+                Destroy(m_playerIndicators[playerNum - 1]);
+            }
+
+            m_playerIndicators[playerNum - 1] = Instantiate(m_playerHoverPrefabs[playerNum - 1],
+                new Vector3(0, 0, 0), Quaternion.identity);
+
+            m_playerIndicators[playerNum - 1].GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
+                PlayerSystem.Instance.m_teamColors[teamNum - 1],
+                hoverIcon: m_goldInteractButtonIcon,
+                objectToTrack: PlayerSystem.Instance.m_players[playerNum - 1],
+                scaleFactor: m_hoverIconScaleFactor,
+                camera: Camera.main
+            );
+        }
+    }
+    
+    private void OnPlayerExitGoldDropZone(int teamNum, int playerNum)
+    {
+        if (m_playerIndicators[playerNum - 1] != null)
+        {
+            Destroy(m_playerIndicators[playerNum - 1]);
         }
     }
 

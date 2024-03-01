@@ -37,22 +37,21 @@ public class BoatGoldController : MonoBehaviour
         playerTransform.parent = m_boatData.m_playerBoardedPositions[m_boatData.m_numPlayersBoarded];
         m_boatData.m_numPlayersBoarded++;
         playerTransform.localPosition = new Vector3(0, 0, 0);
-
-        if (m_boatData.m_numPlayersBoarded == m_boatData.m_playerBoardedPositions.Count)
-        {
-            m_onBoatSail(m_boatData.m_teamNum, m_boatData.m_boatNum, m_boatData.m_currentGoldStored);
-            m_boatData.m_numPlayersBoarded = 0;
-        }
+        
+        m_onBoatSail(m_boatData.m_teamNum, m_boatData.m_boatNum, m_boatData.m_currentGoldStored);
+        m_boatData.m_numPlayersBoarded = 0;
     }
 
-    public void DismountPlayerFromBoat(Transform playerTransform)
+    public void DismountPlayerFromBoat(Transform playerTransform, Transform newParent, Vector3 playerRespawnPosition, bool useDefaultPosition)
     {
-        playerTransform.parent = null;
+        if (useDefaultPosition)
+        {
+            playerRespawnPosition = m_goldDropZone.transform.position;
+        }
+        playerTransform.gameObject.GetComponent<PlayerMovementController>().WarpToPosition(playerRespawnPosition);
+        playerTransform.parent = newParent;
 
-        m_boatData.m_numPlayersBoarded--;
-        playerTransform.localPosition = new Vector3(0, 0, 0);
-
-        playerTransform.position = m_goldDropZone.transform.position;
+        // m_boatData.m_numPlayersBoarded--;
     }
     
 
