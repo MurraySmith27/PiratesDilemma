@@ -90,23 +90,41 @@ public class PlayerMovementController : MonoBehaviour
             {
                 speed = m_chargeDashMoveSpeed;
             }
-            
+
+            Vector3 prevPosition = transform.position;
             Vector2 moveVector = moveInput * (speed * Time.deltaTime);
             m_characterController.Move(new Vector3(moveVector.x, 0, moveVector.y));
-
+            
+            RaycastHit hit;
+            if (Physics.Raycast(
+                    transform.position - new Vector3(0,
+                        m_characterController.center.y + m_characterController.height / 2, 0), Vector3.down,
+                    out hit, maxDistance: 0f, layerMask: LayerMask.GetMask("Killzone")))
+            {
+                //revert the move
+                Debug.Log("above killbox!");
+                WarpToPosition(prevPosition);
+            }
+            
+            //cast ray to ground from bottom of capsule, move down by ray result
+            float distanceToMoveDown = 9.81f * Time.deltaTime;
+            RaycastHit hit2;
+            if (Physics.Raycast(
+                    transform.position - new Vector3(0,
+                        m_characterController.center.y + m_characterController.height / 2, 0), Vector3.down,
+                    out hit2, maxDistance: 0f, layerMask: ~LayerMask.GetMask("Floor")))
+            {
+                distanceToMoveDown = hit2.distance;
+            }
+            
+            if (hit2.transform == null)
+            {
+                WarpToPosition(prevPosition);
+            }
+            
             if (!m_characterController.isGrounded)
             {
-                //cast ray to ground from bottom of capsule, move down by ray result
 
-                float distanceToMoveDown = 9.81f * Time.deltaTime;
-                RaycastHit hit;
-                if (Physics.Raycast(
-                        transform.position - new Vector3(0,
-                            m_characterController.center.y + m_characterController.height / 2, 0), Vector3.down,
-                        out hit, maxDistance: 0f, layerMask: ~LayerMask.GetMask("Floor")))
-                {
-                    distanceToMoveDown = hit.distance;
-                }
 
                 m_characterController.Move(new Vector3(0, -distanceToMoveDown, 0));
             }
