@@ -93,17 +93,31 @@ public class PlayerMovementController : MonoBehaviour
 
             Vector3 prevPosition = transform.position;
             Vector2 moveVector = moveInput * (speed * Time.deltaTime);
-            m_characterController.Move(new Vector3(moveVector.x, 0, moveVector.y));
+
+            Vector3 motion = new Vector3(moveVector.x, 0, moveVector.y);
+            
+            bool blockMove = false;
             
             RaycastHit hit;
             if (Physics.Raycast(
-                    transform.position - new Vector3(0,
+                    transform.position + motion - new Vector3(0,
                         m_characterController.center.y + m_characterController.height / 2, 0), Vector3.down,
-                    out hit, maxDistance: 0f, layerMask: LayerMask.GetMask("Killzone")))
+                    out hit))
             {
-                //revert the move
-                Debug.Log("above killbox!");
-                WarpToPosition(prevPosition);
+                //if we have something to land on, move
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Killzone"))
+                {
+                    blockMove = true;
+                }
+            }
+            else
+            {
+                blockMove = true;
+            }
+
+            if (!blockMove)
+            {
+                m_characterController.Move(motion);
             }
             
             //cast ray to ground from bottom of capsule, move down by ray result
@@ -112,20 +126,15 @@ public class PlayerMovementController : MonoBehaviour
             if (Physics.Raycast(
                     transform.position - new Vector3(0,
                         m_characterController.center.y + m_characterController.height / 2, 0), Vector3.down,
-                    out hit2, maxDistance: 0f, layerMask: ~LayerMask.GetMask("Floor")))
+                    out hit2))
             {
+                //fall just so we dont intersect it.
                 distanceToMoveDown = hit2.distance;
-            }
-            
-            if (hit2.transform == null)
-            {
-                WarpToPosition(prevPosition);
             }
             
             if (!m_characterController.isGrounded)
             {
-
-
+                
                 m_characterController.Move(new Vector3(0, -distanceToMoveDown, 0));
             }
         }
