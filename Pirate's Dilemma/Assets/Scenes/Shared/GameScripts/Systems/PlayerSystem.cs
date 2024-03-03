@@ -167,6 +167,8 @@ public class PlayerSystem : GameSystem
     
     [SerializeField] private float m_startGameCountdownSeconds = 3f;
     
+    [SerializeField] private float m_leavePreviousSceneBufferTime = 0.5f;
+    
     [SerializeField] private string m_gameSceneToLoadName;
 
     private Coroutine m_startGameCountdownCoroutine;
@@ -438,6 +440,7 @@ public class PlayerSystem : GameSystem
     {
         yield return new WaitForSeconds(m_startGameCountdownSeconds);
         GameTimerSystem.Instance.StopGame();
+        yield return new WaitForSeconds(m_leavePreviousSceneBufferTime);
         SceneManager.LoadScene(m_gameSceneToLoadName);
     }
     

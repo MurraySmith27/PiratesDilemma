@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 public delegate void GameStartEvent();
 public delegate void GameFinishEvent();
+public delegate void GameSceneLoadedEvent();
 public delegate void GameTimerUpdateEvent(int currentTimerValueSeconds);
 
 public class GameTimerSystem : GameSystem
@@ -29,12 +30,16 @@ public class GameTimerSystem : GameSystem
     [SerializeField] private string m_characterSelectSceneName;
     
     [SerializeField] private int m_krakenArrivalTimeRemaining = 60;
+
+    [SerializeField] private float m_gameSceneLoadedBufferSeconds = 0.5f;
     
     public List<string> m_levelSceneNames;
     
     public GameStartEvent m_onGameStart;
     
     public GameFinishEvent m_onGameFinish;
+
+    public GameSceneLoadedEvent m_onGameSceneLoaded;
     
     public GameTimerUpdateEvent m_onGameTimerUpdate;
     public GameTimerUpdateEvent m_onStartGameTimerUpdate;
@@ -73,6 +78,13 @@ public class GameTimerSystem : GameSystem
 
     public void StartGame(Scene scene, LoadSceneMode mode)
     {
+        StartCoroutine(StartGameCoroutine());
+    }
+
+    private IEnumerator StartGameCoroutine()
+    {
+        m_onGameSceneLoaded();
+        yield return new WaitForSeconds(m_gameSceneLoadedBufferSeconds);
         StartCoroutine(StartGameCountdown());
         m_onGameTimerUpdate(m_gameTimerSeconds);
     }
@@ -104,7 +116,6 @@ public class GameTimerSystem : GameSystem
             m_onGameStart();
         }
         
-        Debug.Log("start game countdown complete!");
         StartCoroutine(GlobalCountdown(GameTimerSystem.Instance.m_gameTimerSeconds));
     }
     

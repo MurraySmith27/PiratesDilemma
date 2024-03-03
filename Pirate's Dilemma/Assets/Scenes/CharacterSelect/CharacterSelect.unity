@@ -606,6 +606,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1056518078}
   - component: {fileID: 1056518079}
+  - component: {fileID: 1056518080}
   m_Layer: 0
   m_Name: SceneTransition
   m_TagString: Untagged
@@ -645,6 +646,21 @@ MonoBehaviour:
   sourceAsset: {fileID: 9197481963319205126, guid: 7e367adaf4f005b499c2957a2c0b89a8,
     type: 3}
   m_SortingOrder: 0
+--- !u!114 &1056518080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056518077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d84524c042fb29746b7f231db0975ded, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_systemDependencies:
+  - GameTimerSystem
+  m_transitionTime: 0.5
 --- !u!1 &1263212003
 GameObject:
   m_ObjectHideFlags: 0
@@ -1020,6 +1036,7 @@ MonoBehaviour:
   m_actions: {fileID: -944628639613478452, guid: 1f8c678d0c1572946ad4ccad197af8ad,
     type: 3}
   m_startGameCountdownSeconds: 3
+  m_leavePreviousSceneBufferTime: 0.5
   m_gameSceneToLoadName: Level2
 --- !u!1 &1841775409
 GameObject:
