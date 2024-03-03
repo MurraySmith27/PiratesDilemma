@@ -35,6 +35,10 @@ public class PlayerMovementController : MonoBehaviour
     // For when you get pushed
     [SerializeField] private float m_pushDistance;
     [SerializeField] private float m_pushDuration;
+
+    //for invulnerability
+    [SerializeField] private float m_invulnerableTimeOnRespawn = 3f;
+    [SerializeField] private Material m_invulnerableMaterial;
     
     public Transform m_feetPosition;
     
@@ -42,7 +46,8 @@ public class PlayerMovementController : MonoBehaviour
     private bool m_isChargingDash;
     
     private bool m_isDashing;
-    
+
+    private bool m_invulnerable;
 
     private bool m_isBeingPushed;
     
@@ -94,49 +99,75 @@ public class PlayerMovementController : MonoBehaviour
             Vector3 prevPosition = transform.position;
             Vector2 moveVector = moveInput * (speed * Time.deltaTime);
 
-            Vector3 motion = new Vector3(moveVector.x, 0, moveVector.y);
-            
-            bool blockMove = false;
-            
-            RaycastHit hit;
-            if (Physics.Raycast(
-                    transform.position + motion - new Vector3(0,
-                        m_characterController.center.y + m_characterController.height / 2, 0), Vector3.down,
-                    out hit))
+            if (moveVector.magnitude != 0)
             {
-                //if we have something to land on, move
-                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Killzone"))
+
+                //first check what collider is current below the player's position
+                Vector3 bottomOfCharacter = transform.position - new Vector3(0,
+                    m_characterController.center.y + m_characterController.height / 2, 0);
+
+                Collider belowCollider = null;
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, Vector3.down, out hit))
                 {
-                    blockMove = true;
+                    belowCollider = hit.collider;
+                }
+
+                Vector3 motion = new Vector3(moveVector.x, 0, moveVector.y);
+                Debug.DrawLine(transform.position + motion, transform.position + motion + Vector3.down * 10f, Color.red);
+                RaycastHit hit2;
+                if (Physics.Raycast(
+                        transform.position + motion, Vector3.down,
+                        out hit2))
+                {
+                    if (belowCollider != null && hit2.transform.gameObject.layer == LayerMask.NameToLayer("Killzone"))
+                    {
+                        Vector3 closestPoint = belowCollider.ClosestPoint(transform.position + motion);
+                        
+                        Vector3 newMotion =  closestPoint - transform.position;
+
+                        motion = new Vector3(newMotion.x, 0, newMotion.z);
+                    }
+                }
+                else
+                {
+                    motion = Vector3.zero;
+                }
+
+                m_characterController.Move(motion);
+                
+                //there are some situations where moving would bounce the player off a collider and put them over a
+                //killzone. In those situations, just revert to the original position.
+                RaycastHit hit4;
+                if (Physics.Raycast(
+                        transform.position, Vector3.down,
+                        out hit4))
+                {
+                    if (hit4.transform.gameObject.layer == LayerMask.NameToLayer("Killzone"))
+                    {
+                        m_characterController.Move(prevPosition - transform.position);
+                    }
                 }
             }
-            else
-            {
-                blockMove = true;
-            }
 
-            if (!blockMove)
-            {
-                m_characterController.Move(motion);
-            }
-            
             //cast ray to ground from bottom of capsule, move down by ray result
             float distanceToMoveDown = 9.81f * Time.deltaTime;
-            RaycastHit hit2;
+            RaycastHit hit3;
             if (Physics.Raycast(
                     transform.position - new Vector3(0,
                         m_characterController.center.y + m_characterController.height / 2, 0), Vector3.down,
-                    out hit2))
+                    out hit3))
             {
                 //fall just so we dont intersect it.
-                distanceToMoveDown = hit2.distance;
+                distanceToMoveDown = hit3.distance;
             }
-            
+
             if (!m_characterController.isGrounded)
             {
-                
+
                 m_characterController.Move(new Vector3(0, -distanceToMoveDown, 0));
             }
+            
         }
 
         if (moveInput.magnitude != 0 && !m_isDashing && !m_isBeingPushed)
@@ -154,6 +185,7 @@ public class PlayerMovementController : MonoBehaviour
         m_dashAction = m_playerInput.actions["Dash"];
         
         m_isChargingDash = false;
+        m_invulnerable = false;
         m_isDashing = false;
         m_isBeingPushed = false;
 
@@ -175,7 +207,52 @@ public class PlayerMovementController : MonoBehaviour
     {
         return m_isDashing || m_isBeingPushed || m_isChargingDash;
     }
-    
+
+    public void MakeInvulnerable(float invulnerableTime = -1)
+    {
+        if (invulnerableTime == -1)
+        {
+            invulnerableTime = m_invulnerableTimeOnRespawn;
+        }
+
+
+        StartCoroutine(MakeInvulnerableCoroutine(invulnerableTime));
+    }
+
+    private IEnumerator MakeInvulnerableCoroutine(float invulnerableTime)
+    {
+        Renderer[] meshRenderers = GetComponentsInChildren<Renderer>();
+        
+        List<List<Material>> materialsPerChild = new List<List<Material>>();
+
+        //add transparent material to all child meshes.
+        foreach (Renderer meshRenderer in meshRenderers)
+        {
+            
+            List<Material> materials = new List<Material>();
+            meshRenderer.GetMaterials(materials);
+            materialsPerChild.Add(materials);
+            List<Material> materialsCopy = new List<Material>(materials);
+            materialsCopy.Add(m_invulnerableMaterial);
+            
+            m_invulnerable = true;
+            meshRenderer.SetMaterials(materialsCopy);
+        }
+
+        
+        yield return new WaitForSeconds(invulnerableTime);
+        
+        m_invulnerable = false;
+        
+        
+        //reset all materials
+        for (int i = 0; i < meshRenderers.Length; i++)
+        {
+            meshRenderers[i].SetMaterials(materialsPerChild[i]);
+        }
+    }
+
+
     private void OnDashButtonHeld(InputAction.CallbackContext ctx)
     {
         if (m_initialized && !IsOccupied() && !m_playerGoldController.IsOccupied() && m_playerData.m_goldCarried == 0)
@@ -295,7 +372,13 @@ public class PlayerMovementController : MonoBehaviour
         {
             PlayerMovementController otherPlayerMovement = hit.gameObject.GetComponent<PlayerMovementController>();
 
-            if (otherPlayerMovement != null)
+            if (otherPlayerMovement.m_invulnerable)
+            {
+                //stop dashing
+                StopCoroutine(m_dashCoroutine);
+                m_isDashing = false;
+            }
+            else if (otherPlayerMovement != null)
             {
                 Vector3 direction = hit.transform.position - transform.position;
                 direction.y = 0;

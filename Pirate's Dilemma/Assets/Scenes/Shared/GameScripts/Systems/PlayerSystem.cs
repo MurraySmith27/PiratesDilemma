@@ -471,9 +471,13 @@ public class PlayerSystem : GameSystem
         StopCoroutine(deathCoroutine);
         
         UnlockPlayer(playerNum);
+            
+        PlayerMovementController playerMovementController = 
+        m_players[playerNum - 1].GetComponent<PlayerMovementController>();
+        playerMovementController.WarpToPosition(m_playerSpawnPositions[playerNum - 1].position);
 
-        m_players[playerNum - 1].GetComponent<PlayerMovementController>().WarpToPosition(m_playerSpawnPositions[playerNum - 1].position);
-
+        playerMovementController.MakeInvulnerable();
+        
         if (m_onPlayerRespawn != null && m_onPlayerRespawn.GetInvocationList().Length > 0)
         {
             m_onPlayerRespawn(playerNum);

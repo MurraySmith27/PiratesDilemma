@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 382947726927451625}
   - component: {fileID: 302490105185130056}
   - component: {fileID: 490553058566460301}
-  m_Layer: 12
+  m_Layer: 21
   m_Name: HeldGold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -278,6 +278,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_playerNum: 0
   m_teamNum: 0
+  m_goldCarried: 0
 --- !u!114 &3806193576749118782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290,7 +291,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4e2bacc805930941b7c63bf80e6320d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_goldCarried: 0
   m_goldCapacity: 1
   m_goldPickupAudioSource: {fileID: 4657405196688796297}
   m_heldGoldGameObject: {fileID: 108641712032740015}
@@ -329,6 +329,9 @@ MonoBehaviour:
   m_dashIndicatorArrowBodyGameObject: {fileID: 3470228440124671188}
   m_pushDistance: 10
   m_pushDuration: 0.3
+  m_invulnerableTimeOnRespawn: 3
+  m_invulnerableMaterial: {fileID: 2100000, guid: 5ede7b2f73d274542aa6e4b631a4185a,
+    type: 2}
   m_feetPosition: {fileID: 8814260995174423450}
 --- !u!143 &499935073571530274
 CharacterController:
@@ -814,6 +817,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4313782162737317191}
     m_Modifications:
+    - target: {fileID: -9178903666884444048, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -864,10 +872,90 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5471901410102084090, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: -5119854317154028181, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: -4819223349682164798, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: -4213761076027111091, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: -4108034228341841425, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: -2511240423080479738, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: -2328411686548971133, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: -1965255280547418469, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 357344144889231236, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
         type: 3}
       propertyPath: m_Name
       value: SixtoesIdleAnimationSwingy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1047488657938851046, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1626588439486383022, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 1806455235375228090, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 5134071759825955463, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036213049465896255, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7281251948286272689, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7858755233668194120, guid: 958d6f53a4fae224e81a16b4f84ff0a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

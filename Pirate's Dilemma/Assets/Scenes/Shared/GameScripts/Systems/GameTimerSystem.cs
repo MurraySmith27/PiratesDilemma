@@ -73,8 +73,8 @@ public class GameTimerSystem : GameSystem
 
     public void StartGame(Scene scene, LoadSceneMode mode)
     {
-
         StartCoroutine(StartGameCountdown());
+        m_onGameTimerUpdate(m_gameTimerSeconds);
     }
 
     public void StopGame()
@@ -87,7 +87,6 @@ public class GameTimerSystem : GameSystem
 
     private IEnumerator StartGameCountdown()
     {
-
         int count = m_gameStartTimerSeconds;
         m_onStartGameTimerUpdate(count);
         while (count > 0)
@@ -112,6 +111,7 @@ public class GameTimerSystem : GameSystem
     IEnumerator GlobalCountdown(int seconds)
     {
         int count = seconds;
+        m_onGameTimerUpdate(count);
 
         while (count > 0)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -71,11 +72,9 @@ public class InGameUI : UIBase
     
     void OnGameTimerValueChange(int newValueSeconds)
     {
-        int numMinutes = (int)Mathf.Floor(newValueSeconds / 60f);
-        
-        Debug.Log("timer update");
-        // Update the UI
-        m_globalTimerLabel.text = $"{numMinutes}:{newValueSeconds % 60}";
+        TimeSpan time = TimeSpan.FromSeconds(newValueSeconds);
+
+        m_globalTimerLabel.text = time.ToString(@"m\:ss");
     }
 
     void OnGameStart()
