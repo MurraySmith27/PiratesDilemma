@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public delegate void PlayerGetPushedEvent();
 public delegate void PlayerStartDashEvent();
+public delegate void PlayerDashCooldownStartEvent(int teamNum, int playerNum, float cooldownSeconds);
 public delegate void PlayerStartDashChargeEvent();
 
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData), typeof(PlayerGoldController))]
@@ -18,6 +19,8 @@ public class PlayerMovementController : MonoBehaviour
     public PlayerStartDashEvent m_onPlayerStartDash;
         
     public PlayerStartDashChargeEvent m_onPlayerStartDashCharge;
+
+    public PlayerDashCooldownStartEvent m_onDashCooldownStart;
     
     [SerializeField] private float m_speed;
 
@@ -30,6 +33,8 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float m_maxDashDistance;
     [SerializeField] private float m_dashDuration;
     [SerializeField] private float m_chargeDashMoveSpeed;
+    [SerializeField] private float m_dashCooldown = 1f;
+    private bool m_dashOnCooldown = false;
     [SerializeField] private GameObject m_dashIndicatorArrowBodyGameObject;
     
     // For when you get pushed
@@ -41,7 +46,6 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private Material m_invulnerableMaterial;
     
     public Transform m_feetPosition;
-    
     
     private bool m_isChargingDash;
     
@@ -187,6 +191,7 @@ public class PlayerMovementController : MonoBehaviour
         m_isChargingDash = false;
         m_invulnerable = false;
         m_isDashing = false;
+        m_dashOnCooldown = false;
         m_isBeingPushed = false;
 
         m_dashAction.performed += OnDashButtonHeld;
@@ -214,7 +219,6 @@ public class PlayerMovementController : MonoBehaviour
         {
             invulnerableTime = m_invulnerableTimeOnRespawn;
         }
-
 
         StartCoroutine(MakeInvulnerableCoroutine(invulnerableTime));
     }
@@ -255,7 +259,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnDashButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_initialized && !IsOccupied() && !m_playerGoldController.IsOccupied() && m_playerData.m_goldCarried == 0)
+        if (m_initialized && !IsOccupied() && !m_playerGoldController.IsOccupied() && !m_dashOnCooldown && m_playerData.m_goldCarried == 0)
         {
             m_isChargingDash = true;
             m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());
@@ -342,6 +346,11 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         m_isDashing = false;
+        m_dashOnCooldown = true;
+        m_onDashCooldownStart(m_playerData.m_teamNum, m_playerData.m_playerNum, m_dashCooldown);
+        yield return new WaitForSeconds(m_dashCooldown);
+
+        m_dashOnCooldown = false;
     }
     
 
