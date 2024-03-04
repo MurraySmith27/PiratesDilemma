@@ -16,12 +16,12 @@ public delegate void GameTimerUpdateEvent(int currentTimerValueSeconds);
 
 public class GameTimerSystem : GameSystem
 {
-    private static GameTimerSystem m_instance;
+    private static GameTimerSystem _instance;
     public static GameTimerSystem Instance
     {
         get
         {
-            return m_instance;
+            return _instance;
         }
     }
     
@@ -60,13 +60,13 @@ public class GameTimerSystem : GameSystem
     
     void Awake()
     {
-        if (m_instance != null && m_instance != this)
+        if (_instance != null && _instance != this)
         {
-            Destroy(m_instance.gameObject);
+            Destroy(_instance.gameObject);
         }
         else
         {
-            m_instance = this;
+            _instance = this;
         }
         
         DontDestroyOnLoad(this.gameObject);

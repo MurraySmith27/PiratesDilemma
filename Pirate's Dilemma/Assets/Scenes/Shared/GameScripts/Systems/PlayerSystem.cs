@@ -163,6 +163,8 @@ public class PlayerSystem : GameSystem
     
     public PlayerExitGoldDropZoneEvent m_onPlayerExitGoldDropZone;
 
+    public PlayerDashCooldownStartEvent m_onDashCooldownStart;
+
     public InputActionAsset m_actions;
     
     [SerializeField] private float m_startGameCountdownSeconds = 3f;
@@ -396,9 +398,29 @@ public class PlayerSystem : GameSystem
         }
         
         //then start game for player scripts so we can test out movement in character select.
-        m_players[playerNum - 1].GetComponent<PlayerMovementController>().OnGameStart();
-        m_players[playerNum - 1].GetComponent<PlayerGoldController>().OnGameStart();
-        m_players[playerNum-1].GetComponent<PlayerAnimationController>().OnGameStart();
+        PlayerMovementController playerMovementController = m_players[playerNum - 1].GetComponent<PlayerMovementController>();
+
+        playerMovementController.m_onDashCooldownStart += OnPlayerDashCooldownStart;
+        
+        playerMovementController.OnGameStart();
+
+        PlayerGoldController playerGoldController = m_players[playerNum - 1].GetComponent<PlayerGoldController>();
+        
+        playerGoldController.m_onPlayerPickupGold += OnPlayerPickUpGold;
+        playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
+        playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
+        playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
+
+        playerGoldController.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
+        playerGoldController.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
+        playerGoldController.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
+        playerGoldController.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
+        
+        playerGoldController.OnGameStart();
+        
+        PlayerAnimationController playerAnimationController = m_players[playerNum - 1].GetComponent<PlayerAnimationController>();
+        
+        playerAnimationController.OnGameStart();
         
         m_readyPlayers.Add(false);
         
@@ -505,39 +527,71 @@ public class PlayerSystem : GameSystem
 
     private void OnPlayerPickUpGold(int teamNum, int playerNum)
     {
-        m_onPlayerPickupGold(teamNum, playerNum);
+        if (m_onPlayerPickupGold != null && m_onPlayerPickupGold.GetInvocationList().Length > 0)
+        {
+            m_onPlayerPickupGold(teamNum, playerNum);
+        }
     }
 
     private void OnPlayerDropGold(int teamNum, int playerNum)
     {
-        m_onPlayerDropGold(teamNum, playerNum);
+        if (m_onPlayerDropGold != null && m_onPlayerDropGold.GetInvocationList().Length > 0)
+        {
+            m_onPlayerDropGold(teamNum, playerNum);
+        }
     }
 
     private void OnPlayerBoardBoat(int teamNum, int playerNum, int boatNum)
     {
-        m_onPlayerBoardBoat(teamNum, playerNum, boatNum);
+        if (m_onPlayerBoardBoat != null && m_onPlayerBoardBoat.GetInvocationList().Length > 0)
+        {
+            m_onPlayerBoardBoat(teamNum, playerNum, boatNum);
+        }
     }
     
     private void OnPlayerGetOffBoat(int teamNum, int playerNum, int boatNum)
     {
-        m_onPlayerGetOffBoat(teamNum, playerNum, boatNum);
+        if (m_onPlayerGetOffBoat != null && m_onPlayerGetOffBoat.GetInvocationList().Length > 0)
+        {
+            m_onPlayerGetOffBoat(teamNum, playerNum, boatNum);
+        }
     }
 
     private void OnPlayerEnterGoldPickupZone(int teamNum, int playerNum)
     {
-        m_onPlayerEnterGoldPickupZone(teamNum, playerNum);
+        if (m_onPlayerEnterGoldPickupZone != null && m_onPlayerEnterGoldPickupZone.GetInvocationList().Length > 0)
+        {
+            m_onPlayerEnterGoldPickupZone(teamNum, playerNum);
+        }
     }
     private void OnPlayerExitGoldPickupZone(int teamNum, int playerNum)
     {
-        m_onPlayerExitGoldPickupZone(teamNum, playerNum);
+        if (m_onPlayerExitGoldPickupZone != null && m_onPlayerExitGoldPickupZone.GetInvocationList().Length > 0)
+        {
+            m_onPlayerExitGoldPickupZone(teamNum, playerNum);
+        }
     }
     private void OnPlayerEnterGoldDropZone(int teamNum, int playerNum)
     {
-        m_onPlayerEnterGoldDropZone(teamNum, playerNum);
+        if (m_onPlayerEnterGoldDropZone != null && m_onPlayerEnterGoldDropZone.GetInvocationList().Length > 0)
+        {
+            m_onPlayerEnterGoldDropZone(teamNum, playerNum);
+        }
     }
     private void OnPlayerExitGoldDropZone(int teamNum, int playerNum)
     {
-        m_onPlayerExitGoldDropZone(teamNum, playerNum);
+        if (m_onPlayerExitGoldDropZone != null && m_onPlayerExitGoldDropZone.GetInvocationList().Length > 0)
+        {
+            m_onPlayerExitGoldDropZone(teamNum, playerNum);
+        }
+    }
+
+    private void OnPlayerDashCooldownStart(int teamNum, int playerNum, float cooldownSeconds)
+    {
+        if (m_onDashCooldownStart != null && m_onDashCooldownStart.GetInvocationList().Length > 0)
+        {
+            m_onDashCooldownStart(teamNum, playerNum, cooldownSeconds);
+        }
     }
 
     (int, int) AddPlayer()
@@ -669,18 +723,6 @@ public class PlayerSystem : GameSystem
                 m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
                 m_players[i].transform.localScale = spawnPos.transform.localScale;
                 m_players[i].transform.rotation = spawnPos.transform.rotation;
-
-                PlayerGoldController playerGoldController = m_players[i].GetComponent<PlayerGoldController>();
-
-                playerGoldController.m_onPlayerPickupGold += OnPlayerPickUpGold;
-                playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
-                playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
-                playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
-
-                playerGoldController.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
-                playerGoldController.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
-                playerGoldController.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
-                playerGoldController.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
                 
                 m_visualStandIns[i].SetActive(false);
                 
