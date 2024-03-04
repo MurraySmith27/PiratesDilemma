@@ -10,6 +10,8 @@ using UnityEngine.SceneManagement;
 public delegate void GameStartEvent();
 public delegate void GameFinishEvent();
 public delegate void GameSceneLoadedEvent();
+
+public delegate void GameSceneUnloadedEvent();
 public delegate void GameTimerUpdateEvent(int currentTimerValueSeconds);
 
 public class GameTimerSystem : GameSystem
@@ -30,8 +32,16 @@ public class GameTimerSystem : GameSystem
     [SerializeField] private string m_characterSelectSceneName;
     
     [SerializeField] private int m_krakenArrivalTimeRemaining = 60;
+    
+    [SerializeField] private float m_holdAfterGameEndTime = 1f;
+    
+    [SerializeField] private float m_holdBeforeCountdownTimerTime = 1f;
 
     [SerializeField] private float m_gameSceneLoadedBufferSeconds = 0.5f;
+    
+    [SerializeField] private float m_gameSceneUnloadedBufferSeconds = 0.5f;
+
+    [SerializeField] private string m_resultsSceneName;
     
     public List<string> m_levelSceneNames;
     
@@ -40,6 +50,8 @@ public class GameTimerSystem : GameSystem
     public GameFinishEvent m_onGameFinish;
 
     public GameSceneLoadedEvent m_onGameSceneLoaded;
+    
+    public GameSceneUnloadedEvent m_onGameSceneUnloaded;
     
     public GameTimerUpdateEvent m_onGameTimerUpdate;
     public GameTimerUpdateEvent m_onStartGameTimerUpdate;
@@ -85,16 +97,16 @@ public class GameTimerSystem : GameSystem
     {
         m_onGameSceneLoaded();
         yield return new WaitForSeconds(m_gameSceneLoadedBufferSeconds);
+
+        yield return new WaitForSeconds(m_holdBeforeCountdownTimerTime);
+        
         StartCoroutine(StartGameCountdown());
         m_onGameTimerUpdate(m_gameTimerSeconds);
     }
 
-    public void StopGame()
+    public void StopGame(string nextSceneToLoadName)
     {
-        if (m_onGameFinish?.GetInvocationList()?.Length > 0)
-        {
-            m_onGameFinish();
-        }
+        StartCoroutine(EndGameCoroutine(nextSceneToLoadName));
     }
 
     private IEnumerator StartGameCountdown()
@@ -146,7 +158,20 @@ public class GameTimerSystem : GameSystem
             m_onGameTimerUpdate(count);
         }
 
+        StartCoroutine(EndGameCoroutine(m_resultsSceneName));
+    }
+
+    private IEnumerator EndGameCoroutine(string nextSceneToLoadName)
+    {
         m_onGameFinish();
+
+        yield return new WaitForSeconds(m_holdAfterGameEndTime);
+        
+        m_onGameSceneUnloaded();
+        
+        yield return new WaitForSeconds(m_gameSceneUnloadedBufferSeconds);
+        
+        SceneManager.LoadScene(nextSceneToLoadName);
     }
     
 }

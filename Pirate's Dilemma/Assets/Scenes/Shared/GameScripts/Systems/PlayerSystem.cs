@@ -439,9 +439,8 @@ public class PlayerSystem : GameSystem
     private IEnumerator StartGameCountdown()
     {
         yield return new WaitForSeconds(m_startGameCountdownSeconds);
-        GameTimerSystem.Instance.StopGame();
-        yield return new WaitForSeconds(m_leavePreviousSceneBufferTime);
-        SceneManager.LoadScene(m_gameSceneToLoadName);
+        GameTimerSystem.Instance.StopGame(m_gameSceneToLoadName);
+        
     }
     
     public void OnPlayerDie(int playerNum)

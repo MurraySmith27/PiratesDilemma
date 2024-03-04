@@ -19,7 +19,7 @@ public class ScreenSwipeController : UIBase
 
         m_swipeInScreen = m_root.Q<VisualElement>("swipe-cover");
 
-        GameTimerSystem.Instance.m_onGameFinish += StartTransitionOut;
+        GameTimerSystem.Instance.m_onGameSceneUnloaded += StartTransitionOut;
 
         GameTimerSystem.Instance.m_onGameSceneLoaded += StartTransitionIn;
 
@@ -31,7 +31,7 @@ public class ScreenSwipeController : UIBase
 
     void OnDestroy()
     {
-        GameTimerSystem.Instance.m_onGameFinish -= StartTransitionOut;
+        GameTimerSystem.Instance.m_onGameSceneUnloaded -= StartTransitionOut;
 
         GameTimerSystem.Instance.m_onGameSceneLoaded -= StartTransitionIn;
     }
@@ -45,7 +45,7 @@ public class ScreenSwipeController : UIBase
     private IEnumerator TransitionOutAnimation()
     {
         float swipeInitialLeft = Screen.width;
-        float swipeFinalLeft = 0;
+        float swipeFinalLeft = -10;
         
         for (float t = 0; t < 1; t += Time.deltaTime / m_transitionTime)
         {
