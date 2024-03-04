@@ -68,12 +68,10 @@ public class InGameHoversUI : UIBase
 
     private List<GameObject> m_playerIndicators;
     
-
     protected override void Awake()
     {
         base.Awake();
     }
-    
 
     protected override void SetUpUI()
     {

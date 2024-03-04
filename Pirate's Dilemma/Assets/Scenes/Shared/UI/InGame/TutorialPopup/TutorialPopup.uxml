@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="root" style="flex-grow: 1; align-self: auto;">
+        <ui:VisualElement style="flex-grow: 1;" />
+        <ui:VisualElement name="popup-container-root" style="flex-grow: 2; flex-direction: row; flex-shrink: 2;">
+            <ui:VisualElement style="flex-grow: 1;" />
+            <ui:VisualElement name="popup-container" style="flex-grow: 2; align-self: auto; align-items: stretch; background-image: none; flex-shrink: 2; justify-content: flex-start;" />
+            <ui:VisualElement style="flex-grow: 1;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -758,7 +758,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_gameStartTimerSeconds: 3
-  m_gameTimerSeconds: 5
+  m_gameTimerSeconds: 120
   m_characterSelectSceneName: CharacterSelect
   m_krakenArrivalTimeRemaining: 60
   m_holdAfterGameEndTime: 1
@@ -770,6 +770,7 @@ MonoBehaviour:
   - Level1
   - Level2
   - Level3
+  m_gamePaused: 0
 --- !u!4 &1660667910
 Transform:
   m_ObjectHideFlags: 0

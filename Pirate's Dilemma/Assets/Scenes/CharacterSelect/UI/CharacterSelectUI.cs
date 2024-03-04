@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -45,6 +46,13 @@ public class CharacterSelectUI : UIBase
         base.Awake();
     }
 
+    private bool startcalled = false;
+
+    void Start()
+    {
+        startcalled = true;
+    }
+
     protected override void SetUpUI()
     {
         m_root = m_screenSpaceUIDoc.rootVisualElement.Q<VisualElement>("root");
@@ -67,7 +75,6 @@ public class CharacterSelectUI : UIBase
         
         for (int i = 0; i < PlayerSystem.Instance.m_maxNumPlayers; i++)
         {
-            
             m_renderTextureQuads[i].transform.localScale = new Vector3(quadWidthScale, quadHeightScale / 2f, 1);
             Vector3 currentPos = m_renderTextureQuads[i].transform.position;
             m_renderTextureQuads[i].transform.position = new Vector3(-quadWidthScale * ((i % 2) - 1.5f), currentPos.y - (2 * (int)(i/2)-1) * quadHeightScale / 4f, currentPos.z);
@@ -146,5 +153,11 @@ public class CharacterSelectUI : UIBase
             color = Color.red;
         }
         m_readyUpHoverElements[playerNum - 1].Q<VisualElement>("root").style.backgroundColor = new StyleColor(color);
+    }
+
+    void OnDisable()
+    {
+        PlayerSystem.Instance.m_onPlayerJoin -= OnPlayerJoin;
+        PlayerSystem.Instance.m_onPlayerReadyUpToggle -= UpdateReadyUpUI;
     }
 }

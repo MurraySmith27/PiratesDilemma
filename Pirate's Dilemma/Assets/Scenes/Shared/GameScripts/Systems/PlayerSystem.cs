@@ -11,7 +11,6 @@ using Debug = UnityEngine.Debug;
 public delegate void PlayerDieEvent(int playerNum);
 public delegate void PlayerRespawnEvent(int playerNum);
 public delegate void PlayerJoinEvent(int newPlayerNum);
-
 public delegate void PlayerReadyUpToggleEvent(int playerNum, bool isReady);
 
 //The purpose of this class to to store data that persists between scenes about players.
@@ -211,6 +210,7 @@ public class PlayerSystem : GameSystem
     {
         SetPlayerSpawnPositions();
         SceneManager.sceneLoaded += OnGameSceneLoaded;
+        SceneManager.sceneUnloaded += OnGameSceneUnloaded;
 
         base.SystemReady();
     }
@@ -344,7 +344,6 @@ public class PlayerSystem : GameSystem
             playerPrefab = m_team2playerPrefabs[numPlayersPerTeam[teamNum - 1] - 1];
         }
 
-
         GameObject newPlayerInstance = Instantiate(playerPrefab,
             m_playerSpawnPositions[playerNum - 1].position, Quaternion.identity);
         
@@ -440,7 +439,6 @@ public class PlayerSystem : GameSystem
     {
         yield return new WaitForSeconds(m_startGameCountdownSeconds);
         GameTimerSystem.Instance.StopGame(m_gameSceneToLoadName);
-        
     }
     
     public void OnPlayerDie(int playerNum)
@@ -653,39 +651,70 @@ public class PlayerSystem : GameSystem
 
     private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        //only call the callback for the next scene loaded.
-        SceneManager.sceneLoaded -= OnGameSceneLoaded;
-        
-        if (GameTimerSystem.Instance.m_levelSceneNames.Contains(scene.name))
+
+        //get spawn positions from gameobject in scene with special tags.
+        SetPlayerSpawnPositions();
+
+        bool isCharacterSelect = scene.name == GameTimerSystem.Instance.m_characterSelectSceneName;
+        //move players to spawn positions
+        for (int i = 0; i < m_numPlayers; i++)
         {
-            //get spawn positions from gameobject in scene with special tags.
-            SetPlayerSpawnPositions();
+            GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
+
+            m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
+            m_players[i].transform.localScale = spawnPos.transform.localScale;
+            m_players[i].transform.rotation = spawnPos.transform.rotation;
+
+            PlayerGoldController playerGoldController = m_players[i].GetComponent<PlayerGoldController>();
+
+            playerGoldController.m_onPlayerPickupGold += OnPlayerPickUpGold;
+            playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
+            playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
+            playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
+
+            playerGoldController.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
+            playerGoldController.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
+            playerGoldController.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
+            playerGoldController.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
             
-            //move players to spawn positions
+            SwitchToActionMapForPlayer(i + 1, "InGame");
+        }
+
+        if (isCharacterSelect)
+        {
             for (int i = 0; i < m_numPlayers; i++)
             {
-                GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
-
-                m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
-                m_players[i].transform.localScale = spawnPos.transform.localScale;
-                m_players[i].transform.rotation = spawnPos.transform.rotation;
-
-                PlayerGoldController playerGoldController = m_players[i].GetComponent<PlayerGoldController>();
-
-                playerGoldController.m_onPlayerPickupGold += OnPlayerPickUpGold;
-                playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
-                playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
-                playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
-
-                playerGoldController.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
-                playerGoldController.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
-                playerGoldController.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
-                playerGoldController.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
+                PlayerInput playerInput = m_players[i].GetComponentInChildren<PlayerInput>();
                 
-                m_visualStandIns[i].SetActive(false);
+                playerInput.actions.FindAction("ReadyUp").performed += (ctx => OnReadyUpButtonPressed(i+1));
+                playerInput.actions.FindAction("ReadyUp").Enable();
                 
-                SwitchToActionMapForPlayer(i + 1, "InGame");
+                m_players[i].GetComponent<PlayerMovementController>().OnGameStart();
+                m_players[i].GetComponent<PlayerGoldController>().OnGameStart();
+                m_players[i].GetComponent<PlayerAnimationController>().OnGameStart();
+                m_visualStandIns[i].SetActive(true);
+
+                m_readyPlayers[i] = false;
+                
+                m_onPlayerJoin(i+1);
             }
+            
+            if (m_numPlayers < m_maxNumPlayers)
+            {
+                for (int i = 0; i < m_numPlayers; i++)
+                {
+                    PlayerInput playerInput = m_players[i].GetComponentInChildren<PlayerInput>();
+                
+                    playerInput.actions.FindAction("ReadyUp").Disable();
+                }
+                
+                //add the callback for the next player.
+                m_playerControlSchemesList[m_numPlayers].FindAction("Join").performed += OnJoinButtonPressed;
+                m_playerControlSchemesList[m_numPlayers].FindAction("Join").Enable();
+            }
+        }
+        else if (GameTimerSystem.Instance.m_levelSceneNames.Contains(scene.name))
+        {
 
             if (m_numPlayers < m_maxNumPlayers)
             {
@@ -695,6 +724,26 @@ public class PlayerSystem : GameSystem
         
         if (KrakenController.Instance != null) {
             KrakenController.Instance.m_onKrakenEmerge += OnKrakenEmerge;
+        }
+    }
+
+    private void OnGameSceneUnloaded(Scene scene)
+    {
+        for (int i = 0; i < m_numPlayers; i++)
+        {
+            PlayerGoldController playerGoldController = m_players[i].GetComponent<PlayerGoldController>();
+
+            playerGoldController.m_onPlayerPickupGold += OnPlayerPickUpGold;
+            playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
+            playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
+            playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
+
+            playerGoldController.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
+            playerGoldController.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
+            playerGoldController.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
+            playerGoldController.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
+            
+            m_visualStandIns[i].SetActive(false);
         }
     }
 }

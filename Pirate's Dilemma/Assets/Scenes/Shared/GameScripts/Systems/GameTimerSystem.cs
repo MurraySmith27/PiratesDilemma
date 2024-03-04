@@ -9,8 +9,9 @@ using UnityEngine.SceneManagement;
 
 public delegate void GameStartEvent();
 public delegate void GameFinishEvent();
+public delegate void GamePauseEvent();
+public delegate void GameUnpauseEvent();
 public delegate void GameSceneLoadedEvent();
-
 public delegate void GameSceneUnloadedEvent();
 public delegate void GameTimerUpdateEvent(int currentTimerValueSeconds);
 
@@ -29,7 +30,7 @@ public class GameTimerSystem : GameSystem
     
     [SerializeField] private int m_gameTimerSeconds = 120;
 
-    [SerializeField] private string m_characterSelectSceneName;
+    public string m_characterSelectSceneName;
     
     [SerializeField] private int m_krakenArrivalTimeRemaining = 60;
     
@@ -49,12 +50,18 @@ public class GameTimerSystem : GameSystem
     
     public GameFinishEvent m_onGameFinish;
 
+    public GamePauseEvent m_onGamePause;
+
+    public GameUnpauseEvent m_onGameUnpause;
+    
     public GameSceneLoadedEvent m_onGameSceneLoaded;
     
     public GameSceneUnloadedEvent m_onGameSceneUnloaded;
     
     public GameTimerUpdateEvent m_onGameTimerUpdate;
     public GameTimerUpdateEvent m_onStartGameTimerUpdate;
+    
+    public bool m_gamePaused = false;
 
     private bool m_krakenArrived = false;
     
@@ -74,6 +81,7 @@ public class GameTimerSystem : GameSystem
 
     void Start()
     {
+        m_gamePaused = false;
         
         //idea here is that the scene manager only wants to register the callback if loading into player select screen.
         if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
@@ -86,6 +94,20 @@ public class GameTimerSystem : GameSystem
         }
         
         base.SystemReady();
+    }
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0;
+        m_gamePaused = true;
+        m_onGamePause();
+    }
+
+    public void UnPauseGame()
+    {
+        Time.timeScale = 1f;
+        m_gamePaused = false;
+        m_onGameUnpause();
     }
 
     public void StartGame(Scene scene, LoadSceneMode mode)
@@ -163,15 +185,21 @@ public class GameTimerSystem : GameSystem
 
     private IEnumerator EndGameCoroutine(string nextSceneToLoadName)
     {
+        //set time to half speed
+        float endGameTimeScale = 0.5f;
+        Time.timeScale = endGameTimeScale;
+        
         m_onGameFinish();
-
-        yield return new WaitForSeconds(m_holdAfterGameEndTime);
+        
+        yield return new WaitForSeconds(m_holdAfterGameEndTime * endGameTimeScale);
         
         m_onGameSceneUnloaded();
         
         yield return new WaitForSeconds(m_gameSceneUnloadedBufferSeconds);
         
         SceneManager.LoadScene(nextSceneToLoadName);
+
+        Time.timeScale = 1f;
     }
     
 }
