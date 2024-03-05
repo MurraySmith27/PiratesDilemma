@@ -185,27 +185,26 @@ public class PlayerSystem : GameSystem
         else
         {
             PlayerSystem._instance = this;
-        }
+            m_playerControlSchemesList = new List<PlayerControlSchemes>();
+            m_assignedPlayerDevices = new Dictionary<int, InputDevice>();
 
-        m_playerControlSchemesList = new List<PlayerControlSchemes>();
-        m_assignedPlayerDevices = new Dictionary<int, InputDevice>();
-
-        for (int i = 0; i < m_maxNumPlayers; i++)
-        {
-            m_playerControlSchemesList.Add(new PlayerControlSchemes());
+            for (int i = 0; i < m_maxNumPlayers; i++)
+            {
+                m_playerControlSchemesList.Add(new PlayerControlSchemes());
+            }
+        
+            m_playerControlSchemesList[0].FindAction("Join").performed += OnJoinButtonPressed;
+            m_playerControlSchemesList[0].FindAction("Join").Enable();
+        
+            m_players = new List<GameObject>();
+            m_playersParents = new List<Transform>();
+            m_playerTeamAssignments = new List<int>();
+            m_isPlayerDying = new List<bool>();
+            m_readyPlayers = new List<bool>();
+            m_visualStandIns = new List<GameObject>();
+        
+            DontDestroyOnLoad(this.gameObject);    
         }
-        
-        m_playerControlSchemesList[0].FindAction("Join").performed += OnJoinButtonPressed;
-        m_playerControlSchemesList[0].FindAction("Join").Enable();
-        
-        m_players = new List<GameObject>();
-        m_playersParents = new List<Transform>();
-        m_playerTeamAssignments = new List<int>();
-        m_isPlayerDying = new List<bool>();
-        m_readyPlayers = new List<bool>();
-        m_visualStandIns = new List<GameObject>();
-        
-        DontDestroyOnLoad(this.gameObject);    
     }
 
     void Start()
@@ -319,6 +318,7 @@ public class PlayerSystem : GameSystem
         
         int playerNum, teamNum;
         (playerNum, teamNum) = this.AddPlayer();
+        
         if (playerNum == -1)
         {
             //at player limit. destroy.
@@ -370,6 +370,10 @@ public class PlayerSystem : GameSystem
             m_playerControlSchemesList[playerNum].FindAction("Join").performed += OnJoinButtonPressed;
             m_playerControlSchemesList[playerNum].FindAction("Join").Enable();
         }
+        
+        
+        m_playerControlSchemesList[playerNum-1].FindAction("Join").performed -= OnJoinButtonPressed;
+        m_playerControlSchemesList[playerNum-1].FindAction("Join").Disable();
         
         playerInput.actions.FindAction("Join").performed -= OnJoinButtonPressed;
         playerInput.actions.FindAction("Join").Disable();
@@ -460,6 +464,12 @@ public class PlayerSystem : GameSystem
     private IEnumerator StartGameCountdown()
     {
         yield return new WaitForSeconds(m_startGameCountdownSeconds);
+        Debug.Log($"deregistering join event for player index: {m_numPlayers}");
+        m_playerControlSchemesList[m_numPlayers].FindAction("Join").performed -= OnJoinButtonPressed;
+        m_playerControlSchemesList[m_numPlayers].FindAction("Join").Disable();
+        PlayerInput playerInput = m_players[m_numPlayers - 1].GetComponent<PlayerInput>();
+        playerInput.actions.FindAction("Join").performed -= OnJoinButtonPressed;
+        playerInput.actions.FindAction("Join").Disable();
         GameTimerSystem.Instance.StopGame(m_gameSceneToLoadName);
     }
     
@@ -745,8 +755,9 @@ public class PlayerSystem : GameSystem
                 m_players[i].transform.localScale = spawnPos.transform.localScale;
                 m_players[i].transform.rotation = spawnPos.transform.rotation;
                 
-                playerInput.actions.FindAction("ReadyUp").performed += (ctx => OnReadyUpButtonPressed(i+1));
-                playerInput.actions.FindAction("ReadyUp").Enable();
+                m_playerControlSchemesList[i].FindAction("ReadyUp").Enable();
+                m_playerControlSchemesList[i].FindAction("Join").Disable();
+                playerInput.actions.FindAction("Join").Disable();
                 
                 m_players[i].GetComponent<PlayerMovementController>().OnGameStart();
                 m_players[i].GetComponent<PlayerGoldController>().OnGameStart();
@@ -758,18 +769,13 @@ public class PlayerSystem : GameSystem
                 m_onPlayerJoin(i+1);
             }
             
+            Debug.Log($"loading into character select. num players: {m_numPlayers}");
+            
             if (m_numPlayers < m_maxNumPlayers)
             {
-                for (int i = 0; i < m_numPlayers; i++)
-                {
-                    PlayerInput playerInput = m_players[i].GetComponentInChildren<PlayerInput>();
-                
-                    playerInput.actions.FindAction("ReadyUp").Disable();
-                }
-                
                 //add the callback for the next player.
-                m_playerControlSchemesList[m_numPlayers].FindAction("Join").performed += OnJoinButtonPressed;
-                m_playerControlSchemesList[m_numPlayers].FindAction("Join").Enable();
+                // m_playerControlSchemesList[m_numPlayers].FindAction("Join").performed += OnJoinButtonPressed;
+                // m_playerControlSchemesList[m_numPlayers].FindAction("Join").Enable();
             }
         }
         else if (GameTimerSystem.Instance.m_levelSceneNames.Contains(scene.name))

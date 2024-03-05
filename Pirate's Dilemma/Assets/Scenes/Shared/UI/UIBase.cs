@@ -16,8 +16,8 @@ public abstract class UIBase : MonoBehaviour
     
     protected virtual void Awake()
     {
+        GameSystem.m_onSetupComplete -= SystemReady;
         GameSystem.m_onSetupComplete += SystemReady;
-
         m_setUpUIAlready = false;
         SetUpIfReady();
     }

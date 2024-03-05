@@ -69,31 +69,30 @@ public class GameTimerSystem : GameSystem
     {
         if (_instance != null && _instance != this)
         {
-            Destroy(_instance.gameObject);
+            Destroy(this);
         }
         else
         {
             _instance = this;
+            DontDestroyOnLoad(this.gameObject);
         }
-        
-        DontDestroyOnLoad(this.gameObject);
     }
 
     void Start()
     {
-        m_gamePaused = false;
         
-        //idea here is that the scene manager only wants to register the callback if loading into player select screen.
-        if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
-        {
-            SceneManager.sceneLoaded -= StartGame;
-        }
-        else if (SceneManager.GetActiveScene().name == m_characterSelectSceneName)
-        {
-            SceneManager.sceneLoaded += StartGame;
-        }
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
         
         base.SystemReady();
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
+        {
+            StartGame();
+        }
     }
 
     public void PauseGame()
@@ -110,8 +109,9 @@ public class GameTimerSystem : GameSystem
         m_onGameUnpause();
     }
 
-    public void StartGame(Scene scene, LoadSceneMode mode)
+    public void StartGame()
     {
+        m_gamePaused = false;
         StartCoroutine(StartGameCoroutine());
     }
 
@@ -135,6 +135,7 @@ public class GameTimerSystem : GameSystem
     {
         int count = m_gameStartTimerSeconds;
         m_onStartGameTimerUpdate(count);
+
         while (count > 0)
         {
             // Wait for one second

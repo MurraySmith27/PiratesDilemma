@@ -75,7 +75,6 @@ public class PlayerMovementController : MonoBehaviour
     
     private void Awake()
     {
-
         m_playerData = GetComponent<PlayerData>();
 
         m_characterController = GetComponent<CharacterController>();

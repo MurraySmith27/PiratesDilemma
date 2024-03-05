@@ -13,6 +13,8 @@ public class InGameUI : UIBase
 
     [SerializeField] private GameObject m_tutorialPopupObject;
     
+    [SerializeField] private bool m_useTutorialPopups = false;
+    
     private Label m_globalTimerLabel;
     private Label m_leaderBoardLabel;
     private Label m_gameStartTimerLabel;
@@ -52,9 +54,7 @@ public class InGameUI : UIBase
         m_leaderBoardLabel.text = "Scores:";
 
         m_showingTutorialPopup = false;
-
-        GameObject[] boats = GameObject.FindGameObjectsWithTag("Boat");
-
+        
         ScoreSystem.Instance.m_onScoreUpdate += UpdateScoreUI;
 
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
@@ -119,13 +119,16 @@ public class InGameUI : UIBase
     void OnGameStart()
     {
         Camera.main.GetComponent<AudioSource>().Play();
-        
-        m_tutorialPopupObject.GetComponent<TutorialPopupController>().ShowPopup(m_gameRulesTutorialSprite);
 
-        m_currentTutorialPopupSprite = m_gameRulesTutorialSprite;
-        m_showingTutorialPopup = true;
-        
-        GameTimerSystem.Instance.PauseGame();
+        if (m_useTutorialPopups)
+        {
+            m_tutorialPopupObject.GetComponent<TutorialPopupController>().ShowPopup(m_gameRulesTutorialSprite);
+
+            m_currentTutorialPopupSprite = m_gameRulesTutorialSprite;
+            m_showingTutorialPopup = true;
+
+            GameTimerSystem.Instance.PauseGame();
+        }
     }
 
     void OnGamePause()
@@ -172,6 +175,20 @@ public class InGameUI : UIBase
         m_playerControlSchemes.FindAction("Pause").Disable();
         m_playerControlSchemes.FindAction("Select").performed -= OnUISelectButtonPressed;
         m_playerControlSchemes.FindAction("Select").Disable();
+        
+        ScoreSystem.Instance.m_onScoreUpdate -= UpdateScoreUI;
+
+        GameTimerSystem.Instance.m_onGameStart -= OnGameStart;
+
+        GameTimerSystem.Instance.m_onGamePause -= OnGamePause;
+        
+        GameTimerSystem.Instance.m_onGameUnpause -= OnGameUnpause;
+
+        GameTimerSystem.Instance.m_onStartGameTimerUpdate -= OnStartGameTimerValueChange;
+
+        GameTimerSystem.Instance.m_onGameTimerUpdate -= OnGameTimerValueChange;
+        
+        GameTimerSystem.Instance.m_onGameFinish -= OnGameFinish;
     }
     
 }

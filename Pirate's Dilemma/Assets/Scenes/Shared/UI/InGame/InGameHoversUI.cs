@@ -43,7 +43,7 @@ public class InGameHoversUI : UIBase
 
     [SerializeField] private List<Sprite> m_team2BoatBoardingHoverIcons;
 
-    [SerializeField] private float m_hoverIconScaleFactor = 0.1f;
+    [SerializeField] private float m_hoverIconScaleFactor = 0.01f;
 
     private List<List<Sprite>> m_boardingHoverIconsPerTeam
     {
@@ -76,9 +76,10 @@ public class InGameHoversUI : UIBase
     {
         base.Awake();
     }
-
+    
     protected override void SetUpUI()
     {
+        Debug.Log("set up in game hovers ui ");
         m_boatTimerLabelCoroutines = new List<List<Coroutine>>();
 
         m_boatElements = new List<List<VisualElement>>();
@@ -107,7 +108,7 @@ public class InGameHoversUI : UIBase
 
             int teamAssignment = PlayerSystem.Instance.m_playerTeamAssignments[i];
         
-            m_playerIndicators[i].GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
+            m_playerIndicators[i].GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
                 PlayerSystem.Instance.m_teamColors[teamAssignment - 1],
                 hoverIcon: m_playerNumberIcons[i],
                 objectToTrack: PlayerSystem.Instance.m_players[i],
@@ -138,7 +139,6 @@ public class InGameHoversUI : UIBase
             }
         }
         
-        
         //set callback to update tutorial UI when player picks up gold
         PlayerSystem.Instance.m_onPlayerPickupGold += OnGoldPickedUp;
         PlayerSystem.Instance.m_onPlayerDropGold += OnGoldDropped;
@@ -167,7 +167,7 @@ public class InGameHoversUI : UIBase
                 Quaternion.identity);
 
         
-            genericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(0.2f,
+            genericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(0.08f,
                 Color.black,
                 hoverIcon: m_goldPickupZoneHoverIcon,
                 objectToTrack: goldPickupZone,
@@ -195,7 +195,7 @@ public class InGameHoversUI : UIBase
                 {
                     GameObject newHover = Instantiate(m_goldDropZoneHoverPrefabsPerTeam[teamNum-1], Vector3.zero, Quaternion.identity);
                     
-                    newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
+                    newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
                         color: PlayerSystem.Instance.m_teamColors[teamNum - 1],
                         hoverIcon: m_goldDropZoneHoverIcon,
                         objectToTrack: goldDropZone,
@@ -282,7 +282,7 @@ public class InGameHoversUI : UIBase
             //create a new popup.
             GameObject newHover = Instantiate(m_boatBoardingHoverPrefabs[playerNum-1], Vector3.zero, Quaternion.identity);
 
-            newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
+            newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
                 color: Color.white,
                 hoverIcon: m_boardingHoverIconsPerTeam[teamNum - 1][teamPlayerNum - 1],
                 horizontalOffset: 0.3f * (0.5f + teamPlayerNum - numPlayersOnThisTeam / 2f) * m_hoverIconScaleFactor,
@@ -310,7 +310,7 @@ public class InGameHoversUI : UIBase
             m_playerIndicators[playerNum - 1] = Instantiate(m_playerHoverPrefabs[playerNum - 1],
                 new Vector3(0, 0, 0), Quaternion.identity);
 
-            m_playerIndicators[playerNum - 1].GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
+            m_playerIndicators[playerNum - 1].GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
                 PlayerSystem.Instance.m_teamColors[teamNum - 1],
                 hoverIcon: m_goldInteractButtonIcon,
                 objectToTrack: PlayerSystem.Instance.m_players[playerNum - 1],
@@ -340,7 +340,7 @@ public class InGameHoversUI : UIBase
             m_playerIndicators[playerNum - 1] = Instantiate(m_playerHoverPrefabs[playerNum - 1],
                 new Vector3(0, 0, 0), Quaternion.identity);
 
-            m_playerIndicators[playerNum - 1].GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
+            m_playerIndicators[playerNum - 1].GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
                 PlayerSystem.Instance.m_teamColors[teamNum - 1],
                 hoverIcon: m_goldInteractButtonIcon,
                 objectToTrack: PlayerSystem.Instance.m_players[playerNum - 1],
@@ -368,26 +368,26 @@ public class InGameHoversUI : UIBase
     {
         if (m_playerIndicators[playerNum - 1])
         {
-            GameObject newHover = Instantiate(m_playerDashCooldownHoverPrefabs[playerNum - 1], Vector3.zero,
-                Quaternion.identity);
-
-            newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
-                color: Color.white,
-                hoverIcon: m_dashCooldownHoverIcons[playerNum - 1],
-                objectToTrack: PlayerSystem.Instance.m_players[playerNum - 1],
-                scaleFactor: m_hoverIconScaleFactor,
-                camera: Camera.main
-            );
-            
-            m_playerIndicators[playerNum - 1] = newHover;
-
-            yield return new WaitForSeconds(cooldownSeconds);
-
-            if (m_playerIndicators[playerNum - 1] == newHover)
-            {
-                Destroy(m_playerIndicators[playerNum - 1]);
-                m_playerIndicators[playerNum - 1] = null;
-            }
+            // GameObject newHover = Instantiate(m_playerDashCooldownHoverPrefabs[playerNum - 1], Vector3.zero,
+            //     Quaternion.identity);
+            //
+            // newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
+            //     color: Color.white,
+            //     hoverIcon: m_dashCooldownHoverIcons[playerNum - 1],
+            //     objectToTrack: PlayerSystem.Instance.m_players[playerNum - 1],
+            //     scaleFactor: m_hoverIconScaleFactor,
+            //     camera: Camera.main
+            // );
+            //
+            // m_playerIndicators[playerNum - 1] = newHover;
+            //
+            // yield return new WaitForSeconds(cooldownSeconds);
+            //
+            // if (m_playerIndicators[playerNum - 1] == newHover)
+            // {
+            //     Destroy(m_playerIndicators[playerNum - 1]);
+            //     m_playerIndicators[playerNum - 1] = null;
+            // }
         }
         else
         {
@@ -452,7 +452,7 @@ public class InGameHoversUI : UIBase
         {
             GameObject newHover = Instantiate(m_boatBoardingHoverPrefabs[globalPlayerNum-1], Vector3.zero, Quaternion.identity);
 
-            newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.1f,
+            newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
                 color: Color.white,
                 hoverIcon: m_boardingHoverIconsPerTeam[teamNum - 1][0],
                 objectToTrack: boatModelObject,

@@ -13,6 +13,12 @@ public class ScreenSwipeController : UIBase
     private VisualElement m_root;
     private VisualElement m_swipeInScreen;
 
+    
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+    
     protected override void SetUpUI()
     {
         m_root = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("root");
@@ -45,7 +51,7 @@ public class ScreenSwipeController : UIBase
     private IEnumerator TransitionOutAnimation()
     {
         float swipeInitialLeft = Screen.width;
-        float swipeFinalLeft = -10;
+        float swipeFinalLeft = 0;
         
         for (float t = 0; t < 1; t += Time.deltaTime / m_transitionTime)
         {
@@ -65,7 +71,7 @@ public class ScreenSwipeController : UIBase
     private IEnumerator TransitionInAnimation()
     {
         float swipeInitialLeft = 0;
-        float swipeFinalLeft = -Screen.width - 50; //50 pixels as a good buffer
+        float swipeFinalLeft = -Screen.width;
         
         for (float t = 0; t < 1; t += Time.deltaTime / m_transitionTime)
         {

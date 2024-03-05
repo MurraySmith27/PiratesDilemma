@@ -46,13 +46,6 @@ public class CharacterSelectUI : UIBase
         base.Awake();
     }
 
-    private bool startcalled = false;
-
-    void Start()
-    {
-        startcalled = true;
-    }
-
     protected override void SetUpUI()
     {
         m_root = m_screenSpaceUIDoc.rootVisualElement.Q<VisualElement>("root");

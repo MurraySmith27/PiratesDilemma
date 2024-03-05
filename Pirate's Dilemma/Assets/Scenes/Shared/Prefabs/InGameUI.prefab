@@ -89,8 +89,10 @@ MonoBehaviour:
   m_goldDropZoneHoverPrefabsPerTeam:
   - {fileID: 7234308871107947966, guid: f0d2d420d63e40840be4c55f4c700ed6, type: 3}
   - {fileID: 7234308871107947966, guid: 59a077ebb331b4b42902af24ee2209c4, type: 3}
-  m_goldDropZoneHoverIcon: {fileID: 21300000, guid: 90b0d6963c1193142bd595a2ab26ceea,
+  m_goldDropZoneHoverIcon: {fileID: 21300000, guid: 31638b686fe27a743a4ff1a051787cee,
     type: 3}
+  m_playerDashCooldownHoverPrefabs: []
+  m_dashCooldownHoverIcons: []
   m_boatBoardingHoverPrefabs:
   - {fileID: 7234308871107947966, guid: bafdfea7c23febb4a83fddd241dc9acd, type: 3}
   - {fileID: 7234308871107947966, guid: a64ca890e0556404eb73ae70dbdbb7fd, type: 3}
@@ -102,7 +104,7 @@ MonoBehaviour:
   m_team2BoatBoardingHoverIcons:
   - {fileID: 21300000, guid: 110d209db1459184581d692522ecb270, type: 3}
   - {fileID: 21300000, guid: c8c701ca8690162419576dad6ee37629, type: 3}
-  m_hoverIconScaleFactor: 0.1
+  m_hoverIconScaleFactor: 0.05
 --- !u!1 &2931290759399913967
 GameObject:
   m_ObjectHideFlags: 0
@@ -266,11 +268,13 @@ MonoBehaviour:
   m_systemDependencies:
   - PlayerSystem
   - GameTimerSystem
+  - ScoreSystem
   m_scoreElementAsset: {fileID: 9197481963319205126, guid: 1592c9d5efb2cdc46845ddd761855c89,
     type: 3}
   m_gameRulesTutorialSprite: {fileID: 21300000, guid: de7e72055b371104489952c9ca06aea4,
     type: 3}
   m_tutorialPopupObject: {fileID: 3765545985192282897}
+  m_useTutorialPopups: 0
 --- !u!1 &5032374858146451266
 GameObject:
   m_ObjectHideFlags: 0

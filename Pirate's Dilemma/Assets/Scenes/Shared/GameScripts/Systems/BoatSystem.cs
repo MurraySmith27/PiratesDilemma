@@ -113,8 +113,14 @@ public class BoatSystem : GameSystem
         }
         else
         {
+            Debug.Log("boat system is CREATED!");
             _instance = this;
         }
+    }
+
+    void OnDestroy()
+    {
+        _instance = null;
     }
     
     void Start()
