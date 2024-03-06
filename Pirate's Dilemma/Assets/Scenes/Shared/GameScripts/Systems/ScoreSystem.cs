@@ -48,4 +48,13 @@ public class ScoreSystem : GameSystem
         
         m_onScoreUpdate(m_playerScores);
     }
+    
+    protected override void OnDestroy()
+    {
+        if (_instance == this)
+        {
+            base.OnDestroy();
+            _instance = null;
+        }
+    }
 }

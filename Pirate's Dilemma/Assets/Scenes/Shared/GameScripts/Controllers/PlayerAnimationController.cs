@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
@@ -16,6 +18,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     void Awake()
     {
+        GameTimerSystem.Instance.m_onGameStart -= OnGameStart; //remove first just to be safe awake gets called each scene load
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
     }
 

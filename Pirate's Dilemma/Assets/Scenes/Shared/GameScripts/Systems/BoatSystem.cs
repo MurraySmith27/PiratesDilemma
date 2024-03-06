@@ -117,6 +117,16 @@ public class BoatSystem : GameSystem
         }
     }
     
+
+    protected override void OnDestroy()
+    {
+        if (_instance == this)
+        {
+            base.OnDestroy();
+            _instance = null;
+        }
+    }
+    
     void Start()
     {
         m_boatInitialPositionsPerTeam = new List<List<Vector3>>();
@@ -203,7 +213,7 @@ public class BoatSystem : GameSystem
                 GameObject player = boardedPosition.GetChild(0).gameObject;
                 int playerNum = player.GetComponent<PlayerData>().m_playerNum;
                 PlayerSystem.Instance.UnlockPlayer(playerNum);
-                player.GetComponent<PlayerGoldController>().UnboardBoat(PlayerSystem.Instance.m_playersParents[playerNum - 1], m_boatGoldDropZoneInitialPositionsPerTeam[teamNum-1][boatNum-1]);
+                player.GetComponent<PlayerGoldController>().UnboardBoat(PlayerSystem.Instance.m_playersParents[playerNum - 1], m_boatGoldDropZoneInitialPositionsPerTeam[teamNum-1][boatNum-1] + new Vector3(0, 3f, 0));
             }
         }
 
