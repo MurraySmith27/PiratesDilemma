@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public delegate void PlayerPickUpGoldEvent(int teamNum, int playerNum);
 public delegate void PlayerDropGoldEvent(int teamNum, int playerNum);
+
+public delegate void PlayerDropGoldOntoBoatEvent();
 public delegate void PlayerBoardBoatEvent(int teamNum, int playerNum, int boatNum);
 public delegate void PlayerStartedThrowChargeEvent();
 public delegate void PlayerStartedThrowEvent();
@@ -48,6 +50,8 @@ public class PlayerGoldController : MonoBehaviour
     public PlayerPickUpGoldEvent m_onPlayerPickupGold;
 
     public PlayerDropGoldEvent m_onPlayerDropGold;
+
+    public PlayerDropGoldOntoBoatEvent m_onPlayerDropGoldOntoBoat;
     
     public PlayerBoardBoatEvent m_onPlayerBoardBoat;
     
@@ -357,6 +361,11 @@ public class PlayerGoldController : MonoBehaviour
         if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
         {
             boat.GetComponent<BoatGoldController>().AddGold(m_playerData.m_goldCarried, GetComponent<PlayerData>().m_teamNum);
+
+            if (m_onPlayerDropGoldOntoBoat != null && m_onPlayerDropGoldOntoBoat.GetInvocationList().Length > 0)
+            {
+                m_onPlayerDropGoldOntoBoat();
+            }
             DropAllGold();
         }
     }
