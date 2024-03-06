@@ -18,6 +18,8 @@ public abstract class UIBase : MonoBehaviour
     {
         GameSystem.m_onSetupComplete -= SystemReady;
         GameSystem.m_onSetupComplete += SystemReady;
+        GameSystem.m_onSystemDestroyed -= SystemDestroyed;
+        GameSystem.m_onSystemDestroyed += SystemDestroyed;
         m_setUpUIAlready = false;
         SetUpIfReady();
     }
@@ -50,6 +52,18 @@ public abstract class UIBase : MonoBehaviour
             m_systemDependenciesReady[dependencyName] = true;
         }
         SetUpIfReady();
+    }
+
+    private void SystemDestroyed(string dependencyName)
+    {
+        if (!m_systemDependenciesReady.ContainsKey(dependencyName))
+        {
+            m_systemDependenciesReady.Add(dependencyName, false);
+        }
+        else
+        {
+            m_systemDependenciesReady[dependencyName] = false;
+        }
     }
 
     protected abstract void SetUpUI();

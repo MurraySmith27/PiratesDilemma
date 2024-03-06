@@ -35,6 +35,7 @@ public class InGameUI : UIBase
     
     protected override void SetUpUI()
     {
+        Debug.Log("set up ui in game ui called");
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
 
         m_globalTimerLabel = root.Q<Label>("global-timer");

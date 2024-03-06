@@ -69,7 +69,7 @@ public class GameTimerSystem : GameSystem
     {
         if (_instance != null && _instance != this)
         {
-            Destroy(this);
+            Destroy(this.gameObject);
         }
         else
         {
@@ -87,6 +87,15 @@ public class GameTimerSystem : GameSystem
         base.SystemReady();
     }
 
+    protected override void OnDestroy()
+    {
+        if (_instance == this)
+        {
+            base.OnDestroy();
+            _instance = null;
+        }
+    }
+    
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))

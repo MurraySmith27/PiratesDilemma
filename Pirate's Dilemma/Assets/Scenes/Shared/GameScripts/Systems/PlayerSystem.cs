@@ -464,7 +464,6 @@ public class PlayerSystem : GameSystem
     private IEnumerator StartGameCountdown()
     {
         yield return new WaitForSeconds(m_startGameCountdownSeconds);
-        Debug.Log($"deregistering join event for player index: {m_numPlayers}");
         m_playerControlSchemesList[m_numPlayers].FindAction("Join").performed -= OnJoinButtonPressed;
         m_playerControlSchemesList[m_numPlayers].FindAction("Join").Disable();
         PlayerInput playerInput = m_players[m_numPlayers - 1].GetComponent<PlayerInput>();
@@ -692,7 +691,7 @@ public class PlayerSystem : GameSystem
         m_playerInputObjects[playerNum - 1].actions.FindActionMap(actionMapName).Enable();
     }
 
-    public void OnEnable()
+    void OnEnable()
     {
         
         foreach (PlayerInput playerInput in m_playerInputObjects)
@@ -701,9 +700,10 @@ public class PlayerSystem : GameSystem
         }
         
         m_actions.FindActionMap("CharacterSelect").Enable();
+
     }
     
-    public void OnDisable()
+    void OnDisable()
     {
         foreach (PlayerInput playerInput in m_playerInputObjects)
         {
@@ -711,6 +711,16 @@ public class PlayerSystem : GameSystem
         }
         
         m_actions.FindActionMap("CharacterSelect").Disable();
+        
+    }
+    
+    protected override void OnDestroy()
+    {
+        if (_instance == this)
+        {
+            base.OnDestroy();
+            _instance = null;
+        }
     }
 
     private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -769,7 +779,6 @@ public class PlayerSystem : GameSystem
                 m_onPlayerJoin(i+1);
             }
             
-            Debug.Log($"loading into character select. num players: {m_numPlayers}");
             
             if (m_numPlayers < m_maxNumPlayers)
             {

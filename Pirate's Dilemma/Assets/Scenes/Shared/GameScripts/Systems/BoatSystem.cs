@@ -113,14 +113,18 @@ public class BoatSystem : GameSystem
         }
         else
         {
-            Debug.Log("boat system is CREATED!");
             _instance = this;
         }
     }
+    
 
-    void OnDestroy()
+    protected override void OnDestroy()
     {
-        _instance = null;
+        if (_instance == this)
+        {
+            base.OnDestroy();
+            _instance = null;
+        }
     }
     
     void Start()

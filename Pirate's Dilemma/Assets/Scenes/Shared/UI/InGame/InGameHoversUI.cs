@@ -79,7 +79,6 @@ public class InGameHoversUI : UIBase
     
     protected override void SetUpUI()
     {
-        Debug.Log("set up in game hovers ui ");
         m_boatTimerLabelCoroutines = new List<List<Coroutine>>();
 
         m_boatElements = new List<List<VisualElement>>();
