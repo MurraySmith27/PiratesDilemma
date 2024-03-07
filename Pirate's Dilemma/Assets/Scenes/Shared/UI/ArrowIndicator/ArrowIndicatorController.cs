@@ -46,6 +46,10 @@ public class ArrowIndicatorController : MonoBehaviour
         {
             m_camera = camera ;
         }
+        else if (m_camera == null)
+        {
+            m_camera = Camera.main;
+        }
 
         if (scaleFactor != -1f)
         {
@@ -66,6 +70,8 @@ public class ArrowIndicatorController : MonoBehaviour
         MeshRenderer meshRenderer = GetComponentInChildren<MeshRenderer>();
 
         meshRenderer.enabled = true;
+        
+        
 
         Vector3 originalLocalScale = transform.localScale;
         

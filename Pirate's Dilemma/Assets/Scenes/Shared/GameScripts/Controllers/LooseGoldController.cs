@@ -22,17 +22,17 @@ public class LooseGoldController : MonoBehaviour
     private void OnTriggerEnter(Collider collider)
     {
         
-        if (collider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
-        {
-            //landed in drop zone, score for team. 
-            GameObject boat = collider.gameObject.GetComponent<GoldDropZoneData>().m_boat;
-            BoatGoldController boatGoldController = boat.GetComponent<BoatGoldController>();
-            if (boatGoldController.m_acceptingGold)
-            {
-                boatGoldController.AddGold(1, boat.GetComponent<BoatData>().m_teamNum);
-            }
-            Destroy(this.gameObject);
-        }
+        // if (collider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
+        // {
+        //     //landed in drop zone, score for team. 
+        //     GameObject boat = collider.gameObject.GetComponent<GoldDropZoneData>().m_boat;
+        //     BoatGoldController boatGoldController = boat.GetComponent<BoatGoldController>();
+        //     if (boatGoldController.m_acceptingGold)
+        //     {
+        //         boatGoldController.AddGold(1, boat.GetComponent<BoatData>().m_teamNum);
+        //     }
+        //     Destroy(this.gameObject);
+        // }
     }
 
     void OnCollisionEnter(Collision collision)

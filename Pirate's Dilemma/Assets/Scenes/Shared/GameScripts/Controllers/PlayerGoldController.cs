@@ -385,6 +385,11 @@ public class PlayerGoldController : MonoBehaviour
 
         m_heldGoldGameObject.SetActive(true);
         
+        if (m_onPlayerPickupGold != null && m_onPlayerPickupGold.GetInvocationList().Length > 0)
+        {
+            m_onPlayerPickupGold(m_playerData.m_teamNum, m_playerData.m_playerNum);
+        }
+        
         m_readyToThrow = false;
     }
     
@@ -424,7 +429,6 @@ public class PlayerGoldController : MonoBehaviour
         
         if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
         {
-            Debug.Log("dropping barrel in boat!");
             boat.GetComponent<BoatGoldController>().AddGold(Int32.MaxValue, GetComponent<PlayerData>().m_teamNum); // sinks with a lot of gold
             DropAllGold();
             m_barrelInHand = false;

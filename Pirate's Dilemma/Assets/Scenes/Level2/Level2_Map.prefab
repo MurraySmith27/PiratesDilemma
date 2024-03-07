@@ -273,7 +273,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5292
+  m_VersionIndex: 5295
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -726,7 +726,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5442
+  m_VersionIndex: 5445
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1258,7 +1258,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5306
+  m_VersionIndex: 5309
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1650,7 +1650,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5292
+  m_VersionIndex: 5295
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2049,7 +2049,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5306
+  m_VersionIndex: 5309
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2493,7 +2493,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5292
+  m_VersionIndex: 5295
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2638,7 +2638,7 @@ Transform:
   m_GameObject: {fileID: 4182244143901615308}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.8, y: 0, z: -27.2}
+  m_LocalPosition: {x: -15.8, y: 4.63, z: -27.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2659,7 +2659,8 @@ MonoBehaviour:
   barrelPrefab: {fileID: 6507398230545496937, guid: 57058e2eb6bb7974a9bb6c780e17205a,
     type: 3}
   m_barrelSpawnLocation: {fileID: 1566351420496342093}
-  m_initialItemWaitTime: 30
+  m_initialItemWaitTime: 5
+  m_itemSpawnInterval: 25
 --- !u!1 &4619679737827138863
 GameObject:
   m_ObjectHideFlags: 0
@@ -2909,7 +2910,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5442
+  m_VersionIndex: 5445
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -3029,6 +3030,63 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!1 &4734673410331280309
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5079670586070577802}
+  - component: {fileID: 8965961264339754839}
+  m_Layer: 0
+  m_Name: Arrows
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5079670586070577802
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4734673410331280309}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1130385896637578039}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8965961264339754839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4734673410331280309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c07e2052ddfae914db460f2a17abfa23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_systemDependencies:
+  - GameTimerSystem
+  - PlayerSystem
+  m_goldPickupZonePerTeam:
+  - {fileID: 1657244191806172015}
+  - {fileID: 1657244191806172015}
+  m_goldDropZonePerTeam:
+  - {fileID: 3336001650002375459}
+  - {fileID: 4990973269622689754}
+  m_arrowIndicatorPrefab: {fileID: 3223295136545831580, guid: 369084f6d04c3df48be9069614f169ce,
+    type: 3}
+  m_arrowScaleFactor: 0.01
+  m_heightAboveToHover: 0.02
 --- !u!1 &4830504880455284087
 GameObject:
   m_ObjectHideFlags: 0
@@ -3266,7 +3324,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1359
+  m_VersionIndex: 1362
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -3600,7 +3658,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5306
+  m_VersionIndex: 5309
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -3999,7 +4057,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5442
+  m_VersionIndex: 5445
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4692,7 +4750,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5292
+  m_VersionIndex: 5295
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5060,7 +5118,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5306
+  m_VersionIndex: 5309
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5649,7 +5707,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5292
+  m_VersionIndex: 5295
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -6070,7 +6128,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5442
+  m_VersionIndex: 5445
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -6494,6 +6552,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53df00a832c583f419c9928e8abb68d6, type: 3}
+--- !u!1 &1657244191806172015 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3524880937760009983, guid: 53df00a832c583f419c9928e8abb68d6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2744190009964004752}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9001304167591846165 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6556779491352028293, guid: 53df00a832c583f419c9928e8abb68d6,
@@ -6623,6 +6687,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b6fa8fd57a10b3409590d4ea801c060, type: 3}
+--- !u!1 &3336001650002375459 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1612473236944396848, guid: 8b6fa8fd57a10b3409590d4ea801c060,
+    type: 3}
+  m_PrefabInstance: {fileID: 4047465093039329555}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6862307599497265407 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7426625354923020780, guid: 8b6fa8fd57a10b3409590d4ea801c060,
@@ -6752,6 +6822,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e2fc16e13ad2874f906b24efe339bad, type: 3}
+--- !u!1 &4990973269622689754 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8657384394500996262, guid: 2e2fc16e13ad2874f906b24efe339bad,
+    type: 3}
+  m_PrefabInstance: {fileID: 4424305607174615932}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6465348896644520937 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7268741711266621589, guid: 2e2fc16e13ad2874f906b24efe339bad,
@@ -6823,7 +6899,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 8975578017559500204, guid: f0986cf7798e0ce4eaf9cc2dbc44a82e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5079670586070577802}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0986cf7798e0ce4eaf9cc2dbc44a82e, type: 3}
 --- !u!4 &1130385896637578039 stripped
