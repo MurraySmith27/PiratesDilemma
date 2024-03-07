@@ -11,7 +11,7 @@ public class ArrowIndicatorController : MonoBehaviour
     
     private GameObject m_objectToTrack;
     
-    private GameObject m_objectToPointTo;
+    public GameObject m_objectToPointTo;
 
     private float m_horizontalOffset = 0f;
     
