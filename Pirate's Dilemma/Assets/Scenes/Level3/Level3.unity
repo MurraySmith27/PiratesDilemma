@@ -3167,6 +3167,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   barrelPrefab: {fileID: 6507398230545496937, guid: 57058e2eb6bb7974a9bb6c780e17205a,
     type: 3}
+  m_barrelSpawnLocation: {x: 4, y: 3, z: 8}
+  m_initialItemWaitTime: 5
 --- !u!43 &1809319359
 Mesh:
   m_ObjectHideFlags: 0

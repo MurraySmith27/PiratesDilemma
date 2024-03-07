@@ -9,6 +9,11 @@ public class ItemSystem : GameSystem
 {
     public GameObject barrelPrefab;
     
+    [SerializeField] private Vector3 m_barrelSpawnLocation;
+
+    [SerializeField] private float m_initialItemWaitTime;
+    
+    
     void Start()
     {
         StartCoroutine(SpawnItemsWithDelay(1));
@@ -16,7 +21,7 @@ public class ItemSystem : GameSystem
     
     IEnumerator SpawnItemsWithDelay(int itemCount)  
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(m_initialItemWaitTime);
         for (int i = 0; i < itemCount; i++)
         {
             
@@ -48,9 +53,9 @@ public class ItemSystem : GameSystem
         //     new Vector3(8, 3, 8)
         // };
         
-        Vector3 barrelPosition = new Vector3(4, 3, 8);
+        // Vector3 barrelPosition = new Vector3(4, 3, 8);
         
-        Instantiate(barrelPrefab, barrelPosition, Quaternion.identity); // Spawn barrel 
+        Instantiate(barrelPrefab, m_barrelSpawnLocation, Quaternion.identity); // Spawn barrel 
         
     }
     
