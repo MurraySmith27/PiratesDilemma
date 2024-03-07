@@ -28,13 +28,13 @@ public class Level1UIHovers : UIBase
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
         
         
-        PlayerSystem.Instance.m_onPlayerPickupGold += OnGoldPickedUp;
+        //PlayerSystem.Instance.m_onPlayerPickupGold += OnGoldPickedUp;
     }
 
     void OnDestroy()
     {
         GameTimerSystem.Instance.m_onGameStart -= OnGameStart;
-        PlayerSystem.Instance.m_onPlayerPickupGold -= OnGoldPickedUp;
+        //PlayerSystem.Instance.m_onPlayerPickupGold -= OnGoldPickedUp;
     }
 
 
