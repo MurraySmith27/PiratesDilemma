@@ -66,7 +66,7 @@ public class InGameUI : UIBase
 
         for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
-            VisualElement scoreElement = m_scoreElementAsset.Instantiate();
+            VisualElement scoreElement = m_scoreElementAsset.Instantiate().Q<VisualElement>("root");
             m_teamScoreLabels.Add(scoreElement.Q<Label>("score-label"));
             root.Q<VisualElement>("score-board").Add(scoreElement);
             m_teamScoreLabels[i].text = $"0";
