@@ -41,7 +41,7 @@ public class Level1UIHovers : UIBase
         GameTimerSystem.Instance.m_onGameStart -= OnGameStart;
         PlayerSystem.Instance.m_onPlayerPickupGold -= OnGoldPickedUp;
         PlayerSystem.Instance.m_onPlayerDropGold -= OnGoldDropped;
-
+    }
 
     private void OnGameStart()
     {

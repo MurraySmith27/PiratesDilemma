@@ -7,12 +7,11 @@ using UnityEngine.SceneManagement;
 
 public class ItemSystem : GameSystem
 {
-    public GameObject barrelPrefab;
+    [SerializeField] private GameObject barrelPrefab;
     
-    [SerializeField] private Vector3 m_barrelSpawnLocation;
+    [SerializeField] private Transform m_barrelSpawnLocation;
 
     [SerializeField] private float m_initialItemWaitTime;
-    
     
     void Start()
     {
@@ -55,7 +54,7 @@ public class ItemSystem : GameSystem
         
         // Vector3 barrelPosition = new Vector3(4, 3, 8);
         
-        Instantiate(barrelPrefab, m_barrelSpawnLocation, Quaternion.identity); // Spawn barrel 
+        Instantiate(barrelPrefab, m_barrelSpawnLocation.position, Quaternion.identity); // Spawn barrel 
         
     }
     
