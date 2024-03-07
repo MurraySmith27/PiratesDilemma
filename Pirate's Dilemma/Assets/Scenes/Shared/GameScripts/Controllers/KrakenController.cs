@@ -35,7 +35,7 @@ public class KrakenController : MonoBehaviour
 
     [SerializeField] private float m_bobIntensity = 0.1f;
 
-    [SerializeField] private List<GameObject> m_krakenKillZones;
+    // [SerializeField] private List<GameObject> m_krakenKillZones;
 
 
     void Awake()
@@ -109,10 +109,10 @@ public class KrakenController : MonoBehaviour
         }
 
         
-        foreach (GameObject killZone in m_krakenKillZones)
-        {
-            killZone.SetActive(true);
-        }
+        // foreach (GameObject killZone in m_krakenKillZones)
+        // {
+        //     killZone.SetActive(true);
+        // }
 
         Vector3 krakenPos = transform.position;
         float t3 = 0f;

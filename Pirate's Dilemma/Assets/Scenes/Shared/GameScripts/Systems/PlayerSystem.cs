@@ -11,7 +11,6 @@ using Debug = UnityEngine.Debug;
 public delegate void PlayerDieEvent(int playerNum);
 public delegate void PlayerRespawnEvent(int playerNum);
 public delegate void PlayerJoinEvent(int newPlayerNum);
-
 public delegate void PlayerReadyUpToggleEvent(int playerNum, bool isReady);
 
 //The purpose of this class to to store data that persists between scenes about players.
@@ -163,9 +162,13 @@ public class PlayerSystem : GameSystem
     
     public PlayerExitGoldDropZoneEvent m_onPlayerExitGoldDropZone;
 
+    public PlayerDashCooldownStartEvent m_onDashCooldownStart;
+
     public InputActionAsset m_actions;
     
     [SerializeField] private float m_startGameCountdownSeconds = 3f;
+    
+    [SerializeField] private float m_leavePreviousSceneBufferTime = 0.5f;
     
     [SerializeField] private string m_gameSceneToLoadName;
 
@@ -182,33 +185,33 @@ public class PlayerSystem : GameSystem
         else
         {
             PlayerSystem._instance = this;
-        }
+            m_playerControlSchemesList = new List<PlayerControlSchemes>();
+            m_assignedPlayerDevices = new Dictionary<int, InputDevice>();
 
-        m_playerControlSchemesList = new List<PlayerControlSchemes>();
-        m_assignedPlayerDevices = new Dictionary<int, InputDevice>();
-
-        for (int i = 0; i < m_maxNumPlayers; i++)
-        {
-            m_playerControlSchemesList.Add(new PlayerControlSchemes());
+            for (int i = 0; i < m_maxNumPlayers; i++)
+            {
+                m_playerControlSchemesList.Add(new PlayerControlSchemes());
+            }
+        
+            m_playerControlSchemesList[0].FindAction("Join").performed += OnJoinButtonPressed;
+            m_playerControlSchemesList[0].FindAction("Join").Enable();
+        
+            m_players = new List<GameObject>();
+            m_playersParents = new List<Transform>();
+            m_playerTeamAssignments = new List<int>();
+            m_isPlayerDying = new List<bool>();
+            m_readyPlayers = new List<bool>();
+            m_visualStandIns = new List<GameObject>();
+        
+            DontDestroyOnLoad(this.gameObject);    
         }
-        
-        m_playerControlSchemesList[0].FindAction("Join").performed += OnJoinButtonPressed;
-        m_playerControlSchemesList[0].FindAction("Join").Enable();
-        
-        m_players = new List<GameObject>();
-        m_playersParents = new List<Transform>();
-        m_playerTeamAssignments = new List<int>();
-        m_isPlayerDying = new List<bool>();
-        m_readyPlayers = new List<bool>();
-        m_visualStandIns = new List<GameObject>();
-        
-        DontDestroyOnLoad(this.gameObject);    
     }
 
     void Start()
     {
         SetPlayerSpawnPositions();
         SceneManager.sceneLoaded += OnGameSceneLoaded;
+        SceneManager.sceneUnloaded += OnGameSceneUnloaded;
 
         base.SystemReady();
     }
@@ -315,6 +318,7 @@ public class PlayerSystem : GameSystem
         
         int playerNum, teamNum;
         (playerNum, teamNum) = this.AddPlayer();
+        
         if (playerNum == -1)
         {
             //at player limit. destroy.
@@ -342,7 +346,6 @@ public class PlayerSystem : GameSystem
             playerPrefab = m_team2playerPrefabs[numPlayersPerTeam[teamNum - 1] - 1];
         }
 
-
         GameObject newPlayerInstance = Instantiate(playerPrefab,
             m_playerSpawnPositions[playerNum - 1].position, Quaternion.identity);
         
@@ -367,6 +370,10 @@ public class PlayerSystem : GameSystem
             m_playerControlSchemesList[playerNum].FindAction("Join").performed += OnJoinButtonPressed;
             m_playerControlSchemesList[playerNum].FindAction("Join").Enable();
         }
+        
+        
+        m_playerControlSchemesList[playerNum-1].FindAction("Join").performed -= OnJoinButtonPressed;
+        m_playerControlSchemesList[playerNum-1].FindAction("Join").Disable();
         
         playerInput.actions.FindAction("Join").performed -= OnJoinButtonPressed;
         playerInput.actions.FindAction("Join").Disable();
@@ -394,9 +401,29 @@ public class PlayerSystem : GameSystem
         }
         
         //then start game for player scripts so we can test out movement in character select.
-        m_players[playerNum - 1].GetComponent<PlayerMovementController>().OnGameStart();
-        m_players[playerNum - 1].GetComponent<PlayerGoldController>().OnGameStart();
-        m_players[playerNum-1].GetComponent<PlayerAnimationController>().OnGameStart();
+        PlayerMovementController playerMovementController = m_players[playerNum - 1].GetComponent<PlayerMovementController>();
+
+        playerMovementController.m_onDashCooldownStart += OnPlayerDashCooldownStart;
+        
+        playerMovementController.OnGameStart();
+
+        PlayerGoldController playerGoldController = m_players[playerNum - 1].GetComponent<PlayerGoldController>();
+        
+        playerGoldController.m_onPlayerPickupGold += OnPlayerPickUpGold;
+        playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
+        playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
+        playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
+
+        playerGoldController.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
+        playerGoldController.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
+        playerGoldController.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
+        playerGoldController.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
+        
+        playerGoldController.OnGameStart();
+        
+        PlayerAnimationController playerAnimationController = m_players[playerNum - 1].GetComponent<PlayerAnimationController>();
+        
+        playerAnimationController.OnGameStart();
         
         m_readyPlayers.Add(false);
         
@@ -437,8 +464,12 @@ public class PlayerSystem : GameSystem
     private IEnumerator StartGameCountdown()
     {
         yield return new WaitForSeconds(m_startGameCountdownSeconds);
-        GameTimerSystem.Instance.StopGame();
-        SceneManager.LoadScene(m_gameSceneToLoadName);
+        m_playerControlSchemesList[m_numPlayers].FindAction("Join").performed -= OnJoinButtonPressed;
+        m_playerControlSchemesList[m_numPlayers].FindAction("Join").Disable();
+        PlayerInput playerInput = m_players[m_numPlayers - 1].GetComponent<PlayerInput>();
+        playerInput.actions.FindAction("Join").performed -= OnJoinButtonPressed;
+        playerInput.actions.FindAction("Join").Disable();
+        GameTimerSystem.Instance.StopGame(m_gameSceneToLoadName);
     }
     
     public void OnPlayerDie(int playerNum)
@@ -471,9 +502,13 @@ public class PlayerSystem : GameSystem
         StopCoroutine(deathCoroutine);
         
         UnlockPlayer(playerNum);
+            
+        PlayerMovementController playerMovementController = 
+        m_players[playerNum - 1].GetComponent<PlayerMovementController>();
+        playerMovementController.WarpToPosition(m_playerSpawnPositions[playerNum - 1].position);
 
-        m_players[playerNum - 1].GetComponent<PlayerMovementController>().WarpToPosition(m_playerSpawnPositions[playerNum - 1].position);
-
+        playerMovementController.MakeInvulnerable();
+        
         if (m_onPlayerRespawn != null && m_onPlayerRespawn.GetInvocationList().Length > 0)
         {
             m_onPlayerRespawn(playerNum);
@@ -499,39 +534,71 @@ public class PlayerSystem : GameSystem
 
     private void OnPlayerPickUpGold(int teamNum, int playerNum)
     {
-        m_onPlayerPickupGold(teamNum, playerNum);
+        if (m_onPlayerPickupGold != null && m_onPlayerPickupGold.GetInvocationList().Length > 0)
+        {
+            m_onPlayerPickupGold(teamNum, playerNum);
+        }
     }
 
     private void OnPlayerDropGold(int teamNum, int playerNum)
     {
-        m_onPlayerDropGold(teamNum, playerNum);
+        if (m_onPlayerDropGold != null && m_onPlayerDropGold.GetInvocationList().Length > 0)
+        {
+            m_onPlayerDropGold(teamNum, playerNum);
+        }
     }
 
     private void OnPlayerBoardBoat(int teamNum, int playerNum, int boatNum)
     {
-        m_onPlayerBoardBoat(teamNum, playerNum, boatNum);
+        if (m_onPlayerBoardBoat != null && m_onPlayerBoardBoat.GetInvocationList().Length > 0)
+        {
+            m_onPlayerBoardBoat(teamNum, playerNum, boatNum);
+        }
     }
     
     private void OnPlayerGetOffBoat(int teamNum, int playerNum, int boatNum)
     {
-        m_onPlayerGetOffBoat(teamNum, playerNum, boatNum);
+        if (m_onPlayerGetOffBoat != null && m_onPlayerGetOffBoat.GetInvocationList().Length > 0)
+        {
+            m_onPlayerGetOffBoat(teamNum, playerNum, boatNum);
+        }
     }
 
     private void OnPlayerEnterGoldPickupZone(int teamNum, int playerNum)
     {
-        m_onPlayerEnterGoldPickupZone(teamNum, playerNum);
+        if (m_onPlayerEnterGoldPickupZone != null && m_onPlayerEnterGoldPickupZone.GetInvocationList().Length > 0)
+        {
+            m_onPlayerEnterGoldPickupZone(teamNum, playerNum);
+        }
     }
     private void OnPlayerExitGoldPickupZone(int teamNum, int playerNum)
     {
-        m_onPlayerExitGoldPickupZone(teamNum, playerNum);
+        if (m_onPlayerExitGoldPickupZone != null && m_onPlayerExitGoldPickupZone.GetInvocationList().Length > 0)
+        {
+            m_onPlayerExitGoldPickupZone(teamNum, playerNum);
+        }
     }
     private void OnPlayerEnterGoldDropZone(int teamNum, int playerNum)
     {
-        m_onPlayerEnterGoldDropZone(teamNum, playerNum);
+        if (m_onPlayerEnterGoldDropZone != null && m_onPlayerEnterGoldDropZone.GetInvocationList().Length > 0)
+        {
+            m_onPlayerEnterGoldDropZone(teamNum, playerNum);
+        }
     }
     private void OnPlayerExitGoldDropZone(int teamNum, int playerNum)
     {
-        m_onPlayerExitGoldDropZone(teamNum, playerNum);
+        if (m_onPlayerExitGoldDropZone != null && m_onPlayerExitGoldDropZone.GetInvocationList().Length > 0)
+        {
+            m_onPlayerExitGoldDropZone(teamNum, playerNum);
+        }
+    }
+
+    private void OnPlayerDashCooldownStart(int teamNum, int playerNum, float cooldownSeconds)
+    {
+        if (m_onDashCooldownStart != null && m_onDashCooldownStart.GetInvocationList().Length > 0)
+        {
+            m_onDashCooldownStart(teamNum, playerNum, cooldownSeconds);
+        }
     }
 
     (int, int) AddPlayer()
@@ -624,7 +691,7 @@ public class PlayerSystem : GameSystem
         m_playerInputObjects[playerNum - 1].actions.FindActionMap(actionMapName).Enable();
     }
 
-    public void OnEnable()
+    void OnEnable()
     {
         
         foreach (PlayerInput playerInput in m_playerInputObjects)
@@ -633,9 +700,10 @@ public class PlayerSystem : GameSystem
         }
         
         m_actions.FindActionMap("CharacterSelect").Enable();
+
     }
     
-    public void OnDisable()
+    void OnDisable()
     {
         foreach (PlayerInput playerInput in m_playerInputObjects)
         {
@@ -643,43 +711,84 @@ public class PlayerSystem : GameSystem
         }
         
         m_actions.FindActionMap("CharacterSelect").Disable();
+        
+    }
+    
+    protected override void OnDestroy()
+    {
+        if (_instance == this)
+        {
+            base.OnDestroy();
+            _instance = null;
+        }
     }
 
     private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        //only call the callback for the next scene loaded.
-        SceneManager.sceneLoaded -= OnGameSceneLoaded;
-        
-        if (GameTimerSystem.Instance.m_levelSceneNames.Contains(scene.name))
+
+        //get spawn positions from gameobject in scene with special tags.
+        SetPlayerSpawnPositions();
+
+        bool isCharacterSelect = scene.name == GameTimerSystem.Instance.m_characterSelectSceneName;
+        //move players to spawn positions
+        for (int i = 0; i < m_numPlayers; i++)
         {
-            //get spawn positions from gameobject in scene with special tags.
-            SetPlayerSpawnPositions();
+            GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
+
+            m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
+            m_players[i].transform.localScale = spawnPos.transform.localScale;
+            m_players[i].transform.rotation = spawnPos.transform.rotation;
+
+            PlayerGoldController playerGoldController = m_players[i].GetComponent<PlayerGoldController>();
+
+            playerGoldController.m_onPlayerPickupGold += OnPlayerPickUpGold;
+            playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
+            playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
+            playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
+
+            playerGoldController.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
+            playerGoldController.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
+            playerGoldController.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
+            playerGoldController.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
             
-            //move players to spawn positions
+            SwitchToActionMapForPlayer(i + 1, "InGame");
+        }
+
+        if (isCharacterSelect)
+        {
             for (int i = 0; i < m_numPlayers; i++)
             {
+                PlayerInput playerInput = m_players[i].GetComponentInChildren<PlayerInput>();
                 GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
 
                 m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
                 m_players[i].transform.localScale = spawnPos.transform.localScale;
                 m_players[i].transform.rotation = spawnPos.transform.rotation;
-
-                PlayerGoldController playerGoldController = m_players[i].GetComponent<PlayerGoldController>();
-
-                playerGoldController.m_onPlayerPickupGold += OnPlayerPickUpGold;
-                playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
-                playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
-                playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
-
-                playerGoldController.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
-                playerGoldController.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
-                playerGoldController.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
-                playerGoldController.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
                 
-                m_visualStandIns[i].SetActive(false);
+                m_playerControlSchemesList[i].FindAction("ReadyUp").Enable();
+                m_playerControlSchemesList[i].FindAction("Join").Disable();
+                playerInput.actions.FindAction("Join").Disable();
                 
-                SwitchToActionMapForPlayer(i + 1, "InGame");
+                m_players[i].GetComponent<PlayerMovementController>().OnGameStart();
+                m_players[i].GetComponent<PlayerGoldController>().OnGameStart();
+                m_players[i].GetComponent<PlayerAnimationController>().OnGameStart();
+                m_visualStandIns[i].SetActive(true);
+
+                m_readyPlayers[i] = false;
+                
+                m_onPlayerJoin(i+1);
             }
+            
+            
+            if (m_numPlayers < m_maxNumPlayers)
+            {
+                //add the callback for the next player.
+                // m_playerControlSchemesList[m_numPlayers].FindAction("Join").performed += OnJoinButtonPressed;
+                // m_playerControlSchemesList[m_numPlayers].FindAction("Join").Enable();
+            }
+        }
+        else if (GameTimerSystem.Instance.m_levelSceneNames.Contains(scene.name))
+        {
 
             if (m_numPlayers < m_maxNumPlayers)
             {
@@ -689,6 +798,26 @@ public class PlayerSystem : GameSystem
         
         if (KrakenController.Instance != null) {
             KrakenController.Instance.m_onKrakenEmerge += OnKrakenEmerge;
+        }
+    }
+
+    private void OnGameSceneUnloaded(Scene scene)
+    {
+        for (int i = 0; i < m_numPlayers; i++)
+        {
+            PlayerGoldController playerGoldController = m_players[i].GetComponent<PlayerGoldController>();
+
+            playerGoldController.m_onPlayerPickupGold += OnPlayerPickUpGold;
+            playerGoldController.m_onPlayerDropGold += OnPlayerDropGold;
+            playerGoldController.m_onPlayerBoardBoat += OnPlayerBoardBoat;
+            playerGoldController.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
+
+            playerGoldController.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
+            playerGoldController.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
+            playerGoldController.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
+            playerGoldController.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
+            
+            m_visualStandIns[i].SetActive(false);
         }
     }
 }
