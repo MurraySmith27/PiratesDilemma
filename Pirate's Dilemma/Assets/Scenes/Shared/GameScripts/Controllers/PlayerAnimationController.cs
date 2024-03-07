@@ -26,6 +26,7 @@ public class PlayerAnimationController : MonoBehaviour
     public void OnGameStart()
     {
         m_animator = GetComponentInChildren<Animator>();
+        m_animator.Play("Idle", 0);
         m_characterController = GetComponent<CharacterController>();
         
         PlayerMovementController playerMovementController = GetComponent<PlayerMovementController>();
@@ -37,7 +38,7 @@ public class PlayerAnimationController : MonoBehaviour
         PlayerGoldController playerGoldController = GetComponent<PlayerGoldController>();
 
         playerGoldController.m_onPlayerPickupGold += OnPickupGold;
-        playerGoldController.m_onPlayerDropGold += OnDropGold;
+        playerGoldController.m_onPlayerDropGoldOntoBoat += OnDropGold;
         playerGoldController.m_onPlayerStartThrowCharge += OnStartThrowCharge;
         playerGoldController.m_onPlayerStartThrow += OnStartThrow;
 
@@ -84,11 +85,14 @@ public class PlayerAnimationController : MonoBehaviour
     void OnPickupGold(int teamNum, int playerNum)
     {
         m_animator.SetTrigger("StartPickup");
+        m_animator.SetBool("CarryingGold", true);
     }
 
-    void OnDropGold(int teamNum, int playerNum)
+    void OnDropGold()
     {
         m_animator.SetTrigger("StartDrop");
+        
+        m_animator.SetBool("CarryingGold", false);
     }
 
     void OnStartThrowCharge()

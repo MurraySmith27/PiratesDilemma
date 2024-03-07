@@ -132,7 +132,8 @@ public class PlayerSystem : GameSystem
 
     [SerializeField] private float m_playerRespawnTime = 3f;
 
-    private List<PlayerControlSchemes> m_playerControlSchemesList;
+    //this is public so we can simulate inputs.
+    public List<PlayerControlSchemes> m_playerControlSchemesList;
 
     private Dictionary<int, InputDevice> m_assignedPlayerDevices;
     
@@ -431,7 +432,7 @@ public class PlayerSystem : GameSystem
         m_onPlayerJoin(playerNum);
     }
 
-    void OnReadyUpButtonPressed(int playerNum)
+    public void OnReadyUpButtonPressed(int playerNum)
     {
         m_readyPlayers[playerNum - 1] = !m_readyPlayers[playerNum - 1];
         
@@ -464,8 +465,11 @@ public class PlayerSystem : GameSystem
     private IEnumerator StartGameCountdown()
     {
         yield return new WaitForSeconds(m_startGameCountdownSeconds);
-        m_playerControlSchemesList[m_numPlayers].FindAction("Join").performed -= OnJoinButtonPressed;
-        m_playerControlSchemesList[m_numPlayers].FindAction("Join").Disable();
+        if (m_numPlayers < m_maxNumPlayers)
+        {
+            m_playerControlSchemesList[m_numPlayers].FindAction("Join").performed -= OnJoinButtonPressed;
+            m_playerControlSchemesList[m_numPlayers].FindAction("Join").Disable();
+        }
         PlayerInput playerInput = m_players[m_numPlayers - 1].GetComponent<PlayerInput>();
         playerInput.actions.FindAction("Join").performed -= OnJoinButtonPressed;
         playerInput.actions.FindAction("Join").Disable();

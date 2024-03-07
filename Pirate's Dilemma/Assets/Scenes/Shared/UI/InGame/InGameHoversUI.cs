@@ -158,6 +158,29 @@ public class InGameHoversUI : UIBase
 
     }
 
+    void OnDestroy()
+    {
+        PlayerSystem.Instance.m_onPlayerPickupGold -= OnGoldPickedUp;
+        PlayerSystem.Instance.m_onPlayerDropGold -= OnGoldDropped;
+        PlayerSystem.Instance.m_onPlayerBoardBoat -= OnPlayerBoardedBoat;
+        PlayerSystem.Instance.m_onPlayerGetOffBoat -= OnPlayerGetOffBoat;
+
+        PlayerSystem.Instance.m_onPlayerEnterGoldPickupZone -= OnPlayerEnterGoldPickupZone;
+        PlayerSystem.Instance.m_onPlayerExitGoldPickupZone -= OnPlayerExitGoldPickupZone;
+        PlayerSystem.Instance.m_onPlayerEnterGoldDropZone -= OnPlayerEnterGoldDropZone;
+        PlayerSystem.Instance.m_onPlayerExitGoldDropZone -= OnPlayerExitGoldDropZone;
+        
+        PlayerSystem.Instance.m_onDashCooldownStart -= OnPlayerDashCooldownStart;
+
+        if (BoatSystem.Instance != null)
+        {
+            BoatSystem.Instance.m_onSailBoat -= OnSailBoat;
+            BoatSystem.Instance.m_onSinkBoat -= OnSinkBoat;
+        }
+
+        GameTimerSystem.Instance.m_onGameStart -= OnGameStart;
+    }
+
     void OnGameStart()
     {
         foreach (GameObject goldPickupZone in GameObject.FindGameObjectsWithTag("GoldPickupZone"))
