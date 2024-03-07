@@ -36,7 +36,8 @@ public class LooseGoldController : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision collision)
-    {
+    {   
+        GetComponent<TrailRenderer>().enabled = false;
         if (collision.gameObject.layer != LayerMask.NameToLayer("Player"))
         {
             if (m_onLooseGoldCollision.GetInvocationList().Length > 0)
