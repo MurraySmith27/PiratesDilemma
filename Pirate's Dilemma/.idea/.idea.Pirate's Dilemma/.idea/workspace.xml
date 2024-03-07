@@ -6,7 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="2fa9daa2-90f4-44c3-9351-b9e137dd4c15" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level1/Level1HoversUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level1/Level1HoversUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Editor/PiratesDilemmaEditorScripts.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Editor/PiratesDilemmaEditorScripts.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level2/Level2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level2/Level2.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatGoldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BoatGoldController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/GameTimerSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/GameTimerSystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/ItemSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/ItemSystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Barrel.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Barrel.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/HeldBarrel.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/HeldBarrel.prefab" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,6 +27,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17d9ce77f27a4bd2afb5ba32c9bea97646ac00/1e/7efcd5dc/String.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17d9ce77f27a4bd2afb5ba32c9bea97646ac00/2d/00be877c/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/284f0abb8014497cac58bcf5042a4ea93c00/e5/0247329a/NativeInputSystem.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Level1/Level1HoversUI.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/LooseGoldController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Shared/UI/ArrowIndicator/ArrowIndicatorController.cs" root0="FORCE_HIGHLIGHTING" />
@@ -104,10 +113,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="28512">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="28512" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -152,6 +161,7 @@
       <workItem from="1709648652609" duration="12330000" />
       <workItem from="1709739302269" duration="9602000" />
       <workItem from="1709766257137" duration="924000" />
+      <workItem from="1709820720022" duration="3484000" />
     </task>
     <servers />
   </component>
@@ -167,30 +177,56 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs</url>
-          <line>310</line>
-          <properties documentPath="C:\Users\murra\OneDrive\Desktop\personal_dev\PiratesDilemma\Pirate's Dilemma\Assets\Scenes\Shared\GameScripts\Systems\PlayerSystem.cs" initialLine="310" containingFunctionPresentation="Method 'OnJoinButtonPressed'">
+          <url>file://$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs</url>
+          <line>418</line>
+          <properties documentPath="C:\Users\murra\OneDrive\Desktop\personal_dev\PiratesDilemma\Pirate's Dilemma\Assets\Scenes\Shared\GameScripts\Controllers\PlayerGoldController.cs" initialLine="415" containingFunctionPresentation="Method 'DropGold'">
             <startOffsets>
-              <option value="10155" />
+              <option value="14211" />
             </startOffsets>
             <endOffsets>
-              <option value="10217" />
+              <option value="14212" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="8" />
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs</url>
-          <line>652</line>
-          <properties documentPath="C:\Users\murra\OneDrive\Desktop\personal_dev\PiratesDilemma\Pirate's Dilemma\Assets\Scenes\Shared\GameScripts\Systems\PlayerSystem.cs" initialLine="650" containingFunctionPresentation="Method 'RegisterDeviceWithPlayer'">
+          <url>file://$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs</url>
+          <line>197</line>
+          <properties documentPath="C:\Users\murra\OneDrive\Desktop\personal_dev\PiratesDilemma\Pirate's Dilemma\Assets\Scenes\Shared\GameScripts\Controllers\PlayerGoldController.cs" initialLine="197" containingFunctionPresentation="Method 'OnInteractButtonPressed'">
             <startOffsets>
-              <option value="23081" />
+              <option value="6069" />
             </startOffsets>
             <endOffsets>
-              <option value="23110" />
+              <option value="6136" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="10" />
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs</url>
+          <line>194</line>
+          <properties documentPath="C:\Users\murra\OneDrive\Desktop\personal_dev\PiratesDilemma\Pirate's Dilemma\Assets\Scenes\Shared\GameScripts\Controllers\PlayerGoldController.cs" initialLine="194" containingFunctionPresentation="Method 'OnInteractButtonPressed'">
+            <startOffsets>
+              <option value="6021" />
+            </startOffsets>
+            <endOffsets>
+              <option value="6047" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerGoldController.cs</url>
+          <line>224</line>
+          <properties documentPath="C:\Users\murra\OneDrive\Desktop\personal_dev\PiratesDilemma\Pirate's Dilemma\Assets\Scenes\Shared\GameScripts\Controllers\PlayerGoldController.cs" initialLine="224" containingFunctionPresentation="Method 'OnInteractButtonPressed'">
+            <startOffsets>
+              <option value="7103" />
+            </startOffsets>
+            <endOffsets>
+              <option value="7121" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

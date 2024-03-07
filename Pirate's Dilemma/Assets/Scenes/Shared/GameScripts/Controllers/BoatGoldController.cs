@@ -59,12 +59,13 @@ public class BoatGoldController : MonoBehaviour
     {
         m_boatData.m_currentGoldStored[teamNum - 1] += goldAdded;
         
+        m_onGoldAddedToBoat(m_boatData.m_teamNum, m_boatData.m_boatNum, m_boatData.m_currentTotalGoldStored, m_boatData.m_goldCapacity);
+        
         if (m_boatData.m_currentTotalGoldStored > m_boatData.m_goldCapacity)
         {
             m_onBoatSink(m_boatData.m_teamNum, m_boatData.m_boatNum);
             m_acceptingGold = false;
         }
         
-        m_onGoldAddedToBoat(m_boatData.m_teamNum, m_boatData.m_boatNum, m_boatData.m_currentTotalGoldStored, m_boatData.m_goldCapacity);
     }
 }

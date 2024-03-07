@@ -28,7 +28,7 @@ public class GameTimerSystem : GameSystem
     
     [SerializeField] private int m_gameStartTimerSeconds = 3;
     
-    [SerializeField] private int m_gameTimerSeconds = 120;
+    public int m_gameTimerSeconds = 120;
 
     public string m_characterSelectSceneName;
     

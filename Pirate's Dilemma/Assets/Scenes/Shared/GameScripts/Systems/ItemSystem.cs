@@ -7,29 +7,57 @@ using UnityEngine.SceneManagement;
 
 public class ItemSystem : GameSystem
 {
+    private static ItemSystem _instance;
+
+    public static ItemSystem Instance
+    {
+        get
+        {
+            return _instance;
+        }
+    }
+    
     [SerializeField] private GameObject barrelPrefab;
     
     [SerializeField] private Transform m_barrelSpawnLocation;
 
     [SerializeField] private float m_initialItemWaitTime;
+
+    [SerializeField] private float m_itemSpawnInterval;
+
+    private float m_nextItemTime;
+
+
+    void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
     
     void Start()
     {
-        StartCoroutine(SpawnItemsWithDelay(1));
+        m_nextItemTime = GameTimerSystem.Instance.m_gameTimerSeconds - m_initialItemWaitTime;
+        GameTimerSystem.Instance.m_onGameTimerUpdate += CheckTimerForItemSpawn;
+        base.SystemReady();
     }
-    
-    IEnumerator SpawnItemsWithDelay(int itemCount)  
-    {
-        yield return new WaitForSeconds(m_initialItemWaitTime);
-        for (int i = 0; i < itemCount; i++)
-        {
-            
-            SpawnItemRandomizer(); 
 
-            yield return new WaitForSeconds(UnityEngine.Random.Range(20f, 30f));
+    private void CheckTimerForItemSpawn(int currentTimerValueSeconds)
+    {
+        if (currentTimerValueSeconds <= m_nextItemTime)
+        {
+            //spawn item!
+            SpawnItemRandomizer();
+
+            m_nextItemTime -= m_itemSpawnInterval;
         }
     }
-
+    
     void SpawnItemRandomizer()
     {
         // int randomNumberId = UnityEngine.Random.Range(0, 2);
@@ -53,9 +81,7 @@ public class ItemSystem : GameSystem
         // };
         
         // Vector3 barrelPosition = new Vector3(4, 3, 8);
-        
         Instantiate(barrelPrefab, m_barrelSpawnLocation.position, Quaternion.identity); // Spawn barrel 
-        
     }
     
 }

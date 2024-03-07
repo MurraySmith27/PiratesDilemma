@@ -27,11 +27,9 @@ public class TestFromCharacterSelect : MonoBehaviour
             AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/Scenes/CharacterSelect/CharacterSelect.unity");
 
         EditorSceneManager.playModeStartScene = characterSelectScene;
-
-        EditorCoroutineUtility.StartCoroutineOwnerless(FourPlayerSimulationCoroutine());
         EditorApplication.EnterPlaymode();
-
-
+        Debug.Log("sdtartng editoir coroutine");
+        EditorCoroutineUtility.StartCoroutineOwnerless(FourPlayerSimulationCoroutine());
     }
     
     static IEnumerator FourPlayerSimulationCoroutine()

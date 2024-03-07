@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,7 +82,18 @@ public class PlayerGoldController : MonoBehaviour
 
     private PlayerData m_playerData;
 
-    private bool m_inGoldDropZone = false;
+    private bool m_inFriendlyGoldDropZone;
+    
+    private bool m_inEnemyGoldDropZone;
+    
+    private bool m_inGoldDropZone
+    {
+        get
+        {
+            return m_inFriendlyGoldDropZone || m_inEnemyGoldDropZone;
+        }
+    }
+    
     private GameObject m_currentGoldDropzone;
     private bool m_inGoldPickupZone = false;
 
@@ -141,7 +153,8 @@ public class PlayerGoldController : MonoBehaviour
         m_isBoardedOnBoat = false;
         
         m_inGoldPickupZone = false;
-        m_inGoldDropZone = false;
+        m_inFriendlyGoldDropZone = false;
+        m_inEnemyGoldDropZone = false;
     }
 
     public void OnGameStop()
@@ -181,44 +194,24 @@ public class PlayerGoldController : MonoBehaviour
         m_readyToThrow = true;
         bool pickedUpItem = false;
         
-        // List<GameObject> barrelInScene = GameObject.FindGameObjectsWithTag("Barrel").ToList();
-        // Debug.Log(barrelInScene.Count);
-        // foreach (GameObject barrel in barrelInScene)
-        // {
-        //     if ((barrel.transform.position - transform.position).magnitude < m_looseGoldPickupRadius)
-        //     {
-        //         if (!pickedUpItem)
-        //         {
-        //             
-        //         }
-        //     }
-        // }
-        
-        // if (m_goldCarried < m_goldCapacity)
-        // bool pickedUpGold = false;
-        if (m_playerData.m_goldCarried < m_goldCapacity)
+   
+        if (m_playerData.m_goldCarried < m_goldCapacity && !m_barrelInHand)
         {
-            // List<GameObject> looseGoldInScene = GameObject.FindGameObjectsWithTag("LooseGold").ToList();
-            
             List<GameObject> itemsInScene = GameObject.FindGameObjectsWithTag("LooseGold").ToList();
             itemsInScene.AddRange(GameObject.FindGameObjectsWithTag("Barrel").ToList()); // Include barrels in the items list
 
             foreach (GameObject item in itemsInScene)
             {
-                // if ((looseGold.transform.position - transform.position).magnitude < m_looseGoldPickupRadius)
-                if ((item.transform.position - transform.position).magnitude < m_looseGoldPickupRadius)
+                if ((item.transform.position - transform.position).magnitude < m_looseGoldPickupRadius && m_playerData.m_goldCarried == 0)
                 {
-                    
-                    if(item.CompareTag("Barrel") && m_playerData.m_goldCarried == 0)
+                    if(item.CompareTag("Barrel"))
                     {
                         PickUpBarrel();
-                        Debug.Log("picked up barrel lol");
                         pickedUpItem = true;
                         Destroy(item);
                         break;
                     }
-                    else
-                    {
+                    else {
                         PickupGold();
                         pickedUpItem = true;
                         Destroy(item);
@@ -227,26 +220,22 @@ public class PlayerGoldController : MonoBehaviour
 
                 }
             }
+        }
 
-            // if (!pickedUpItem && m_inGoldDropZone)
-            // {
-            //     BoardBoat();
-            // }
-        }
-        // if (m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpItem)
-        
-        if (m_playerData.m_goldCarried < m_goldCapacity && m_inGoldPickupZone && !pickedUpItem)
+        if (!pickedUpItem)
         {
-            PickupGold();
-        }
-        else if (m_playerData.m_goldCarried != 0 && m_inGoldDropZone)
-        {
-            DropGold();
-        }
-        else if (m_barrelInHand && m_inGoldDropZone)
-        {
-            DropBarrel();
-            Debug.Log("fudsafsdflksjdfklj");
+            if (m_playerData.m_goldCarried < m_goldCapacity && m_inGoldPickupZone)
+            {
+                PickupGold();
+            }
+            else if (m_playerData.m_goldCarried != 0 && m_inFriendlyGoldDropZone)
+            {
+                DropGold();
+            }
+            else if (m_barrelInHand && m_inEnemyGoldDropZone)
+            {
+                DropBarrel();
+            }
         }
     }
 
@@ -435,9 +424,11 @@ public class PlayerGoldController : MonoBehaviour
         
         if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
         {
-            boat.GetComponent<BoatGoldController>().AddGold(1000, GetComponent<PlayerData>().m_teamNum); // sinks with a lot of gold
+            Debug.Log("dropping barrel in boat!");
+            boat.GetComponent<BoatGoldController>().AddGold(Int32.MaxValue, GetComponent<PlayerData>().m_teamNum); // sinks with a lot of gold
             DropAllGold();
             m_barrelInHand = false;
+            m_heldBarrelGameObject.SetActive(false);
         }
     }
 
@@ -518,7 +509,18 @@ public class PlayerGoldController : MonoBehaviour
         {
             if (!m_inGoldDropZone)
             {
-                m_inGoldDropZone = true;
+                int boatTeamNum = otherCollider.gameObject.GetComponent<GoldDropZoneData>().m_boat
+                    .GetComponent<BoatData>()
+                    .m_teamNum;
+                if (boatTeamNum == m_playerData.m_teamNum)
+                {
+                    m_inFriendlyGoldDropZone = true;
+                }
+                else
+                {
+                    m_inEnemyGoldDropZone = true;
+                }
+
                 m_currentGoldDropzone = otherCollider.gameObject;
                 if (m_onPlayerEnterGoldDropZone != null && m_onPlayerEnterGoldDropZone.GetInvocationList().Length > 0)
                 {
@@ -554,7 +556,18 @@ public class PlayerGoldController : MonoBehaviour
         {
             if (m_inGoldDropZone)
             {
-                m_inGoldDropZone = false;
+                int boatTeamNum = otherCollider.gameObject.GetComponent<GoldDropZoneData>().m_boat
+                    .GetComponent<BoatData>()
+                    .m_teamNum;
+                if (boatTeamNum == m_playerData.m_teamNum)
+                {
+                    m_inFriendlyGoldDropZone = false;
+                }
+                else
+                {
+                    m_inEnemyGoldDropZone = false;
+                }
+                
                 m_currentGoldDropzone = null;
                 if (m_onPlayerExitGoldDropZone != null && m_onPlayerExitGoldDropZone.GetInvocationList().Length > 0)
                 {

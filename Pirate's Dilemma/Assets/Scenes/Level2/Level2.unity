@@ -1631,6 +1631,21 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 510763654}
+    - target: {fileID: 322328867768230114, guid: b70541353d9844f4794cea8fdd4a2c5f,
+        type: 3}
+      propertyPath: m_itemSpawnInterval
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 322328867768230114, guid: b70541353d9844f4794cea8fdd4a2c5f,
+        type: 3}
+      propertyPath: m_initialItemWaitTime
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1566351420496342093, guid: b70541353d9844f4794cea8fdd4a2c5f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.63
+      objectReference: {fileID: 0}
     - target: {fileID: 1692924952799851192, guid: b70541353d9844f4794cea8fdd4a2c5f,
         type: 3}
       propertyPath: m_Mesh
@@ -1681,6 +1696,16 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 2130396431}
+    - target: {fileID: 4264240050300890443, guid: b70541353d9844f4794cea8fdd4a2c5f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.000000014880607
+      objectReference: {fileID: 0}
+    - target: {fileID: 4264240050300890443, guid: b70541353d9844f4794cea8fdd4a2c5f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000000008638702
+      objectReference: {fileID: 0}
     - target: {fileID: 4628666844329692432, guid: b70541353d9844f4794cea8fdd4a2c5f,
         type: 3}
       propertyPath: m_Mesh
@@ -1706,6 +1731,16 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1843992888}
+    - target: {fileID: 5828749571533095796, guid: b70541353d9844f4794cea8fdd4a2c5f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.000000014880607
+      objectReference: {fileID: 0}
+    - target: {fileID: 5828749571533095796, guid: b70541353d9844f4794cea8fdd4a2c5f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000000008638702
+      objectReference: {fileID: 0}
     - target: {fileID: 6213061974801760216, guid: b70541353d9844f4794cea8fdd4a2c5f,
         type: 3}
       propertyPath: m_Mesh
