@@ -46,7 +46,7 @@ public class BoatGoldController : MonoBehaviour
     {
         if (useDefaultPosition)
         {
-            playerRespawnPosition = m_goldDropZone.transform.position;
+            playerRespawnPosition = m_goldDropZone.transform.position + new Vector3(0, 3f, 0);
         }
         playerTransform.gameObject.GetComponent<PlayerMovementController>().WarpToPosition(playerRespawnPosition);
         playerTransform.parent = newParent;
