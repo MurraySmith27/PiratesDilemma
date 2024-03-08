@@ -8,6 +8,8 @@ public class LooseGoldController : MonoBehaviour
 {
     public LooseGoldCollisionEvent m_onLooseGoldCollision;
 
+    public int m_lastHeldTeamNum;
+    
     void Start()
     {
         StartCoroutine(DespawnAfterSeconds());
@@ -21,18 +23,16 @@ public class LooseGoldController : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        
-        // if (collider.gameObject.layer == LayerMask.NameToLayer("GoldDropZone"))
-        // {
-        //     //landed in drop zone, score for team. 
-        //     GameObject boat = collider.gameObject.GetComponent<GoldDropZoneData>().m_boat;
-        //     BoatGoldController boatGoldController = boat.GetComponent<BoatGoldController>();
-        //     if (boatGoldController.m_acceptingGold)
-        //     {
-        //         boatGoldController.AddGold(1, boat.GetComponent<BoatData>().m_teamNum);
-        //     }
-        //     Destroy(this.gameObject);
-        // }
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Boat") && collider.gameObject.GetComponent<BoatData>().m_teamNum != m_lastHeldTeamNum)
+        {
+            //landed in drop zone, score for team. 
+            BoatGoldController boatGoldController = collider.gameObject.GetComponent<BoatGoldController>();
+            if (boatGoldController.m_acceptingGold)
+            {
+                boatGoldController.AddGold(1, collider.gameObject.GetComponent<BoatData>().m_teamNum);
+            }
+            Destroy(this.gameObject);
+        }
     }
 
     void OnCollisionEnter(Collision collision)

@@ -309,7 +309,7 @@ MonoBehaviour:
   m_heldBarrelGameObject: {fileID: 297953741941491675}
   m_throwingTargetGameObject: {fileID: 8660961137410361375}
   m_maxThrowDistance: 7
-  m_timeToGetMaxThrowRange: 1
+  m_timeToGetMaxThrowRange: 2
   m_throwHeightDecreaseFactor: 1.4
   m_looseGoldPrefab: {fileID: 4714602978416047080, guid: ea421fdecbc4cef428b431abf643e362,
     type: 3}
@@ -334,7 +334,7 @@ MonoBehaviour:
   m_speed: 10
   m_onCollideWithGoldForce: 0.6
   m_dashTargetGameObject: {fileID: 3979000730159853127}
-  m_timeToChargeToMaxDashRange: 0.3
+  m_timeToChargeToMaxDashRange: 0.01
   m_minDashDistance: 1
   m_maxDashDistance: 5.5
   m_dashDuration: 0.3
@@ -5631,6 +5631,21 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2268871583673633788, guid: 6268743af7f2eca4fb55b02df1847887,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 2268871583673633788, guid: 6268743af7f2eca4fb55b02df1847887,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 2268871583673633788, guid: 6268743af7f2eca4fb55b02df1847887,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 2268871583673633788, guid: 6268743af7f2eca4fb55b02df1847887,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -5678,6 +5693,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2268871583673633788, guid: 6268743af7f2eca4fb55b02df1847887,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2779322352849525361, guid: 6268743af7f2eca4fb55b02df1847887,
         type: 3}

@@ -72,15 +72,15 @@ public class PlayerAnimationController : MonoBehaviour
         
     }
 
-    void OnDashCooldownStart()
+    void OnDashCooldownStart(int teamNum, int playerNum, float cooldownSeconds)
     {
-        StartCoroutine(Sweat());
+        StartCoroutine(Sweat(cooldownSeconds));
     }
 
-    private IEnumerator Sweat()
+    private IEnumerator Sweat(float cooldownSeconds)
     {
         m_sweatParticle.SetActive(true);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(cooldownSeconds);
         m_sweatParticle.SetActive(false);
     }
     
