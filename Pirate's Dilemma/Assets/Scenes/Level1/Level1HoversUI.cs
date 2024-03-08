@@ -34,6 +34,9 @@ public class Level1UIHovers : UIBase
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
         PlayerSystem.Instance.m_onPlayerPickupGold += OnGoldPickedUp;
         PlayerSystem.Instance.m_onPlayerDropGold += OnGoldDropped;
+
+        PlayerSystem.Instance.m_onPlayerBoardBoat += OnPlayerBoardBoat;
+        PlayerSystem.Instance.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
     }
 
     void OnDestroy()
@@ -41,13 +44,20 @@ public class Level1UIHovers : UIBase
         GameTimerSystem.Instance.m_onGameStart -= OnGameStart;
         PlayerSystem.Instance.m_onPlayerPickupGold -= OnGoldPickedUp;
         PlayerSystem.Instance.m_onPlayerDropGold -= OnGoldDropped;
+        
+        PlayerSystem.Instance.m_onPlayerBoardBoat -= OnPlayerBoardBoat;
+        PlayerSystem.Instance.m_onPlayerGetOffBoat -= OnPlayerGetOffBoat;
     }
 
     private void OnGameStart()
     {
-        //at the start of this level, players 2 and 4 should start with arrows to their respective gold piles
-        m_playerArrowIndicators[2] = Instantiate(m_arrowIndicatorPrefab, Vector3.zero, Quaternion.identity);
-        
+
+        for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
+        {
+            m_playerArrowIndicators[i] = Instantiate(m_arrowIndicatorPrefab, Vector3.zero, Quaternion.identity);
+        }
+
+        //at the start of this level, players 3 and 4 should start with arrows to their respective gold piles
         m_playerArrowIndicators[2].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
             PlayerSystem.Instance.m_teamColors[0],
             scaleFactor: m_arrowScaleFactor,
@@ -55,8 +65,6 @@ public class Level1UIHovers : UIBase
             objectToPointTo: m_goldPickupZonePerTeam[0],
             camera: Camera.main
             );
-        
-        m_playerArrowIndicators[3] = Instantiate(m_arrowIndicatorPrefab, Vector3.zero, Quaternion.identity);
         
         m_playerArrowIndicators[3].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
             PlayerSystem.Instance.m_teamColors[1],
@@ -72,8 +80,6 @@ public class Level1UIHovers : UIBase
 
         if (playerNum == 1)
         {
-            m_playerArrowIndicators[0] = Instantiate(m_arrowIndicatorPrefab, Vector3.zero, Quaternion.identity);
-        
             m_playerArrowIndicators[0].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
                 PlayerSystem.Instance.m_teamColors[0],
                 scaleFactor: m_arrowScaleFactor,
@@ -84,8 +90,6 @@ public class Level1UIHovers : UIBase
         }
         else if (playerNum == 2)
         {
-            m_playerArrowIndicators[1] = Instantiate(m_arrowIndicatorPrefab, Vector3.zero, Quaternion.identity);
-        
             m_playerArrowIndicators[1].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
                 PlayerSystem.Instance.m_teamColors[1],
                 scaleFactor: m_arrowScaleFactor,
@@ -109,10 +113,34 @@ public class Level1UIHovers : UIBase
         if (playerNum == 1)
         {
             m_playerArrowIndicators[0].GetComponent<ArrowIndicatorController>().StopArrowIndicatorController();
+            
+            GameObject teamBoat = BoatSystem.Instance.m_boatsPerTeam[0][0];
+            if (teamBoat.GetComponent<BoatData>().m_currentTotalGoldStored > 0)
+            {
+                m_playerArrowIndicators[0].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
+                    PlayerSystem.Instance.m_teamColors[0],
+                    scaleFactor: m_arrowScaleFactor,
+                    objectToTrack: PlayerSystem.Instance.m_players[0],
+                    objectToPointTo: teamBoat,
+                    camera: Camera.main
+                );
+            }
         }
         else if (playerNum == 2)
         {
             m_playerArrowIndicators[1].GetComponent<ArrowIndicatorController>().StopArrowIndicatorController();
+
+            GameObject teamBoat = BoatSystem.Instance.m_boatsPerTeam[1][0];
+            if (teamBoat.GetComponent<BoatData>().m_currentTotalGoldStored > 0)
+            {
+                m_playerArrowIndicators[1].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
+                    PlayerSystem.Instance.m_teamColors[1],
+                    scaleFactor: m_arrowScaleFactor,
+                    objectToTrack: PlayerSystem.Instance.m_players[1],
+                    objectToPointTo: teamBoat,
+                    camera: Camera.main
+                    );
+            }
         }
         else if (playerNum == 3)
         {
@@ -123,5 +151,15 @@ public class Level1UIHovers : UIBase
             m_playerArrowIndicators[3].GetComponent<ArrowIndicatorController>().m_objectToPointTo =
                 m_goldPickupZonePerTeam[1];
         }
+    }
+
+    private void OnPlayerBoardBoat(int teamNum, int playerNum, int boatNum)
+    {
+        m_playerArrowIndicators[playerNum-1].GetComponent<ArrowIndicatorController>().StopArrowIndicatorController();
+    }
+    
+    private void OnPlayerGetOffBoat(int teamNum, int playerNum, int boatNum)
+    {
+        m_playerArrowIndicators[playerNum-1].GetComponent<ArrowIndicatorController>().StopArrowIndicatorController();
     }
 }

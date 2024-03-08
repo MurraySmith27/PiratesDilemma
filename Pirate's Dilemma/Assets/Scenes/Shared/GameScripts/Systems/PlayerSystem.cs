@@ -171,7 +171,9 @@ public class PlayerSystem : GameSystem
     
     [SerializeField] private float m_leavePreviousSceneBufferTime = 0.5f;
     
-    [SerializeField] private string m_gameSceneToLoadName;
+    [SerializeField] private List<string> m_gameScenesToLoadNames;
+
+    private int m_numLevelsPlayed = 0;
 
     private Coroutine m_startGameCountdownCoroutine;
 
@@ -203,6 +205,8 @@ public class PlayerSystem : GameSystem
             m_isPlayerDying = new List<bool>();
             m_readyPlayers = new List<bool>();
             m_visualStandIns = new List<GameObject>();
+
+            m_numLevelsPlayed = 0;
         
             DontDestroyOnLoad(this.gameObject);    
         }
@@ -215,6 +219,15 @@ public class PlayerSystem : GameSystem
         SceneManager.sceneUnloaded += OnGameSceneUnloaded;
 
         base.SystemReady();
+    }
+    
+    //TODO: REmove this placehodler code:
+    void Update()
+    {
+        if (Input.GetKeyDown("u"))
+        {
+            m_numLevelsPlayed++;
+        }
     }
 
     private void SetPlayerSpawnPositions()
@@ -473,7 +486,8 @@ public class PlayerSystem : GameSystem
         PlayerInput playerInput = m_players[m_numPlayers - 1].GetComponent<PlayerInput>();
         playerInput.actions.FindAction("Join").performed -= OnJoinButtonPressed;
         playerInput.actions.FindAction("Join").Disable();
-        GameTimerSystem.Instance.StopGame(m_gameSceneToLoadName);
+        GameTimerSystem.Instance.StopGame(m_gameScenesToLoadNames[m_numLevelsPlayed % m_gameScenesToLoadNames.Count]);
+        m_numLevelsPlayed++;
     }
     
     public void OnPlayerDie(int playerNum)

@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: b0fb44281655ddc4986ac7caba6ea893, type: 2}
+  m_PanelSettings: {fileID: 11400000, guid: 9f6e2ec1cc7213c44ad426da21da19a4, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: a7b40aef32e945546aa40db9f01d490d,
     type: 3}
@@ -82,28 +82,30 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 98b1b30edb7403043b44fcb4a45e3d22, type: 3}
   m_goldPickupZoneHoverPrefab: {fileID: 7234308871107947966, guid: 1dc9c12929b554b4ea861e02d284af1b,
     type: 3}
-  m_goldPickupZoneHoverIcon: {fileID: 21300000, guid: 31638b686fe27a743a4ff1a051787cee,
+  m_goldPickupZoneHoverIcon: {fileID: 21300000, guid: 5dac7edffa7ac2c4eba8cdc211400a3e,
     type: 3}
   m_goldInteractButtonIcon: {fileID: 21300000, guid: 90b0d6963c1193142bd595a2ab26ceea,
     type: 3}
   m_goldDropZoneHoverPrefabsPerTeam:
   - {fileID: 7234308871107947966, guid: f0d2d420d63e40840be4c55f4c700ed6, type: 3}
   - {fileID: 7234308871107947966, guid: 59a077ebb331b4b42902af24ee2209c4, type: 3}
-  m_goldDropZoneHoverIcon: {fileID: 21300000, guid: 31638b686fe27a743a4ff1a051787cee,
+  m_goldDropZoneHoverIcon: {fileID: 21300000, guid: 5dac7edffa7ac2c4eba8cdc211400a3e,
     type: 3}
   m_playerDashCooldownHoverPrefabs: []
   m_dashCooldownHoverIcons: []
   m_boatBoardingHoverPrefabs:
-  - {fileID: 7234308871107947966, guid: bafdfea7c23febb4a83fddd241dc9acd, type: 3}
   - {fileID: 7234308871107947966, guid: a64ca890e0556404eb73ae70dbdbb7fd, type: 3}
-  - {fileID: 7234308871107947966, guid: 7739d0912f608664bb703623f3fa254a, type: 3}
+  - {fileID: 7234308871107947966, guid: bafdfea7c23febb4a83fddd241dc9acd, type: 3}
   - {fileID: 7234308871107947966, guid: 0969e758c5137e941a69318af40e42eb, type: 3}
+  - {fileID: 7234308871107947966, guid: 7739d0912f608664bb703623f3fa254a, type: 3}
   m_team1BoatBoardingHoverIcons:
   - {fileID: 21300000, guid: 33cb58d506df1324b975d3d9acdfd4f6, type: 3}
   - {fileID: 21300000, guid: c0d419bf18063dd408bcce1eee3ac212, type: 3}
   m_team2BoatBoardingHoverIcons:
   - {fileID: 21300000, guid: 110d209db1459184581d692522ecb270, type: 3}
   - {fileID: 21300000, guid: c8c701ca8690162419576dad6ee37629, type: 3}
+  m_goldScoringParticlesPrefab: {fileID: 8294879432045753576, guid: 59df4c53968e9bb4199cf5da0619e561,
+    type: 3}
   m_hoverIconScaleFactor: 0.05
 --- !u!1 &2931290759399913967
 GameObject:
@@ -186,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: b0fb44281655ddc4986ac7caba6ea893, type: 2}
+  m_PanelSettings: {fileID: 11400000, guid: eb56490a8228d3f49a668fa4d302cd83, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 72c87900ace261a49b3396b799ea7be0,
     type: 3}
@@ -275,6 +277,7 @@ MonoBehaviour:
     type: 3}
   m_tutorialPopupObject: {fileID: 3765545985192282897}
   m_useTutorialPopups: 0
+  m_scoreIncreaseDelay: 2.2
 --- !u!1 &5032374858146451266
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,7 +323,7 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: b0fb44281655ddc4986ac7caba6ea893, type: 2}
+  m_PanelSettings: {fileID: 11400000, guid: 51232b43f01e1f14fac29a622758aca2, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: ca9406a2ea3104241b23049fb197e452,
     type: 3}
@@ -382,7 +385,7 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: b0fb44281655ddc4986ac7caba6ea893, type: 2}
+  m_PanelSettings: {fileID: 11400000, guid: fe610e8c4f5b9df4facb75fe9c793f33, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 7e367adaf4f005b499c2957a2c0b89a8,
     type: 3}

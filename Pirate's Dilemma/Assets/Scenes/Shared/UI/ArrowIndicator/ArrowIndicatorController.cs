@@ -24,6 +24,8 @@ public class ArrowIndicatorController : MonoBehaviour
 
     private Coroutine m_arrowTrackingCoroutine;
 
+    public bool m_arrowIndicatorActive;
+
     public void StartArrowIndicatorController(float heightAboveToHover, 
         Color color,
         float horizontalOffset = 0f,
@@ -46,6 +48,10 @@ public class ArrowIndicatorController : MonoBehaviour
         {
             m_camera = camera ;
         }
+        else if (m_camera == null)
+        {
+            m_camera = Camera.main;
+        }
 
         if (scaleFactor != -1f)
         {
@@ -58,6 +64,7 @@ public class ArrowIndicatorController : MonoBehaviour
 
         m_heightAboveToHover = heightAboveToHover;
 
+        m_arrowIndicatorActive = true;
         m_arrowTrackingCoroutine = StartCoroutine(StartArrowTracking());
     }
 
@@ -66,6 +73,8 @@ public class ArrowIndicatorController : MonoBehaviour
         MeshRenderer meshRenderer = GetComponentInChildren<MeshRenderer>();
 
         meshRenderer.enabled = true;
+        
+        
 
         Vector3 originalLocalScale = transform.localScale;
         
@@ -99,7 +108,11 @@ public class ArrowIndicatorController : MonoBehaviour
 
     public void StopArrowIndicatorController()
     {
-        StopCoroutine(m_arrowTrackingCoroutine);
+        if (m_arrowTrackingCoroutine != null)
+        {
+            StopCoroutine(m_arrowTrackingCoroutine);
+        }
+
         GetComponentInChildren<MeshRenderer>().enabled = false;
     }
     

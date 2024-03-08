@@ -51,7 +51,7 @@ public class ScreenSwipeController : UIBase
     private IEnumerator TransitionOutAnimation()
     {
         float swipeInitialLeft = Screen.width;
-        float swipeFinalLeft = 0;
+        float swipeFinalLeft = -Screen.width * 0.1f;
         
         for (float t = 0; t < 1; t += Time.deltaTime / m_transitionTime)
         {
@@ -71,7 +71,7 @@ public class ScreenSwipeController : UIBase
     private IEnumerator TransitionInAnimation()
     {
         float swipeInitialLeft = 0;
-        float swipeFinalLeft = -Screen.width;
+        float swipeFinalLeft = -Screen.width * 1.2f;
         
         for (float t = 0; t < 1; t += Time.deltaTime / m_transitionTime)
         {

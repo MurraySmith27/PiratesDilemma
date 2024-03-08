@@ -43,6 +43,8 @@ public class InGameHoversUI : UIBase
 
     [SerializeField] private List<Sprite> m_team2BoatBoardingHoverIcons;
 
+    [SerializeField] private GameObject m_goldScoringParticlesPrefab;
+
     [SerializeField] private float m_hoverIconScaleFactor = 0.01f;
 
     private List<List<Sprite>> m_boardingHoverIconsPerTeam
@@ -190,7 +192,7 @@ public class InGameHoversUI : UIBase
 
         
             genericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(0.08f,
-                Color.black,
+                Color.yellow,
                 hoverIcon: m_goldPickupZoneHoverIcon,
                 objectToTrack: goldPickupZone,
                 scaleFactor: m_hoverIconScaleFactor,
@@ -218,7 +220,7 @@ public class InGameHoversUI : UIBase
                     GameObject newHover = Instantiate(m_goldDropZoneHoverPrefabsPerTeam[teamNum-1], Vector3.zero, Quaternion.identity);
                     
                     newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
-                        color: PlayerSystem.Instance.m_teamColors[teamNum - 1],
+                        color: Color.yellow,
                         hoverIcon: m_goldDropZoneHoverIcon,
                         objectToTrack: goldDropZone,
                         scaleFactor: m_hoverIconScaleFactor,
@@ -269,12 +271,26 @@ public class InGameHoversUI : UIBase
 
     private void OnPlayerBoardedBoat(int teamNum, int playerNum, int boatNum)
     {
-        playerNum = PlayerSystem.Instance.m_playerNumToTeamPlayerNum[playerNum - 1]; 
+        int teamPlayerNum = PlayerSystem.Instance.m_playerNumToTeamPlayerNum[playerNum - 1]; 
         //remove one popup
-        if (m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][playerNum - 1] != null)
+        if (m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][teamPlayerNum - 1] != null)
         {
-            Destroy(m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][playerNum - 1]);
+            Destroy(m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][teamPlayerNum - 1]);
         }
+
+        GameObject player = PlayerSystem.Instance.m_players[playerNum - 1];
+
+        GameObject goldScoringParticlesGameObject = Instantiate(m_goldScoringParticlesPrefab, Vector3.zero, Quaternion.identity);
+
+        Vector2 finalScreenCoords = InGameUI.Instance.GetScreenCoordinatesOfScoreboardEntry(teamNum);
+        
+        goldScoringParticlesGameObject.GetComponent<GoldScoringParticlesController>().StartGoldScoringParticles(
+            Camera.main.WorldToScreenPoint(player.transform.position),
+            finalScreenCoords,
+            floatInPlaceAtStartTimeSeconds: 1f,
+            animationTimeSeconds: 1f,
+            camera: Camera.main
+            );
     }
 
     private void OnPlayerGetOffBoat(int teamNum, int playerNum, int boatNum)

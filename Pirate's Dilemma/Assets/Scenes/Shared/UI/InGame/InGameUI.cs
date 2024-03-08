@@ -7,6 +7,16 @@ using UnityEngine.UIElements;
 
 public class InGameUI : UIBase
 {
+    private static InGameUI _instance;
+
+    public static InGameUI Instance
+    {
+        get
+        {
+            return _instance;
+        }
+    }
+    
     [SerializeField] private VisualTreeAsset m_scoreElementAsset;
 
     [SerializeField] private Sprite m_gameRulesTutorialSprite;
@@ -14,6 +24,8 @@ public class InGameUI : UIBase
     [SerializeField] private GameObject m_tutorialPopupObject;
     
     [SerializeField] private bool m_useTutorialPopups = false;
+
+    [SerializeField] private float m_scoreIncreaseDelay = 2f; 
     
     private Label m_globalTimerLabel;
     private Label m_leaderBoardLabel;
@@ -30,12 +42,20 @@ public class InGameUI : UIBase
 
     protected override void Awake()
     {
+
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
         base.Awake();
     }
     
     protected override void SetUpUI()
     {
-        Debug.Log("set up ui in game ui called");
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
 
         m_globalTimerLabel = root.Q<Label>("global-timer");
@@ -46,10 +66,11 @@ public class InGameUI : UIBase
 
         for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
-            m_teamScoreLabels.Add(m_scoreElementAsset.Instantiate().Q<Label>("score-label"));
-            root.Q<VisualElement>("score-board").Add(m_teamScoreLabels[i]);
-            m_teamScoreLabels[i].text = $"Team {i+1}: 0";
-            m_teamScoreLabels[i].style.backgroundColor = PlayerSystem.Instance.m_teamColors[i];
+            VisualElement scoreElement = m_scoreElementAsset.Instantiate().Q<VisualElement>("root");
+            m_teamScoreLabels.Add(scoreElement.Q<Label>("score-label"));
+            root.Q<VisualElement>("score-board").Add(scoreElement);
+            m_teamScoreLabels[i].text = $"0";
+            m_teamScoreLabels[i].parent.style.backgroundColor = PlayerSystem.Instance.m_teamColors[i];
         }
         
         m_leaderBoardLabel.text = "Scores:";
@@ -71,6 +92,22 @@ public class InGameUI : UIBase
         GameTimerSystem.Instance.m_onGameFinish += OnGameFinish;
     }
 
+    public Vector2 GetScreenCoordinatesOfScoreboardEntry(int teamNum)
+    {
+        float left = m_teamScoreLabels[teamNum - 1].resolvedStyle.left;
+        float top = m_teamScoreLabels[teamNum - 1].resolvedStyle.top;
+        VisualElement parent = m_teamScoreLabels[teamNum - 1].parent;
+
+        while (parent != null)
+        {
+            left += parent.resolvedStyle.left;
+            top += parent.resolvedStyle.top;
+            parent = parent.parent;
+        }
+
+        return new Vector2(left, Screen.height - top);
+    }
+    
     void OnStartGameTimerValueChange(int newValueSeconds)
     {
         string text = $"{newValueSeconds}";
@@ -153,9 +190,16 @@ public class InGameUI : UIBase
 
     void UpdateScoreUI(List<int> newScores)
     {
+        StartCoroutine(WaitThenUpdateScore(newScores));
+    }
+
+    private IEnumerator WaitThenUpdateScore(List<int> newScores)
+    {
+        yield return new WaitForSeconds(m_scoreIncreaseDelay);
+        
         for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
         {
-            m_teamScoreLabels[i].text = $"Team {i+1}: {newScores[i]}";
+            m_teamScoreLabels[i].text = $"{newScores[i]}";
         }
     }
     

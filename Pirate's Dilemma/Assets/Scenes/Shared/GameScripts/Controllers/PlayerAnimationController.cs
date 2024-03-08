@@ -10,6 +10,8 @@ public class PlayerAnimationController : MonoBehaviour
 
     private CharacterController m_characterController;
 
+    [SerializeField] private GameObject m_sweatParticle;
+
     private bool m_initialized = false;
     
     private bool m_lastPosSet = false;
@@ -20,6 +22,7 @@ public class PlayerAnimationController : MonoBehaviour
     {
         GameTimerSystem.Instance.m_onGameStart -= OnGameStart; //remove first just to be safe awake gets called each scene load
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+        m_sweatParticle.SetActive(false);
     }
 
     // Start is called before the first frame update
@@ -34,6 +37,8 @@ public class PlayerAnimationController : MonoBehaviour
         playerMovementController.m_onPlayerStartDashCharge += OnStartDashCharge;
         playerMovementController.m_onPlayerStartDash += OnStartDash;
         playerMovementController.m_onPlayerDie += OnDie;
+        playerMovementController.m_onDashCooldownStart += OnDashCooldownStart;
+        
 
         PlayerGoldController playerGoldController = GetComponent<PlayerGoldController>();
 
@@ -67,6 +72,18 @@ public class PlayerAnimationController : MonoBehaviour
         
     }
 
+    void OnDashCooldownStart()
+    {
+        StartCoroutine(Sweat());
+    }
+
+    private IEnumerator Sweat()
+    {
+        m_sweatParticle.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        m_sweatParticle.SetActive(false);
+    }
+    
     void OnStartDashCharge()
     {
         m_animator.SetTrigger("StartDashCharge");

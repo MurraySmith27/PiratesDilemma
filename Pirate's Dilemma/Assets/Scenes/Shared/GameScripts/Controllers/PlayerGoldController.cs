@@ -103,7 +103,11 @@ public class PlayerGoldController : MonoBehaviour
 
     private bool m_readyToThrow;
 
-    private bool m_barrelInHand;
+    public bool m_barrelInHand
+    {
+        get;
+        private set;
+    }
 
     private bool m_isBoardedOnBoat;
 
@@ -142,6 +146,7 @@ public class PlayerGoldController : MonoBehaviour
         if (m_throwingCoroutine != null)
         {
             StopCoroutine(m_throwingCoroutine);
+            m_throwingTargetGameObject.SetActive(false);
         }
 
         m_playerOriginalParent = transform.parent;
@@ -385,6 +390,11 @@ public class PlayerGoldController : MonoBehaviour
 
         m_heldGoldGameObject.SetActive(true);
         
+        if (m_onPlayerPickupGold != null && m_onPlayerPickupGold.GetInvocationList().Length > 0)
+        {
+            m_onPlayerPickupGold(m_playerData.m_teamNum, m_playerData.m_playerNum);
+        }
+        
         m_readyToThrow = false;
     }
     
@@ -424,7 +434,6 @@ public class PlayerGoldController : MonoBehaviour
         
         if (boat && boat.GetComponent<BoatGoldController>().m_acceptingGold)
         {
-            Debug.Log("dropping barrel in boat!");
             boat.GetComponent<BoatGoldController>().AddGold(Int32.MaxValue, GetComponent<PlayerData>().m_teamNum); // sinks with a lot of gold
             DropAllGold();
             m_barrelInHand = false;
@@ -481,6 +490,7 @@ public class PlayerGoldController : MonoBehaviour
         {
             StopCoroutine(m_throwingCoroutine);
             m_throwing = false;
+            m_throwingTargetGameObject.SetActive(false);
         }
         
         if (m_playerData.m_goldCarried > 0)

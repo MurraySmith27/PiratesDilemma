@@ -1160,7 +1160,10 @@ MonoBehaviour:
     type: 3}
   m_startGameCountdownSeconds: 3
   m_leavePreviousSceneBufferTime: 0.5
-  m_gameSceneToLoadName: Level2
+  m_gameScenesToLoadNames:
+  - Level1
+  - Level2
+  - Level3
 --- !u!1 &1841775409
 GameObject:
   m_ObjectHideFlags: 0
