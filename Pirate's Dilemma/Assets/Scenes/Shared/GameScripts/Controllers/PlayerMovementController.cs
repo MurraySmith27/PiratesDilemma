@@ -71,6 +71,7 @@ public class PlayerMovementController : MonoBehaviour
     private CharacterController m_characterController;
 
     private Coroutine m_dashChargeUpCoroutine;
+    [SerializeField] private int numDirections = 16;
 
     
     private void Awake()
@@ -91,6 +92,10 @@ public class PlayerMovementController : MonoBehaviour
     private void FixedUpdate()
     {
         Vector2 moveInput = -m_moveAction.ReadValue<Vector2>().normalized;
+        float angle  = Vector2.SignedAngle(Vector2.right, moveInput);
+        float angleIncrement = 360f / numDirections;
+        angle = Mathf.Round(angle / angleIncrement) * angleIncrement;
+        moveInput = Quarternion.Euler(0, 0, angle) * Vector2.right;
         if (m_initialized && !m_isDashing && !m_isBeingPushed && !m_playerGoldController.IsOccupied())
         {
             float speed = m_speed;
