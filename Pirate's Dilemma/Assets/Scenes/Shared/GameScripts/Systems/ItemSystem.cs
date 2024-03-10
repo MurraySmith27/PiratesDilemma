@@ -42,19 +42,19 @@ public class ItemSystem : GameSystem
     
     void Start()
     {
-        m_nextItemTime = GameTimerSystem.Instance.m_gameTimerSeconds - m_initialItemWaitTime;
+        m_nextItemTime = m_initialItemWaitTime;
         GameTimerSystem.Instance.m_onGameTimerUpdate += CheckTimerForItemSpawn;
         base.SystemReady();
     }
 
     private void CheckTimerForItemSpawn(int currentTimerValueSeconds)
     {
-        if (currentTimerValueSeconds <= m_nextItemTime)
+        if (currentTimerValueSeconds >= m_nextItemTime)
         {
             //spawn item!
             SpawnItemRandomizer();
 
-            m_nextItemTime -= m_itemSpawnInterval;
+            m_nextItemTime += m_itemSpawnInterval;
         }
     }
     

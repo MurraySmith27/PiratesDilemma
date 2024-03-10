@@ -9,7 +9,7 @@ public delegate void PlayerStartDashEvent();
 public delegate void PlayerDashCooldownStartEvent(int teamNum, int playerNum, float cooldownSeconds);
 public delegate void PlayerStartDashChargeEvent();
 
-[RequireComponent(typeof(PlayerInput), typeof(PlayerData), typeof(PlayerGoldController))]
+[RequireComponent(typeof(PlayerInput), typeof(PlayerData), typeof(PlayerItemController))]
 public class PlayerMovementController : MonoBehaviour
 {
     public PlayerDieEvent m_onPlayerDie;
@@ -58,7 +58,7 @@ public class PlayerMovementController : MonoBehaviour
     private Coroutine m_dashCoroutine;
     private Coroutine m_beingPushedCoroutine;
     
-    private PlayerGoldController m_playerGoldController;
+    private PlayerItemController _mPlayerItemController;
     private PlayerInput m_playerInput;
 
     private InputAction m_dashAction;
@@ -91,7 +91,7 @@ public class PlayerMovementController : MonoBehaviour
     private void FixedUpdate()
     {
         Vector2 moveInput = -m_moveAction.ReadValue<Vector2>().normalized;
-        if (m_initialized && !m_isDashing && !m_isBeingPushed && !m_playerGoldController.IsOccupied())
+        if (m_initialized && !m_isDashing && !m_isBeingPushed && !_mPlayerItemController.IsOccupied())
         {
             float speed = m_speed;
             if (m_isChargingDash)
@@ -181,7 +181,7 @@ public class PlayerMovementController : MonoBehaviour
 
     public void OnGameStart()
     {
-        m_playerGoldController = GetComponent<PlayerGoldController>();
+        _mPlayerItemController = GetComponent<PlayerItemController>();
         m_playerInput = GetComponent<PlayerInput>();
         
         m_moveAction = m_playerInput.actions["Move"];
@@ -258,7 +258,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnDashButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_initialized && !IsOccupied() && !m_playerGoldController.IsOccupied() && !m_dashOnCooldown && m_playerData.m_goldCarried == 0 && !m_playerGoldController.m_barrelInHand)
+        if (m_initialized && !IsOccupied() && !_mPlayerItemController.IsOccupied() && !m_dashOnCooldown && m_playerData.m_bombsCarried == 0 && !_mPlayerItemController.m_barrelInHand)
         {
             m_isChargingDash = true;
             m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());
@@ -371,7 +371,7 @@ public class PlayerMovementController : MonoBehaviour
             otherTeamNum = 2;
         }
         
-        if (hit.gameObject.layer == LayerMask.NameToLayer("LooseGold"))
+        if (hit.gameObject.layer == LayerMask.NameToLayer("LooseBomb"))
         {
             hit.rigidbody.AddForceAtPosition((hit.gameObject.transform.position - transform.position).normalized *
                                    m_onCollideWithGoldForce * m_characterController.velocity.magnitude, transform.position, ForceMode.Impulse);

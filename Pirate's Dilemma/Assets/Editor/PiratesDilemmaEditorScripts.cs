@@ -20,37 +20,5 @@ public class TestFromCharacterSelect : MonoBehaviour
         EditorApplication.EnterPlaymode();
     }
 
-    [MenuItem("PiratesDilemma/FourPlayerSimulation")]
-    static void FourPlayerSimulation()
-    {
-        SceneAsset characterSelectScene =
-            AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/Scenes/CharacterSelect/CharacterSelect.unity");
-
-        EditorSceneManager.playModeStartScene = characterSelectScene;
-        EditorApplication.EnterPlaymode();
-        Debug.Log("sdtartng editoir coroutine");
-        EditorCoroutineUtility.StartCoroutineOwnerless(FourPlayerSimulationCoroutine());
-    }
     
-    static IEnumerator FourPlayerSimulationCoroutine()
-    {
-
-        Debug.Log("four player simulation coroutine");
-        yield return new EditorWaitForSeconds(3f);
-        for (int i = 0; i < 4; i++)
-        {
-            InputAction.CallbackContext ctx = new();
-            
-            Debug.Log("pressing join button!");
-            PlayerSystem.Instance.OnJoinButtonPressed(ctx);
-        }
-
-        for (int i = 0; i < 4; i++)
-        {
-            InputAction.CallbackContext ctx = new();
-            
-            Debug.Log("pressing ready button!");
-            PlayerSystem.Instance.OnReadyUpButtonPressed(i+1);
-        }
-    }
 }

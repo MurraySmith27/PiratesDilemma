@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void LooseGoldCollisionEvent();
-public class LooseGoldController : MonoBehaviour
+public delegate void LooseBombCollisionEvent();
+public class LooseBombController : MonoBehaviour
 {
-    public LooseGoldCollisionEvent m_onLooseGoldCollision;
+    [SerializeField] private float m_bombAliveSeconds = 5f;
+    public LooseBombCollisionEvent m_onLooseBombCollision;
 
     public int m_lastHeldTeamNum;
+
+    public int m_damagePerBomb = 1;
     
     void Start()
     {
@@ -17,7 +20,7 @@ public class LooseGoldController : MonoBehaviour
 
     IEnumerator DespawnAfterSeconds()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(m_bombAliveSeconds);
         Destroy(this.gameObject);
     }
 
@@ -26,10 +29,10 @@ public class LooseGoldController : MonoBehaviour
         if (collider.gameObject.layer == LayerMask.NameToLayer("Boat") && collider.gameObject.GetComponent<BoatData>().m_teamNum != m_lastHeldTeamNum)
         {
             //landed in drop zone, score for team. 
-            BoatGoldController boatGoldController = collider.gameObject.GetComponent<BoatGoldController>();
-            if (boatGoldController.m_acceptingGold)
+            BoatDamageController boatDamageController = collider.gameObject.GetComponent<BoatDamageController>();
+            if (boatDamageController.m_acceptingDamage)
             {
-                boatGoldController.AddGold(1, collider.gameObject.GetComponent<BoatData>().m_teamNum);
+                boatDamageController.TakeDamage(m_damagePerBomb);
             }
             Destroy(this.gameObject);
         }
@@ -40,9 +43,9 @@ public class LooseGoldController : MonoBehaviour
         GetComponent<TrailRenderer>().enabled = false;
         if (collision.gameObject.layer != LayerMask.NameToLayer("Player"))
         {
-            if (m_onLooseGoldCollision.GetInvocationList().Length > 0)
+            if (m_onLooseBombCollision != null && m_onLooseBombCollision.GetInvocationList().Length > 0)
             {
-                m_onLooseGoldCollision();
+                m_onLooseBombCollision();
             }
         }
     }

@@ -27,12 +27,8 @@ public class GameTimerSystem : GameSystem
     }
     
     [SerializeField] private int m_gameStartTimerSeconds = 3;
-    
-    public int m_gameTimerSeconds = 120;
 
     public string m_characterSelectSceneName;
-    
-    [SerializeField] private int m_krakenArrivalTimeRemaining = 60;
     
     [SerializeField] private float m_holdAfterGameEndTime = 1f;
     
@@ -62,8 +58,6 @@ public class GameTimerSystem : GameSystem
     public GameTimerUpdateEvent m_onStartGameTimerUpdate;
     
     public bool m_gamePaused = false;
-
-    private bool m_krakenArrived = false;
     
     void Awake()
     {
@@ -122,6 +116,12 @@ public class GameTimerSystem : GameSystem
     {
         m_gamePaused = false;
         StartCoroutine(StartGameCoroutine());
+        BoatSystem.Instance.m_onSinkBoat += EndGame;
+    }
+
+    private void EndGame(int teamNum, int boatNum)
+    {
+        StartCoroutine(EndGameCoroutine(m_characterSelectSceneName));
     }
 
     private IEnumerator StartGameCoroutine()
@@ -132,7 +132,7 @@ public class GameTimerSystem : GameSystem
         yield return new WaitForSeconds(m_holdBeforeCountdownTimerTime);
         
         StartCoroutine(StartGameCountdown());
-        m_onGameTimerUpdate(m_gameTimerSeconds);
+        m_onGameTimerUpdate(0);
     }
 
     public void StopGame(string nextSceneToLoadName)
@@ -160,37 +160,24 @@ public class GameTimerSystem : GameSystem
             m_onGameStart();
         }
         
-        StartCoroutine(GlobalCountdown(GameTimerSystem.Instance.m_gameTimerSeconds));
+        StartCoroutine(GlobalCountdown());
     }
     
-    IEnumerator GlobalCountdown(int seconds)
+    IEnumerator GlobalCountdown()
     {
-        int count = seconds;
+        int count = 0;
         m_onGameTimerUpdate(count);
 
-        while (count > 0)
+        while (true)
         {
             // Wait for one second
             yield return new WaitForSeconds(1);
             
             // Decrease the count
-            count--;
-
-            if (count <= m_krakenArrivalTimeRemaining && !m_krakenArrived)
-            {
-                GameObject kraken = GameObject.FindGameObjectWithTag("Kraken");
-
-                if (kraken != null)
-                {
-                    kraken.GetComponent<KrakenController>().StartKrakenArrival();
-                }
-                m_krakenArrived = true;
-            }
+            count++;
             
             m_onGameTimerUpdate(count);
         }
-
-        StartCoroutine(EndGameCoroutine(m_resultsSceneName));
     }
 
     private IEnumerator EndGameCoroutine(string nextSceneToLoadName)

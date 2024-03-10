@@ -18,7 +18,7 @@ public class Level1UIHovers : UIBase
     
     private List<GameObject> m_playerArrowIndicators = new List<GameObject>();
 
-    void Awake()
+    protected override void Awake()
     {
         base.Awake();
     }
@@ -32,21 +32,15 @@ public class Level1UIHovers : UIBase
         }
         
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
-        PlayerSystem.Instance.m_onPlayerPickupGold += OnGoldPickedUp;
-        PlayerSystem.Instance.m_onPlayerDropGold += OnGoldDropped;
-
-        PlayerSystem.Instance.m_onPlayerBoardBoat += OnPlayerBoardBoat;
-        PlayerSystem.Instance.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
+        PlayerSystem.Instance.m_onPlayerPickupBomb += OnBombPickedUp;
+        PlayerSystem.Instance.m_onPlayerDropBomb += OnBombDropped;
     }
 
     void OnDestroy()
     {
         GameTimerSystem.Instance.m_onGameStart -= OnGameStart;
-        PlayerSystem.Instance.m_onPlayerPickupGold -= OnGoldPickedUp;
-        PlayerSystem.Instance.m_onPlayerDropGold -= OnGoldDropped;
-        
-        PlayerSystem.Instance.m_onPlayerBoardBoat -= OnPlayerBoardBoat;
-        PlayerSystem.Instance.m_onPlayerGetOffBoat -= OnPlayerGetOffBoat;
+        PlayerSystem.Instance.m_onPlayerPickupBomb -= OnBombPickedUp;
+        PlayerSystem.Instance.m_onPlayerDropBomb -= OnBombDropped;
     }
 
     private void OnGameStart()
@@ -75,7 +69,7 @@ public class Level1UIHovers : UIBase
         );
     }
 
-    private void OnGoldPickedUp(int teamNum, int playerNum) 
+    private void OnBombPickedUp(int teamNum, int playerNum) 
     {
 
         if (playerNum == 1)
@@ -108,14 +102,14 @@ public class Level1UIHovers : UIBase
         }
     }
 
-    private void OnGoldDropped(int teamNum, int playerNum)
+    private void OnBombDropped(int teamNum, int playerNum)
     {
         if (playerNum == 1)
         {
             m_playerArrowIndicators[0].GetComponent<ArrowIndicatorController>().StopArrowIndicatorController();
             
             GameObject teamBoat = BoatSystem.Instance.m_boatsPerTeam[0][0];
-            if (teamBoat.GetComponent<BoatData>().m_currentTotalGoldStored > 0)
+            if (teamBoat.GetComponent<BoatData>().m_remainingHealth > 0)
             {
                 m_playerArrowIndicators[0].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
                     PlayerSystem.Instance.m_teamColors[0],
@@ -131,7 +125,7 @@ public class Level1UIHovers : UIBase
             m_playerArrowIndicators[1].GetComponent<ArrowIndicatorController>().StopArrowIndicatorController();
 
             GameObject teamBoat = BoatSystem.Instance.m_boatsPerTeam[1][0];
-            if (teamBoat.GetComponent<BoatData>().m_currentTotalGoldStored > 0)
+            if (teamBoat.GetComponent<BoatData>().m_remainingHealth > 0)
             {
                 m_playerArrowIndicators[1].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
                     PlayerSystem.Instance.m_teamColors[1],
@@ -151,15 +145,5 @@ public class Level1UIHovers : UIBase
             m_playerArrowIndicators[3].GetComponent<ArrowIndicatorController>().m_objectToPointTo =
                 m_goldPickupZonePerTeam[1];
         }
-    }
-
-    private void OnPlayerBoardBoat(int teamNum, int playerNum, int boatNum)
-    {
-        m_playerArrowIndicators[playerNum-1].GetComponent<ArrowIndicatorController>().StopArrowIndicatorController();
-    }
-    
-    private void OnPlayerGetOffBoat(int teamNum, int playerNum, int boatNum)
-    {
-        m_playerArrowIndicators[playerNum-1].GetComponent<ArrowIndicatorController>().StopArrowIndicatorController();
     }
 }

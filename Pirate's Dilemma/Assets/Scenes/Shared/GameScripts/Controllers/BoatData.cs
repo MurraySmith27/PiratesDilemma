@@ -8,44 +8,10 @@ public class BoatData : MonoBehaviour
     public int m_teamNum;
     // The boat number within the team.
     public int m_boatNum;
-    // The amount of total gold stored on the boat between every team.
-    public int m_currentTotalGoldStored
-    {
-        get
-        {
-            return m_currentGoldStored.Sum();
-        }
-    }
-
-    // The amount of gold currently stored on the boat for each team.
-    public List<int> m_currentGoldStored;
-    // The total capacity of gold that this boat can hold
-    public int m_goldCapacity;
-    // The total time to live for this boat (when it's spawned, not the current timer value).
-    public int m_timeToLive;
-
-    public List<Transform> m_playerBoardedPositions;
-
-    public int m_numPlayersBoarded;
-
+    // The amount of remaining health the boat has.
+    public int m_remainingHealth;
+    // The total health the boat has.
+    public int m_maxHealth;
     //The sink audio source
     public AudioSource m_sinkAudioSource;
-    // The sail away audio source.
-    public AudioSource m_sailAudioSource;
-
-    public Vector2 m_boatDismountDirection = new Vector2(0, 1);
-    private void Awake()
-    {
-        ClearGoldStored();
-    }
-
-    public void ClearGoldStored()
-    {
-        m_currentGoldStored = new List<int>();
-
-        for (int i = 0; i < PlayerSystem.Instance.m_numTeams; i++)
-        {
-            m_currentGoldStored.Add(0);
-        }
-    }
 }
