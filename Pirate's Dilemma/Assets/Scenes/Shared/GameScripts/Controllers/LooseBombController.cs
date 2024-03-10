@@ -7,11 +7,19 @@ public delegate void LooseBombCollisionEvent();
 public class LooseBombController : MonoBehaviour
 {
     [SerializeField] private float m_bombAliveSeconds = 5f;
+    
+    [SerializeField] private GameObject m_explosionPrefab;
+    
+    [SerializeField] private float m_explosionAliveSeconds;
+    
     public LooseBombCollisionEvent m_onLooseBombCollision;
 
     public int m_lastHeldTeamNum;
 
     public int m_damagePerBomb = 1;
+
+    public bool m_isLit = false;
+
     
     void Start()
     {
@@ -26,7 +34,7 @@ public class LooseBombController : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.layer == LayerMask.NameToLayer("Boat") && collider.gameObject.GetComponent<BoatData>().m_teamNum != m_lastHeldTeamNum)
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Boat") && collider.gameObject.GetComponent<BoatData>().m_teamNum != m_lastHeldTeamNum && m_isLit)
         {
             //landed in drop zone, score for team. 
             BoatDamageController boatDamageController = collider.gameObject.GetComponent<BoatDamageController>();
@@ -34,6 +42,8 @@ public class LooseBombController : MonoBehaviour
             {
                 boatDamageController.TakeDamage(m_damagePerBomb);
             }
+
+            GenerateExplosion(transform.position);
             Destroy(this.gameObject);
         }
     }
@@ -48,5 +58,17 @@ public class LooseBombController : MonoBehaviour
                 m_onLooseBombCollision();
             }
         }
+
+        if (m_isLit)
+        {
+            GenerateExplosion(collision.contacts[0].point);
+        }
+    }
+
+    private void GenerateExplosion(Vector3 explosionCenter)
+    {
+        Debug.Log("generating explosion!");
+        GameObject explosion = Instantiate(m_explosionPrefab, explosionCenter, Quaternion.identity);
+        Destroy(explosion, m_explosionAliveSeconds);
     }
 }

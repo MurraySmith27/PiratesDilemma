@@ -758,9 +758,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_gameStartTimerSeconds: 3
-  m_gameTimerSeconds: 60
   m_characterSelectSceneName: CharacterSelect
-  m_krakenArrivalTimeRemaining: 30
   m_holdAfterGameEndTime: 1
   m_holdBeforeCountdownTimerTime: 1
   m_gameSceneLoadedBufferSeconds: 0.55
@@ -1188,6 +1186,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4264240050300890443, guid: fa837950df16ae74c966d0e174bf7d67,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.0000000222575
+      objectReference: {fileID: 0}
+    - target: {fileID: 4264240050300890443, guid: fa837950df16ae74c966d0e174bf7d67,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.00000001306665
+      objectReference: {fileID: 0}
     - target: {fileID: 7580684644525770009, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1242,6 +1250,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TestLevel_Map
+      objectReference: {fileID: 0}
+    - target: {fileID: 8619921798994050774, guid: fa837950df16ae74c966d0e174bf7d67,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.0000000222575
+      objectReference: {fileID: 0}
+    - target: {fileID: 8619921798994050774, guid: fa837950df16ae74c966d0e174bf7d67,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.00000001306665
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

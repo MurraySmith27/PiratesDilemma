@@ -42,6 +42,8 @@ public class InGameHoversUI : UIBase
 
     [SerializeField] private Sprite m_boatHoverIcon;
 
+    [SerializeField] private float m_throwBombToBoatControlsHoverRadius = 3f;
+    
     private List<List<VisualElement>> m_boatElements;
 
     private List<List<GameObject>> m_boatHoversPerTeam;
@@ -53,6 +55,12 @@ public class InGameHoversUI : UIBase
     private List<GameObject> m_playerIndicators;
 
     private List<List<Coroutine>> m_boatLabelCoroutines;
+
+    private Coroutine m_updateCoroutine;
+
+    private List<bool> m_isPlayerNearBomb;
+
+    private List<bool> m_isPlayerNearEnemyBoat;
     
     protected override void Awake()
     {
@@ -72,6 +80,10 @@ public class InGameHoversUI : UIBase
         m_playerIndicators = new List<GameObject>();
 
         m_boatLabelCoroutines = new List<List<Coroutine>>();
+
+        m_isPlayerNearBomb = new List<bool>();
+
+        m_isPlayerNearEnemyBoat = new List<bool>();
         
         m_root = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("root");
         
@@ -80,6 +92,9 @@ public class InGameHoversUI : UIBase
         for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
         {
             m_playerElements.Add(null);
+            
+            m_isPlayerNearBomb.Add(false);
+            m_isPlayerNearEnemyBoat.Add(false);
             
             m_playerIndicators.Add(Instantiate(m_playerHoverPrefabs[i], new Vector3(0, 0, 0),
                 Quaternion.identity));
@@ -124,6 +139,8 @@ public class InGameHoversUI : UIBase
 
     void OnDestroy()
     {
+        StopCoroutine(m_updateCoroutine);
+        
         PlayerSystem.Instance.m_onPlayerPickupBomb -= OnGoldPickedUp;
         PlayerSystem.Instance.m_onPlayerDropBomb -= OnGoldDropped;
         PlayerSystem.Instance.m_onDashCooldownStart -= OnPlayerDashCooldownStart;
@@ -162,6 +179,68 @@ public class InGameHoversUI : UIBase
             
             ClosingCircleSpawner.Instance.CreateClosingCircle(bombSpawnPoint, Color.white);
         }
+
+        m_updateCoroutine = StartCoroutine(UpdateCoroutine());
+    }
+
+    private IEnumerator UpdateCoroutine()
+    {
+        while (true)
+        {
+            for (int i = 1; i <= PlayerSystem.Instance.m_numPlayers; i++)
+            {
+                GameObject player = PlayerSystem.Instance.m_players[i-1];
+                int playerTeamNum = player.GetComponent<PlayerData>().m_teamNum;
+                float pickupRadius = player.GetComponent<PlayerItemController>().m_looseItemPickupRadius;
+
+                bool nearBomb = false;
+                foreach (GameObject bomb in GameObject.FindGameObjectsWithTag("LooseBomb"))
+                {
+                    if (Vector3.Distance(player.transform.position, bomb.transform.position) <= pickupRadius)
+                    {
+                        nearBomb = true;
+                        break;
+                    }
+                }
+
+                if (!nearBomb && m_isPlayerNearBomb[i-1])
+                {
+                    OnPlayerExitBombRadius(playerTeamNum, i);
+                    m_isPlayerNearBomb[i - 1] = false;
+                }
+                else if (nearBomb && !m_isPlayerNearBomb[i - 1])
+                {
+                    OnPlayerEnterBombRadius(playerTeamNum, i);
+                    m_isPlayerNearBomb[i-1] = true;
+                }
+                
+
+                bool nearEnemyBoat = false;
+                foreach (GameObject boat in GameObject.FindGameObjectsWithTag("Boat"))
+                {
+                    if (Vector3.Distance(player.transform.position, boat.transform.position) <= m_throwBombToBoatControlsHoverRadius &&
+                        boat.GetComponent<BoatData>().m_teamNum != playerTeamNum)
+                    {
+                        nearEnemyBoat = true;
+                        break;
+                    }
+                }
+
+                if (!nearEnemyBoat && m_isPlayerNearEnemyBoat[i-1])
+                {
+                    OnPlayerEnterEnemyBoatRadius(playerTeamNum, i);
+                    m_isPlayerNearEnemyBoat[i - 1] = false;
+                }
+                else if (nearEnemyBoat && !m_isPlayerNearEnemyBoat[i - 1])
+                {
+                    OnPlayerExitEnemyBoatRadius(playerTeamNum, i);
+                    m_isPlayerNearEnemyBoat[i-1] = true;
+                }
+            }
+
+            
+            yield return null;
+        }
     }
 
     void OnGoldPickedUp(int teamNum, int playerNum)
@@ -175,7 +254,7 @@ public class InGameHoversUI : UIBase
         {
             foreach (GameObject boat in GameObject.FindGameObjectsWithTag("Boat"))
             {
-                if (boat.GetComponent<BoatData>().m_teamNum == teamNum)
+                if (boat.GetComponent<BoatData>().m_teamNum != teamNum)
                 {
                     GameObject newHover = Instantiate(m_boatHoverPrefabsPerTeam[teamNum-1], Vector3.zero, Quaternion.identity);
                     
@@ -228,9 +307,8 @@ public class InGameHoversUI : UIBase
             }
         }
     }
-    
 
-    private void OnPlayerEnterBombSpawnPoint(int teamNum, int playerNum)
+    private void OnPlayerEnterBombRadius(int teamNum, int playerNum)
     {
         if (PlayerSystem.Instance.m_players[playerNum - 1].GetComponent<PlayerData>().m_bombsCarried == 0)
         {
@@ -252,7 +330,7 @@ public class InGameHoversUI : UIBase
         }
     }
     
-    private void OnPlayerLeaveBombSpawnPoint(int teamNum, int playerNum)
+    private void OnPlayerExitBombRadius(int teamNum, int playerNum)
     {
         if (m_playerIndicators[playerNum - 1] != null)
         {
@@ -338,6 +416,7 @@ public class InGameHoversUI : UIBase
         m_boatElements[teamNum-1][boatNum-1].Clear();
         m_boatElements[teamNum-1][boatNum-1].RemoveFromHierarchy();
         m_boatElements[teamNum-1][boatNum-1] = null;
+        StopCoroutine(m_boatLabelCoroutines[teamNum - 1][boatNum-1]);
     }
 
     void BombAddedToBoat(int teamNum, int boatNum, int damage, int remainingHealth, int maxHealth)

@@ -179,8 +179,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d69db1f7612fa6149982490da1965b20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_bombAliveSeconds: 5
+  m_explosionPrefab: {fileID: 3658179560201325224, guid: 8dd8f5fa3349df34bb92a5ecf3ada071,
+    type: 3}
+  m_explosionAliveSeconds: 1
   m_lastHeldTeamNum: 0
   m_damagePerBomb: 1
+  m_isLit: 0
 --- !u!96 &-3480362166084312967
 TrailRenderer:
   serializedVersion: 3

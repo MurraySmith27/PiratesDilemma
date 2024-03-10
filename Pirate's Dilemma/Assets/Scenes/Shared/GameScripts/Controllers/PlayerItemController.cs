@@ -39,7 +39,7 @@ public class PlayerItemController : MonoBehaviour
 
     [FormerlySerializedAs("m_looseGoldPrefab")] [SerializeField] private GameObject m_looseBombPrefab;
 
-    [FormerlySerializedAs("m_looseGoldPickupRadius")] [SerializeField] private float m_looseItemPickupRadius;
+    [FormerlySerializedAs("m_looseGoldPickupRadius")] public float m_looseItemPickupRadius;
     
     [FormerlySerializedAs("m_goldThrowingAirTime")] [SerializeField] private float m_bombThrowingAirTime;
     
@@ -67,6 +67,8 @@ public class PlayerItemController : MonoBehaviour
     //
     // public PlayerExitGoldDropZoneEvent m_onPlayerExitGoldDropZone;
 
+
+    private bool m_isHeldBombLit;
     
     private PlayerInput m_playerInput;
     private PlayerMovementController m_playerMovementController;
@@ -311,6 +313,11 @@ public class PlayerItemController : MonoBehaviour
             Vector3 targetPos = m_throwingTargetGameObject.transform.position;
             
             GameObject looseBomb = SpawnLooseBomb(true);
+
+            if (m_isHeldBombLit)
+            {
+                looseBomb.GetComponent<LooseBombController>().m_isLit = true;
+            }
             
             Coroutine throwBombCoroutine = StartCoroutine(ThrowBombCoroutine(targetPos, looseBomb));
 
@@ -384,6 +391,8 @@ public class PlayerItemController : MonoBehaviour
         m_playerData.m_bombsCarried += 1;
     
         m_heldBombGameObject.SetActive(true);
+
+        m_isHeldBombLit = false;
         
         if (m_onPlayerPickupBomb != null && m_onPlayerPickupBomb.GetInvocationList().Length > 0)
         {
@@ -553,6 +562,12 @@ public class PlayerItemController : MonoBehaviour
         // {
         //     BoardBoat(otherCollider.gameObject);
         // }
+        
+        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("BombLightingArea") &&
+            m_playerData.m_bombsCarried > 0)
+        {
+            m_isHeldBombLit = true;
+        }
     }
     
     void OnTriggerExit(Collider otherCollider)

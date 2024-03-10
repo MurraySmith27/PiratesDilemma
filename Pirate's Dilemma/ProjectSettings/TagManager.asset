@@ -31,6 +31,7 @@ TagManager:
   - Barrel
   - BoatHoverTrackLocation
   - BombSpawnPoint
+  - BombLighter
   layers:
   - Default
   - TransparentFX
@@ -55,8 +56,8 @@ TagManager:
   - Team2Player
   - HasOutline
   - OnTopOfUI
-  - 
-  - 
+  - BombLightingArea
+  - Explosion
   - 
   - 
   - 

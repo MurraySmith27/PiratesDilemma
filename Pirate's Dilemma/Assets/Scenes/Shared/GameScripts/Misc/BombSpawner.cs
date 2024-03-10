@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BombSpawner : MonoBehaviour
 {
@@ -13,9 +15,11 @@ public class BombSpawner : MonoBehaviour
 
     private int m_lastBombSpawnedTimeStamp;
     
-    private bool m_initialized; 
+    private bool m_initialized;
+
+    private Coroutine m_simulateTimerUpdateCoroutine;
     
-    void Awake()
+    void Start()
     {
         m_spawnedBombs = new List<GameObject>();
 
@@ -30,6 +34,12 @@ public class BombSpawner : MonoBehaviour
         
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
         GameTimerSystem.Instance.m_onGameFinish += OnGameFinish;
+
+        //for charcter select so bombs spawn.
+        if (SceneManager.GetActiveScene().name == GameTimerSystem.Instance.m_characterSelectSceneName)
+        {
+            m_simulateTimerUpdateCoroutine = StartCoroutine(SimulateTimerUpdate());
+        }
     }
 
     void OnDestroy()
@@ -40,9 +50,32 @@ public class BombSpawner : MonoBehaviour
 
     private void OnGameStart()
     {
+        if (m_simulateTimerUpdateCoroutine != null)
+        {
+            StopCoroutine(m_simulateTimerUpdateCoroutine);
+        }
         m_initialized = true;
         m_lastBombSpawnedTimeStamp = -1;
         GameTimerSystem.Instance.m_onGameTimerUpdate += OnTimerUpdate;
+    }
+
+    private IEnumerator SimulateTimerUpdate()
+    {
+        
+        //first spawn all bombs
+        while (TrySpawnBomb())
+        {
+            
+        }
+        
+        int count = 0;
+        
+        while (true)
+        {
+            OnTimerUpdate(count++);
+            yield return new WaitForSeconds(1f);
+            
+        }
     }
 
     private void OnGameFinish()

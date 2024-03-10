@@ -58,6 +58,8 @@ public class GameTimerSystem : GameSystem
     public GameTimerUpdateEvent m_onStartGameTimerUpdate;
     
     public bool m_gamePaused = false;
+
+    private Coroutine m_gameCountdownCoroutine;
     
     void Awake()
     {
@@ -94,6 +96,7 @@ public class GameTimerSystem : GameSystem
     {
         if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
         {
+            Debug.Log("CALLING START GAME");
             StartGame();
         }
     }
@@ -121,7 +124,7 @@ public class GameTimerSystem : GameSystem
 
     private void EndGame(int teamNum, int boatNum)
     {
-        StartCoroutine(EndGameCoroutine(m_characterSelectSceneName));
+        StopGame(m_characterSelectSceneName);
     }
 
     private IEnumerator StartGameCoroutine()
@@ -138,6 +141,10 @@ public class GameTimerSystem : GameSystem
     public void StopGame(string nextSceneToLoadName)
     {
         StartCoroutine(EndGameCoroutine(nextSceneToLoadName));
+        if (m_gameCountdownCoroutine != null)
+        {
+            StopCoroutine(m_gameCountdownCoroutine);
+        }
     }
 
     private IEnumerator StartGameCountdown()
@@ -160,7 +167,7 @@ public class GameTimerSystem : GameSystem
             m_onGameStart();
         }
         
-        StartCoroutine(GlobalCountdown());
+        m_gameCountdownCoroutine = StartCoroutine(GlobalCountdown());
     }
     
     IEnumerator GlobalCountdown()
@@ -172,6 +179,7 @@ public class GameTimerSystem : GameSystem
         {
             // Wait for one second
             yield return new WaitForSeconds(1);
+            Debug.Log("GLOBAL COUNTDOWN");
             
             // Decrease the count
             count++;

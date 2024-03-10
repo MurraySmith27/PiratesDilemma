@@ -692,7 +692,9 @@ public class PlayerSystem : GameSystem
             m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
             m_players[i].transform.localScale = spawnPos.transform.localScale;
             m_players[i].transform.rotation = spawnPos.transform.rotation;
+            m_playerControlSchemesList[i].FindAction("ReadyUp").Disable();
 
+            
             PlayerItemController playerItemController = m_players[i].GetComponent<PlayerItemController>();
 
             playerItemController.m_onPlayerPickupBomb += OnPlayerPickUpBomb;
