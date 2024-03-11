@@ -170,7 +170,7 @@ public class InGameHoversUI : UIBase
 
         
             genericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(0.08f,
-                Color.yellow,
+                Color.black,
                 hoverIcon: m_bombSpawnPointHoverIcon,
                 objectToTrack: bombSpawnPoint,
                 scaleFactor: m_hoverIconScaleFactor,
@@ -259,7 +259,7 @@ public class InGameHoversUI : UIBase
                     GameObject newHover = Instantiate(m_boatHoverPrefabsPerTeam[teamNum-1], Vector3.zero, Quaternion.identity);
                     
                     newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
-                        color: Color.white,
+                        color: Color.black,
                         hoverIcon: m_boatHoverIcon,
                         objectToTrack: boat,
                         scaleFactor: m_hoverIconScaleFactor,
@@ -421,7 +421,6 @@ public class InGameHoversUI : UIBase
 
     void BombAddedToBoat(int teamNum, int boatNum, int damage, int remainingHealth, int maxHealth)
     {
-        Debug.Log($"adding bomb to boat team: {teamNum}, boat: {boatNum}");
         m_currentBoatLabels[teamNum-1][boatNum-1] = $"{remainingHealth} / {maxHealth}";
         
         GameObject boatObject = BoatSystem.Instance.m_boatsPerTeam[teamNum-1][boatNum-1];

@@ -27,6 +27,8 @@ public class PlayerItemController : MonoBehaviour
 
     [FormerlySerializedAs("m_heldGoldGameObject")] [SerializeField] private GameObject m_heldBombGameObject;
     
+    [SerializeField] private AudioSource m_bombHissAudioSource;
+    
     [SerializeField] private GameObject m_heldBarrelGameObject;
 
     [SerializeField] private GameObject m_throwingTargetGameObject;
@@ -51,6 +53,8 @@ public class PlayerItemController : MonoBehaviour
     
     [SerializeField] private float m_getOffBoatInputThreshold = 0.5f;
 
+    [SerializeField] private GameObject m_heldBombFireParticle;
+    
     public PlayerPickUpBombEvent m_onPlayerPickupBomb;
 
     public PlayerDropBombEvent m_onPlayerDropBomb;
@@ -291,7 +295,7 @@ public class PlayerItemController : MonoBehaviour
     public GameObject SpawnLooseBomb(bool isThrowing)
     {
         GameObject looseBombObject = Instantiate(m_looseBombPrefab, transform.position, Quaternion.identity);
-        looseBombObject.GetComponent<LooseBombController>().m_lastHeldTeamNum = m_playerData.m_teamNum;
+        looseBombObject.GetComponent<BombController>().m_lastHeldTeamNum = m_playerData.m_teamNum;
         if (isThrowing)
         {
             looseBombObject.layer = LayerMask.NameToLayer("AirbornLooseBomb");
@@ -316,14 +320,16 @@ public class PlayerItemController : MonoBehaviour
 
             if (m_isHeldBombLit)
             {
-                looseBomb.GetComponent<LooseBombController>().m_isLit = true;
+                looseBomb.GetComponent<BombController>().SetLit(true);
+                m_isHeldBombLit = false;
+                m_heldBombFireParticle.SetActive(false);
             }
             
             Coroutine throwBombCoroutine = StartCoroutine(ThrowBombCoroutine(targetPos, looseBomb));
 
             m_onPlayerStartThrow();
 
-            looseBomb.GetComponent<LooseBombController>().m_onLooseBombCollision +=
+            looseBomb.GetComponent<BombController>().m_onLooseBombCollision +=
                 () =>
                 {
                     looseBomb.GetComponent<Rigidbody>().isKinematic = false;
@@ -393,6 +399,8 @@ public class PlayerItemController : MonoBehaviour
         m_heldBombGameObject.SetActive(true);
 
         m_isHeldBombLit = false;
+        m_heldBombFireParticle.SetActive(false);
+        
         
         if (m_onPlayerPickupBomb != null && m_onPlayerPickupBomb.GetInvocationList().Length > 0)
         {
@@ -567,6 +575,8 @@ public class PlayerItemController : MonoBehaviour
             m_playerData.m_bombsCarried > 0)
         {
             m_isHeldBombLit = true;
+            m_heldBombFireParticle.SetActive(true);
+            m_bombHissAudioSource.Play();
         }
     }
     

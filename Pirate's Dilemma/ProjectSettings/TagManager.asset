@@ -32,6 +32,7 @@ TagManager:
   - BoatHoverTrackLocation
   - BombSpawnPoint
   - BombLighter
+  - LooseBombInSpawn
   layers:
   - Default
   - TransparentFX
@@ -58,7 +59,7 @@ TagManager:
   - OnTopOfUI
   - BombLightingArea
   - Explosion
-  - 
+  - LooseBombInSpawn
   - 
   - 
   - 
