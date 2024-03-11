@@ -433,18 +433,22 @@ public class InGameHoversUI : UIBase
         m_boatElements[teamNum-1][boatNum-1] = m_boatUIAsset.Instantiate();
         m_root.Add(m_boatElements[teamNum-1][boatNum-1]);
         
-        Label capacityLabel = m_boatElements[teamNum-1][boatNum-1].Q<Label>("capacity-label");
         
         GameObject boatHoverTrackLocation = null;
-
+        
         for (int childNum = 0; childNum < boat.transform.childCount; childNum++)
         {
             Transform child = boat.transform.GetChild(childNum);
-            if (child.CompareTag("BoatHoverTrackLocation"))
+            for (int nestedChildNum = 0; nestedChildNum < child.childCount; nestedChildNum++)
             {
-                boatHoverTrackLocation = child.gameObject;
+                Transform grandChild = child.GetChild(nestedChildNum);
+                if (grandChild.CompareTag("BoatHoverTrackLocation"))
+                {
+                    boatHoverTrackLocation = grandChild.gameObject;
+                }
             }
         }
+        VisualElement healthSection  = m_boatElements[teamNum-1][boatNum-1].Q<VisualElement>("health-section");
 
         while (true)
         {
@@ -454,7 +458,7 @@ public class InGameHoversUI : UIBase
             m_boatElements[teamNum - 1][boatNum - 1].style.left = screenX;
             m_boatElements[teamNum-1][boatNum-1].style.top = (Screen.height - screenY) - 60;
 
-            capacityLabel.style.width = 100f * m_currentBoatLabels[teamNum-1][boatNum-1].Item1 / m_currentBoatLabels[teamNum-1][boatNum-1].Item2;
+            healthSection.style.width = Length.Percent(100f * m_currentBoatLabels[teamNum-1][boatNum-1].Item1 / m_currentBoatLabels[teamNum-1][boatNum-1].Item2);
         
             yield return null;
         }
