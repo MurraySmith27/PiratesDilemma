@@ -30,6 +30,8 @@ public class KrakenController : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera m_vcam;
 
     [SerializeField] private List<GameObject> m_krakenArrivalDestrucables;
+    
+    [SerializeField] private float m_krakenArrivalTime = 30f;
 
     [SerializeField] private float m_krakenArrivalAgressiveness = 1;
 
@@ -37,6 +39,8 @@ public class KrakenController : MonoBehaviour
 
     // [SerializeField] private List<GameObject> m_krakenKillZones;
 
+
+    private bool m_krakenArrived;
 
     void Awake()
     {
@@ -50,13 +54,22 @@ public class KrakenController : MonoBehaviour
             _instance = this;
         }
     }
-    
-    
-    public void StartKrakenArrival()
+
+    void Start()
     {
-        StartCoroutine(KrakenArrival());
+        m_krakenArrived = false;
+        GameTimerSystem.Instance.m_onGameTimerUpdate += OnGameTimerUpdate;
     }
-    
+
+    private void OnGameTimerUpdate(int gameTimerValue)
+    {
+        if (gameTimerValue >= m_krakenArrivalTime && !m_krakenArrived)
+        {
+     
+            StartCoroutine(KrakenArrival());
+            m_krakenArrived = true;
+        }
+    }
     
     private IEnumerator KrakenArrival()
     {

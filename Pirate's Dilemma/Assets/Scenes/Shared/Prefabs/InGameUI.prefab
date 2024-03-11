@@ -80,33 +80,21 @@ MonoBehaviour:
   - {fileID: 21300000, guid: b7531e48de0d2174f82a1b9bcae8c0f6, type: 3}
   - {fileID: 21300000, guid: ae9f05c41eb3f0f4db3cba2dfacdb1de, type: 3}
   - {fileID: 21300000, guid: 98b1b30edb7403043b44fcb4a45e3d22, type: 3}
-  m_goldPickupZoneHoverPrefab: {fileID: 7234308871107947966, guid: 1dc9c12929b554b4ea861e02d284af1b,
+  m_bombInteractButtonIcon: {fileID: 21300000, guid: 90b0d6963c1193142bd595a2ab26ceea,
     type: 3}
-  m_goldPickupZoneHoverIcon: {fileID: 21300000, guid: 5dac7edffa7ac2c4eba8cdc211400a3e,
+  m_bombSpawnPointHoverPrefab: {fileID: 7234308871107947966, guid: 1dc9c12929b554b4ea861e02d284af1b,
     type: 3}
-  m_goldInteractButtonIcon: {fileID: 21300000, guid: 90b0d6963c1193142bd595a2ab26ceea,
-    type: 3}
-  m_goldDropZoneHoverPrefabsPerTeam:
-  - {fileID: 7234308871107947966, guid: f0d2d420d63e40840be4c55f4c700ed6, type: 3}
-  - {fileID: 7234308871107947966, guid: 59a077ebb331b4b42902af24ee2209c4, type: 3}
-  m_goldDropZoneHoverIcon: {fileID: 21300000, guid: 5dac7edffa7ac2c4eba8cdc211400a3e,
+  m_bombSpawnPointHoverIcon: {fileID: 21300000, guid: 31638b686fe27a743a4ff1a051787cee,
     type: 3}
   m_playerDashCooldownHoverPrefabs: []
   m_dashCooldownHoverIcons: []
-  m_boatBoardingHoverPrefabs:
-  - {fileID: 7234308871107947966, guid: a64ca890e0556404eb73ae70dbdbb7fd, type: 3}
-  - {fileID: 7234308871107947966, guid: bafdfea7c23febb4a83fddd241dc9acd, type: 3}
-  - {fileID: 7234308871107947966, guid: 0969e758c5137e941a69318af40e42eb, type: 3}
-  - {fileID: 7234308871107947966, guid: 7739d0912f608664bb703623f3fa254a, type: 3}
-  m_team1BoatBoardingHoverIcons:
-  - {fileID: 21300000, guid: 33cb58d506df1324b975d3d9acdfd4f6, type: 3}
-  - {fileID: 21300000, guid: c0d419bf18063dd408bcce1eee3ac212, type: 3}
-  m_team2BoatBoardingHoverIcons:
-  - {fileID: 21300000, guid: 110d209db1459184581d692522ecb270, type: 3}
-  - {fileID: 21300000, guid: c8c701ca8690162419576dad6ee37629, type: 3}
   m_goldScoringParticlesPrefab: {fileID: 8294879432045753576, guid: 59df4c53968e9bb4199cf5da0619e561,
     type: 3}
   m_hoverIconScaleFactor: 0.05
+  m_boatHoverPrefabsPerTeam:
+  - {fileID: 7234308871107947966, guid: f0d2d420d63e40840be4c55f4c700ed6, type: 3}
+  - {fileID: 7234308871107947966, guid: 59a077ebb331b4b42902af24ee2209c4, type: 3}
+  m_boatHoverIcon: {fileID: 21300000, guid: 31638b686fe27a743a4ff1a051787cee, type: 3}
 --- !u!1 &2931290759399913967
 GameObject:
   m_ObjectHideFlags: 0
@@ -141,6 +129,7 @@ Transform:
   - {fileID: 2056038230693778725}
   - {fileID: 9213025227885314958}
   - {fileID: 1185748894512299888}
+  - {fileID: 5828620416007016471}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3765545985192282897
@@ -276,8 +265,65 @@ MonoBehaviour:
   m_gameRulesTutorialSprite: {fileID: 21300000, guid: de7e72055b371104489952c9ca06aea4,
     type: 3}
   m_tutorialPopupObject: {fileID: 3765545985192282897}
-  m_useTutorialPopups: 0
+  m_useTutorialPopups: 1
   m_scoreIncreaseDelay: 2.2
+--- !u!1 &4568172735476978199
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5828620416007016471}
+  - component: {fileID: 434149858558359618}
+  m_Layer: 0
+  m_Name: Level1HoversUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5828620416007016471
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4568172735476978199}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8975578017559500204}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &434149858558359618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4568172735476978199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c07e2052ddfae914db460f2a17abfa23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_systemDependencies:
+  - GameTimerSystem
+  - PlayerSystem
+  m_goldPickupZonePerTeam:
+  - {fileID: 0}
+  - {fileID: 0}
+  m_goldDropZonePerTeam:
+  - {fileID: 0}
+  - {fileID: 0}
+  m_arrowIndicatorPrefab: {fileID: 3223295136545831580, guid: 369084f6d04c3df48be9069614f169ce,
+    type: 3}
+  m_arrowScaleFactor: 0.01
+  m_heightAboveToHover: 0.02
 --- !u!1 &5032374858146451266
 GameObject:
   m_ObjectHideFlags: 0

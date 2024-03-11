@@ -129,7 +129,7 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _UseCustomNormalMap: 0
-    - _UseEmission: 1
+    - _UseEmission: 0
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1
@@ -138,6 +138,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Dark_Color: {r: 0.24964403, g: 0.26018345, b: 0.2830189, a: 1}
+    - _DefaultEmissionHDR: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Light_Color: {r: 0.488341, g: 0.5483051, b: 0.5849056, a: 1}
     - _ShadowColor: {r: 0.31132078, g: 0.30985227, b: 0.30985227, a: 0}

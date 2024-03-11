@@ -39,8 +39,17 @@ public class CharacterSelectUI : UIBase
 
     private List<InputAction> m_readyUpActions;
 
+    private List<SupportedDeviceType> m_deviceTypesPerPlayer;
+
     private Coroutine m_startGameCountdownCoroutine;
-    
+
+
+    private enum SupportedDeviceType
+    {
+        DualshockGamepad,
+        Gamepad,
+        Keyboard
+    }
     protected override void Awake()
     {
         base.Awake();
@@ -55,6 +64,7 @@ public class CharacterSelectUI : UIBase
         m_readyUpHoverElements = new List<VisualElement>();
         m_readyUpActions = new List<InputAction>();
         m_readyPlayers = new List<bool>();
+        m_deviceTypesPerPlayer = new List<SupportedDeviceType>();
         
         //resize the render texture quads to fit the screen properly
         Vector3 cameraPos = Camera.main.transform.position;
@@ -73,6 +83,8 @@ public class CharacterSelectUI : UIBase
             m_renderTextureQuads[i].transform.position = new Vector3(-quadWidthScale * ((i % 2) - 1.5f), currentPos.y - (2 * (int)(i/2)-1) * quadHeightScale / 4f, currentPos.z);
             
             m_docs.Add(m_renderTextureQuads[i].GetComponent<UIDocument>());
+
+            m_deviceTypesPerPlayer.Add(SupportedDeviceType.Keyboard);
             
             m_pressToJoinElements.Add(m_docs[i].rootVisualElement);
             m_pressToJoinElements[i].Q<Label>("player-label").text = $"Player {i + 1}";
@@ -101,14 +113,29 @@ public class CharacterSelectUI : UIBase
 
         PlayerSystem.Instance.SwitchToActionMapForPlayer(newPlayerNum, "CharacterSelect");
 
-        InputDevice device = PlayerSystem.Instance.m_playerInputObjects[newPlayerNum - 1].devices[0];
+        if (PlayerSystem.Instance.m_playerInputObjects[newPlayerNum - 1].devices.Count > 0)
+        {
+            InputDevice device = PlayerSystem.Instance.m_playerInputObjects[newPlayerNum - 1].devices[0];
+            if (device is DualShockGamepad)
+            {
+                m_deviceTypesPerPlayer[newPlayerNum - 1] = SupportedDeviceType.DualshockGamepad;
+            }
+            else if (device is Gamepad)
+            {
+                m_deviceTypesPerPlayer[newPlayerNum - 1] = SupportedDeviceType.Gamepad;
+            }
+            else
+            {
+                m_deviceTypesPerPlayer[newPlayerNum - 1] = SupportedDeviceType.Keyboard;
+            }
+        }
         
         Image image = new Image();
-        if (device is DualShockGamepad)
+        if (m_deviceTypesPerPlayer[newPlayerNum-1] == SupportedDeviceType.DualshockGamepad)
         {
             image.sprite = m_playstationControllerReadyUpIcon;
         }
-        else if (device is Gamepad)
+        else if (m_deviceTypesPerPlayer[newPlayerNum-1] == SupportedDeviceType.Gamepad)
         {
             image.sprite = m_xboxControllerReadyUpIcon;
         }

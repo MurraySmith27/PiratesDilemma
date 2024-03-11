@@ -14,7 +14,7 @@ TagManager:
   - GoldPickupZone
   - Team1Boat
   - Team2Boat
-  - LooseGold
+  - LooseBomb
   - Kraken
   - Team1BoardedPosition
   - Team2BoardedPosition
@@ -30,6 +30,9 @@ TagManager:
   - BoatModel
   - Barrel
   - BoatHoverTrackLocation
+  - BombSpawnPoint
+  - BombLighter
+  - LooseBombInSpawn
   layers:
   - Default
   - TransparentFX
@@ -38,13 +41,13 @@ TagManager:
   - Water
   - UI
   - GoldDropZone
-  - GoldPickupZone
+  - BombSpawnPoint
   - Player
   - Killzone
   - StaticObstacle
   - Floor
-  - AirbornLooseGold
-  - LooseGold
+  - AirbornLooseBomb
+  - LooseBomb
   - DestroyedDestructable
   - ThrowTarget
   - Boat
@@ -54,9 +57,9 @@ TagManager:
   - Team2Player
   - HasOutline
   - OnTopOfUI
-  - 
-  - 
-  - 
+  - BombLightingArea
+  - Explosion
+  - LooseBombInSpawn
   - 
   - 
   - 

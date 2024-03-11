@@ -40,12 +40,11 @@ public class PlayerAnimationController : MonoBehaviour
         playerMovementController.m_onDashCooldownStart += OnDashCooldownStart;
         
 
-        PlayerGoldController playerGoldController = GetComponent<PlayerGoldController>();
+        PlayerItemController playerItemController = GetComponent<PlayerItemController>();
 
-        playerGoldController.m_onPlayerPickupGold += OnPickupGold;
-        playerGoldController.m_onPlayerDropGoldOntoBoat += OnDropGold;
-        playerGoldController.m_onPlayerStartThrowCharge += OnStartThrowCharge;
-        playerGoldController.m_onPlayerStartThrow += OnStartThrow;
+        playerItemController.m_onPlayerPickupBomb += OnPickupBomb;
+        playerItemController.m_onPlayerStartThrowCharge += OnStartThrowCharge;
+        playerItemController.m_onPlayerStartThrow += OnStartThrow;
 
         m_initialized = true;
     }
@@ -72,15 +71,15 @@ public class PlayerAnimationController : MonoBehaviour
         
     }
 
-    void OnDashCooldownStart()
+    void OnDashCooldownStart(int teamNum, int playerNum, float cooldownSeconds)
     {
-        StartCoroutine(Sweat());
+        StartCoroutine(Sweat(cooldownSeconds));
     }
 
-    private IEnumerator Sweat()
+    private IEnumerator Sweat(float cooldownSeconds)
     {
         m_sweatParticle.SetActive(true);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(cooldownSeconds);
         m_sweatParticle.SetActive(false);
     }
     
@@ -99,19 +98,12 @@ public class PlayerAnimationController : MonoBehaviour
         m_animator.SetTrigger("OnDeath");
     }
     
-    void OnPickupGold(int teamNum, int playerNum)
+    void OnPickupBomb(int teamNum, int playerNum)
     {
         m_animator.SetTrigger("StartPickup");
         m_animator.SetBool("CarryingGold", true);
     }
-
-    void OnDropGold()
-    {
-        m_animator.SetTrigger("StartDrop");
-        
-        m_animator.SetBool("CarryingGold", false);
-    }
-
+    
     void OnStartThrowCharge()
     {
         m_animator.SetTrigger("StartThrowCharge");

@@ -8,6 +8,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 
@@ -22,57 +23,44 @@ public class InGameHoversUI : UIBase
     [SerializeField] private List<GameObject> m_playerHoverPrefabs;
 
     [SerializeField] private List<Sprite> m_playerNumberIcons;
-
-    [SerializeField] private GameObject m_goldPickupZoneHoverPrefab;
-
-    [SerializeField] private Sprite m_goldPickupZoneHoverIcon;
-
-    [SerializeField] private Sprite m_goldInteractButtonIcon;
-
-    [SerializeField] private List<GameObject> m_goldDropZoneHoverPrefabsPerTeam;
-
-    [SerializeField] private Sprite m_goldDropZoneHoverIcon;
-
+    
+    [FormerlySerializedAs("m_goldInteractButtonIcon")] [SerializeField] private Sprite m_bombInteractButtonIcon;
+    
+    [SerializeField] private GameObject m_bombSpawnPointHoverPrefab;
+    
+    [SerializeField] private Sprite m_bombSpawnPointHoverIcon;
+    
     [SerializeField] private List<GameObject> m_playerDashCooldownHoverPrefabs;
     
     [SerializeField] private List<Sprite> m_dashCooldownHoverIcons;
-
-    [SerializeField] private List<GameObject> m_boatBoardingHoverPrefabs;
-
-    [SerializeField] private List<Sprite> m_team1BoatBoardingHoverIcons;
-
-    [SerializeField] private List<Sprite> m_team2BoatBoardingHoverIcons;
 
     [SerializeField] private GameObject m_goldScoringParticlesPrefab;
 
     [SerializeField] private float m_hoverIconScaleFactor = 0.01f;
 
-    private List<List<Sprite>> m_boardingHoverIconsPerTeam
-    {
-        get
-        {
-            List<List<Sprite>> arr = new();
-            arr.Add(m_team1BoatBoardingHoverIcons);
-            arr.Add(m_team2BoatBoardingHoverIcons);
-            
-            return arr;
-        }
-    }
+    [SerializeField] private List<GameObject> m_boatHoverPrefabsPerTeam;
 
+    [SerializeField] private Sprite m_boatHoverIcon;
 
+    [SerializeField] private float m_throwBombToBoatControlsHoverRadius = 3f;
+    
     private List<List<VisualElement>> m_boatElements;
+
+    private List<List<GameObject>> m_boatHoversPerTeam;
 
     private List<VisualElement> m_playerElements;
 
-    private List<List<Coroutine>> m_boatTimerLabelCoroutines;
-
-    private List<List<string>> m_currentBoatLabels;
-
-    private List<List<GameObject>> m_dropZoneHoversPerTeam;
-
-    private List<List<List<GameObject>>> m_boatBoardingHoversPerBoatPerTeam;
+    private List<List<(int, int)>> m_currentBoatLabels;
 
     private List<GameObject> m_playerIndicators;
+
+    private List<List<Coroutine>> m_boatLabelCoroutines;
+
+    private Coroutine m_updateCoroutine;
+
+    private List<bool> m_isPlayerNearBomb;
+
+    private List<bool> m_isPlayerNearEnemyBoat;
     
     protected override void Awake()
     {
@@ -81,28 +69,32 @@ public class InGameHoversUI : UIBase
     
     protected override void SetUpUI()
     {
-        m_boatTimerLabelCoroutines = new List<List<Coroutine>>();
-
         m_boatElements = new List<List<VisualElement>>();
         
         m_playerElements = new List<VisualElement>();
         
-        m_currentBoatLabels = new List<List<string>>();
+        m_currentBoatLabels = new List<List<(int, int)>>();
 
-        m_dropZoneHoversPerTeam = new List<List<GameObject>>();
-
-        m_boatBoardingHoversPerBoatPerTeam = new List<List<List<GameObject>>>();
+        m_boatHoversPerTeam = new List<List<GameObject>>();
         
         m_playerIndicators = new List<GameObject>();
+
+        m_boatLabelCoroutines = new List<List<Coroutine>>();
+
+        m_isPlayerNearBomb = new List<bool>();
+
+        m_isPlayerNearEnemyBoat = new List<bool>();
         
         m_root = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("root");
         
-        BoatSystem.Instance.m_onResetBoat += NewBoatSpawned;
-        BoatSystem.Instance.m_onGoldAddedToBoat += GoldAddedToBoat;
+        BoatSystem.Instance.m_onBoatDamaged += BombAddedToBoat;
         
         for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
         {
             m_playerElements.Add(null);
+            
+            m_isPlayerNearBomb.Add(false);
+            m_isPlayerNearEnemyBoat.Add(false);
             
             m_playerIndicators.Add(Instantiate(m_playerHoverPrefabs[i], new Vector3(0, 0, 0),
                 Quaternion.identity));
@@ -121,85 +113,133 @@ public class InGameHoversUI : UIBase
         for (int teamNum = 1; teamNum <= PlayerSystem.Instance.m_numTeams; teamNum++)
         {
             m_boatElements.Add(new List<VisualElement>());
-            m_boatTimerLabelCoroutines.Add(new List<Coroutine>());
-            m_currentBoatLabels.Add(new List<string>());
-            m_dropZoneHoversPerTeam.Add(new List<GameObject>());
-            m_boatBoardingHoversPerBoatPerTeam.Add(new List<List<GameObject>>());
+            m_currentBoatLabels.Add(new List<(int, int)>());
+            m_boatLabelCoroutines.Add(new List<Coroutine>());
+            m_boatHoversPerTeam.Add(new List<GameObject>());
             
             for (int boatNum = 1; boatNum <= BoatSystem.Instance.m_numBoatsPerTeam[teamNum-1]; boatNum++)
             {
                 m_boatElements[teamNum-1].Add(null);
-                m_currentBoatLabels[teamNum-1].Add("");
-                m_boatTimerLabelCoroutines[teamNum-1].Add( StartCoroutine(UpdateBoatUI(teamNum, boatNum)));
-                m_boatBoardingHoversPerBoatPerTeam[teamNum - 1].Add(new List<GameObject>());
-
-                for (int playerNum = 1; playerNum <= PlayerSystem.Instance.m_numPlayersPerTeam[teamNum - 1]; playerNum++)
-                {
-                    m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1].Add(null);
-                }
+                m_currentBoatLabels[teamNum-1].Add((1, 1));
+                m_boatLabelCoroutines[teamNum - 1].Add(StartCoroutine(UpdateBoatUI(teamNum, boatNum)));
+                m_boatHoversPerTeam[teamNum-1].Add(null);
             }
         }
         
         //set callback to update tutorial UI when player picks up gold
-        PlayerSystem.Instance.m_onPlayerPickupGold += OnGoldPickedUp;
-        PlayerSystem.Instance.m_onPlayerDropGold += OnGoldDropped;
-        PlayerSystem.Instance.m_onPlayerBoardBoat += OnPlayerBoardedBoat;
-        PlayerSystem.Instance.m_onPlayerGetOffBoat += OnPlayerGetOffBoat;
-
-        PlayerSystem.Instance.m_onPlayerEnterGoldPickupZone += OnPlayerEnterGoldPickupZone;
-        PlayerSystem.Instance.m_onPlayerExitGoldPickupZone += OnPlayerExitGoldPickupZone;
-        PlayerSystem.Instance.m_onPlayerEnterGoldDropZone += OnPlayerEnterGoldDropZone;
-        PlayerSystem.Instance.m_onPlayerExitGoldDropZone += OnPlayerExitGoldDropZone;
+        PlayerSystem.Instance.m_onPlayerPickupBomb += OnGoldPickedUp;
+        PlayerSystem.Instance.m_onPlayerDropBomb += OnGoldDropped;
         
         PlayerSystem.Instance.m_onDashCooldownStart += OnPlayerDashCooldownStart;
         
-        BoatSystem.Instance.m_onSailBoat += OnSailBoat;
         BoatSystem.Instance.m_onSinkBoat += OnSinkBoat;
 
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
-
     }
 
     void OnDestroy()
     {
-        PlayerSystem.Instance.m_onPlayerPickupGold -= OnGoldPickedUp;
-        PlayerSystem.Instance.m_onPlayerDropGold -= OnGoldDropped;
-        PlayerSystem.Instance.m_onPlayerBoardBoat -= OnPlayerBoardedBoat;
-        PlayerSystem.Instance.m_onPlayerGetOffBoat -= OnPlayerGetOffBoat;
-
-        PlayerSystem.Instance.m_onPlayerEnterGoldPickupZone -= OnPlayerEnterGoldPickupZone;
-        PlayerSystem.Instance.m_onPlayerExitGoldPickupZone -= OnPlayerExitGoldPickupZone;
-        PlayerSystem.Instance.m_onPlayerEnterGoldDropZone -= OnPlayerEnterGoldDropZone;
-        PlayerSystem.Instance.m_onPlayerExitGoldDropZone -= OnPlayerExitGoldDropZone;
+        StopCoroutine(m_updateCoroutine);
         
+        PlayerSystem.Instance.m_onPlayerPickupBomb -= OnGoldPickedUp;
+        PlayerSystem.Instance.m_onPlayerDropBomb -= OnGoldDropped;
         PlayerSystem.Instance.m_onDashCooldownStart -= OnPlayerDashCooldownStart;
 
         if (BoatSystem.Instance != null)
         {
-            BoatSystem.Instance.m_onSailBoat -= OnSailBoat;
             BoatSystem.Instance.m_onSinkBoat -= OnSinkBoat;
         }
 
         GameTimerSystem.Instance.m_onGameStart -= OnGameStart;
+
+        foreach (List<Coroutine> boatCoroutines in m_boatLabelCoroutines)
+        {
+            foreach (Coroutine coroutine in boatCoroutines)
+            {
+                StopCoroutine(coroutine);
+            }    
+        }
     }
 
     void OnGameStart()
     {
-        foreach (GameObject goldPickupZone in GameObject.FindGameObjectsWithTag("GoldPickupZone"))
+        foreach (GameObject bombSpawnPoint in GameObject.FindGameObjectsWithTag("BombSpawnPoint"))
         {
-            GameObject genericIndicatorInstance = Instantiate(m_goldPickupZoneHoverPrefab, Vector3.zero,
+            GameObject genericIndicatorInstance = Instantiate(m_bombSpawnPointHoverPrefab, Vector3.zero,
                 Quaternion.identity);
 
         
             genericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(0.08f,
-                Color.yellow,
-                hoverIcon: m_goldPickupZoneHoverIcon,
-                objectToTrack: goldPickupZone,
+                Color.black,
+                hoverIcon: m_bombSpawnPointHoverIcon,
+                objectToTrack: bombSpawnPoint,
                 scaleFactor: m_hoverIconScaleFactor,
                 camera: Camera.main
             );
             
-            ClosingCircleSpawner.Instance.CreateClosingCircle(goldPickupZone, Color.white);
+            ClosingCircleSpawner.Instance.CreateClosingCircle(bombSpawnPoint, Color.white);
+        }
+
+        m_updateCoroutine = StartCoroutine(UpdateCoroutine());
+    }
+
+    private IEnumerator UpdateCoroutine()
+    {
+        while (true)
+        {
+            for (int i = 1; i <= PlayerSystem.Instance.m_numPlayers; i++)
+            {
+                GameObject player = PlayerSystem.Instance.m_players[i-1];
+                int playerTeamNum = player.GetComponent<PlayerData>().m_teamNum;
+                float pickupRadius = player.GetComponent<PlayerItemController>().m_looseItemPickupRadius;
+
+                bool nearBomb = false;
+                foreach (GameObject bomb in GameObject.FindGameObjectsWithTag("LooseBomb"))
+                {
+                    if (Vector3.Distance(player.transform.position, bomb.transform.position) <= pickupRadius)
+                    {
+                        nearBomb = true;
+                        break;
+                    }
+                }
+
+                if (!nearBomb && m_isPlayerNearBomb[i-1])
+                {
+                    OnPlayerExitBombRadius(playerTeamNum, i);
+                    m_isPlayerNearBomb[i - 1] = false;
+                }
+                else if (nearBomb && !m_isPlayerNearBomb[i - 1])
+                {
+                    OnPlayerEnterBombRadius(playerTeamNum, i);
+                    m_isPlayerNearBomb[i-1] = true;
+                }
+                
+
+                bool nearEnemyBoat = false;
+                foreach (GameObject boat in GameObject.FindGameObjectsWithTag("Boat"))
+                {
+                    if (Vector3.Distance(player.transform.position, boat.transform.position) <= m_throwBombToBoatControlsHoverRadius &&
+                        boat.GetComponent<BoatData>().m_teamNum != playerTeamNum)
+                    {
+                        nearEnemyBoat = true;
+                        break;
+                    }
+                }
+
+                if (!nearEnemyBoat && m_isPlayerNearEnemyBoat[i-1])
+                {
+                    OnPlayerEnterEnemyBoatRadius(playerTeamNum, i);
+                    m_isPlayerNearEnemyBoat[i - 1] = false;
+                }
+                else if (nearEnemyBoat && !m_isPlayerNearEnemyBoat[i - 1])
+                {
+                    OnPlayerExitEnemyBoatRadius(playerTeamNum, i);
+                    m_isPlayerNearEnemyBoat[i-1] = true;
+                }
+            }
+
+            
+            yield return null;
         }
     }
 
@@ -210,26 +250,25 @@ public class InGameHoversUI : UIBase
             Destroy(m_playerIndicators[playerNum - 1]);
         }
         //create popups if there isn't one already
-        if (m_dropZoneHoversPerTeam[teamNum - 1].Count == 0)
+        if (m_boatHoversPerTeam[teamNum - 1].Count == 0)
         {
-            foreach (GameObject goldDropZone in GameObject.FindGameObjectsWithTag("BoatDropZone"))
+            foreach (GameObject boat in GameObject.FindGameObjectsWithTag("Boat"))
             {
-                if (goldDropZone.GetComponentInChildren<GoldDropZoneData>().m_boat.GetComponent<BoatData>()
-                        .m_teamNum == teamNum)
+                if (boat.GetComponent<BoatData>().m_teamNum != teamNum)
                 {
-                    GameObject newHover = Instantiate(m_goldDropZoneHoverPrefabsPerTeam[teamNum-1], Vector3.zero, Quaternion.identity);
+                    GameObject newHover = Instantiate(m_boatHoverPrefabsPerTeam[teamNum-1], Vector3.zero, Quaternion.identity);
                     
                     newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
-                        color: Color.yellow,
-                        hoverIcon: m_goldDropZoneHoverIcon,
-                        objectToTrack: goldDropZone,
+                        color: Color.black,
+                        hoverIcon: m_boatHoverIcon,
+                        objectToTrack: boat,
                         scaleFactor: m_hoverIconScaleFactor,
                         camera: Camera.main
                     );
                     
-                    ClosingCircleSpawner.Instance.CreateClosingCircle(goldDropZone, Color.white);
+                    ClosingCircleSpawner.Instance.CreateClosingCircle(boat, Color.white);
                     
-                    m_dropZoneHoversPerTeam[teamNum - 1].Add(newHover);
+                    m_boatHoversPerTeam[teamNum - 1].Add(newHover);
                 }
             }
         }
@@ -242,14 +281,14 @@ public class InGameHoversUI : UIBase
             Destroy(m_playerIndicators[playerNum - 1]);
         }
         
-        if (m_dropZoneHoversPerTeam[teamNum - 1].Count != 0)
+        if (m_boatHoversPerTeam[teamNum - 1].Count != 0)
         {
             bool destroyHovers = true;
             foreach (GameObject player in PlayerSystem.Instance.m_players)
             {
                 PlayerData playerData = player.GetComponent<PlayerData>();
                 if (playerData.m_teamNum == teamNum &&
-                    playerData.m_goldCarried != 0)
+                    playerData.m_bombsCarried != 0)
                 {
                     //dont destroy hovers
                     destroyHovers = false;
@@ -259,86 +298,19 @@ public class InGameHoversUI : UIBase
 
             if (destroyHovers)
             {
-                foreach (GameObject hover in m_dropZoneHoversPerTeam[teamNum - 1])
+                foreach (GameObject hover in m_boatHoversPerTeam[teamNum - 1])
                 {
                     Destroy(hover);
                 }
 
-                m_dropZoneHoversPerTeam[teamNum - 1].Clear();
+                m_boatHoversPerTeam[teamNum - 1].Clear();
             }
         }
     }
 
-    private void OnPlayerBoardedBoat(int teamNum, int playerNum, int boatNum)
+    private void OnPlayerEnterBombRadius(int teamNum, int playerNum)
     {
-        int teamPlayerNum = PlayerSystem.Instance.m_playerNumToTeamPlayerNum[playerNum - 1]; 
-        //remove one popup
-        if (m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][teamPlayerNum - 1] != null)
-        {
-            Destroy(m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][teamPlayerNum - 1]);
-        }
-
-        GameObject player = PlayerSystem.Instance.m_players[playerNum - 1];
-
-        GameObject goldScoringParticlesGameObject = Instantiate(m_goldScoringParticlesPrefab, Vector3.zero, Quaternion.identity);
-
-        Vector2 finalScreenCoords = InGameUI.Instance.GetScreenCoordinatesOfScoreboardEntry(teamNum);
-        
-        goldScoringParticlesGameObject.GetComponent<GoldScoringParticlesController>().StartGoldScoringParticles(
-            Camera.main.WorldToScreenPoint(player.transform.position),
-            finalScreenCoords,
-            floatInPlaceAtStartTimeSeconds: 1f,
-            animationTimeSeconds: 1f,
-            camera: Camera.main
-            );
-    }
-
-    private void OnPlayerGetOffBoat(int teamNum, int playerNum, int boatNum)
-    {
-        int teamPlayerNum = PlayerSystem.Instance.m_playerNumToTeamPlayerNum[playerNum - 1];
-        int globalBoatNum = BoatSystem.Instance.m_teamBoatNumToBoatNum[teamNum-1][boatNum - 1];
-        
-        GameObject boatObject = BoatSystem.Instance.m_boats[globalBoatNum - 1];
-        int numGoldOnBoat = boatObject.GetComponent<BoatData>().m_currentTotalGoldStored;
-
-        int numPlayersOnThisTeam = PlayerSystem.Instance.m_numPlayersPerTeam[teamNum - 1];
-
-        
-        GameObject boatModelObject = null;
-        for (int i = 0; i < boatObject.transform.childCount; i++)
-        {
-            Transform child = boatObject.transform.GetChild(i);
-            if (child.CompareTag("BoatModel"))
-            {
-                boatModelObject = child.gameObject;
-                break;
-            }
-        }
-        
-        if (m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][teamPlayerNum - 1] == null && numGoldOnBoat > 0)
-        {
-            //create a new popup.
-            GameObject newHover = Instantiate(m_boatBoardingHoverPrefabs[playerNum-1], Vector3.zero, Quaternion.identity);
-
-            newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
-                color: Color.white,
-                hoverIcon: m_boardingHoverIconsPerTeam[teamNum - 1][teamPlayerNum - 1],
-                horizontalOffset: 0.3f * (0.5f + teamPlayerNum - numPlayersOnThisTeam / 2f) * m_hoverIconScaleFactor,
-                objectToTrack: boatModelObject,
-                scaleFactor: m_hoverIconScaleFactor,
-                camera: Camera.main
-            );
-            
-            
-            ClosingCircleSpawner.Instance.CreateClosingCircle(boatModelObject, Color.white);
-
-            m_boatBoardingHoversPerBoatPerTeam[teamNum-1][boatNum-1][teamPlayerNum-1] = newHover;
-        }
-    }
-
-    private void OnPlayerEnterGoldPickupZone(int teamNum, int playerNum)
-    {
-        if (PlayerSystem.Instance.m_players[playerNum - 1].GetComponent<PlayerData>().m_goldCarried == 0)
+        if (PlayerSystem.Instance.m_players[playerNum - 1].GetComponent<PlayerData>().m_bombsCarried == 0)
         {
             if (m_playerIndicators[playerNum - 1] != null)
             {
@@ -350,7 +322,7 @@ public class InGameHoversUI : UIBase
 
             m_playerIndicators[playerNum - 1].GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
                 PlayerSystem.Instance.m_teamColors[teamNum - 1],
-                hoverIcon: m_goldInteractButtonIcon,
+                hoverIcon: m_bombInteractButtonIcon,
                 objectToTrack: PlayerSystem.Instance.m_players[playerNum - 1],
                 scaleFactor: m_hoverIconScaleFactor,
                 camera: Camera.main
@@ -358,7 +330,7 @@ public class InGameHoversUI : UIBase
         }
     }
     
-    private void OnPlayerExitGoldPickupZone(int teamNum, int playerNum)
+    private void OnPlayerExitBombRadius(int teamNum, int playerNum)
     {
         if (m_playerIndicators[playerNum - 1] != null)
         {
@@ -366,9 +338,9 @@ public class InGameHoversUI : UIBase
         }
     }
     
-    private void OnPlayerEnterGoldDropZone(int teamNum, int playerNum)
+    private void OnPlayerEnterEnemyBoatRadius(int teamNum, int playerNum)
     {
-        if (PlayerSystem.Instance.m_players[playerNum - 1].GetComponent<PlayerData>().m_goldCarried > 0)
+        if (PlayerSystem.Instance.m_players[playerNum - 1].GetComponent<PlayerData>().m_bombsCarried > 0)
         {
             if (m_playerIndicators[playerNum - 1] != null)
             {
@@ -380,7 +352,7 @@ public class InGameHoversUI : UIBase
 
             m_playerIndicators[playerNum - 1].GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
                 PlayerSystem.Instance.m_teamColors[teamNum - 1],
-                hoverIcon: m_goldInteractButtonIcon,
+                hoverIcon: m_bombInteractButtonIcon,
                 objectToTrack: PlayerSystem.Instance.m_players[playerNum - 1],
                 scaleFactor: m_hoverIconScaleFactor,
                 camera: Camera.main
@@ -388,7 +360,7 @@ public class InGameHoversUI : UIBase
         }
     }
     
-    private void OnPlayerExitGoldDropZone(int teamNum, int playerNum)
+    private void OnPlayerExitEnemyBoatRadius(int teamNum, int playerNum)
     {
         if (m_playerIndicators[playerNum - 1] != null)
         {
@@ -432,12 +404,7 @@ public class InGameHoversUI : UIBase
             yield return null;
         }
     } 
-
-    private void OnSailBoat(int teamNum, int boatNum, List<int> goldScoredPerTeam)
-    {
-        BoatDeleted(teamNum, boatNum);
-    }
-
+    
     private void OnSinkBoat(int teamNum, int boatNum)
     {
         BoatDeleted(teamNum, boatNum);
@@ -449,67 +416,25 @@ public class InGameHoversUI : UIBase
         m_boatElements[teamNum-1][boatNum-1].Clear();
         m_boatElements[teamNum-1][boatNum-1].RemoveFromHierarchy();
         m_boatElements[teamNum-1][boatNum-1] = null;
-        StopCoroutine(m_boatTimerLabelCoroutines[teamNum-1][boatNum-1]);
-        
-        //get rid of boat boarding alert popups
-        for (int i = 0; i < m_boatBoardingHoversPerBoatPerTeam[teamNum-1][boatNum-1].Count; i++) 
-        {
-            Destroy(m_boatBoardingHoversPerBoatPerTeam[teamNum-1][boatNum-1][i]);
-            m_boatBoardingHoversPerBoatPerTeam[teamNum-1][boatNum-1][i] = null;
-        }
-        
+        StopCoroutine(m_boatLabelCoroutines[teamNum - 1][boatNum-1]);
     }
 
-    void NewBoatSpawned(int teamNum, int boatNum)
+    void BombAddedToBoat(int teamNum, int boatNum, int damage, int remainingHealth, int maxHealth)
     {
-        m_boatTimerLabelCoroutines[teamNum-1][boatNum-1] = StartCoroutine(UpdateBoatUI(teamNum, boatNum));
-    }
-
-    void GoldAddedToBoat(int teamNum, int boatNum, int goldTotal, int capacity)
-    {
-        m_currentBoatLabels[teamNum-1][boatNum-1] = $"{goldTotal} / {capacity}";
-        
-        GameObject boatObject = BoatSystem.Instance.m_boatsPerTeam[teamNum-1][boatNum-1];
-
-        GameObject boatModelObject = null;
-        for (int i = 0; i < boatObject.transform.childCount; i++)
-        {
-            Transform child = boatObject.transform.GetChild(i);
-            if (child.CompareTag("BoatModel"))
-            {
-                boatModelObject = child.gameObject;
-                break;
-            }
-        }
-        
-        int numPlayersOnThisTeam = PlayerSystem.Instance.m_numPlayersPerTeam[teamNum - 1];
-        
-        //add a hover to tell players to get on the boat (if there isn't one already) for first player per team (boat side)
-        int globalPlayerNum = PlayerSystem.Instance.m_teamPlayerNumToPlayerNum[teamNum-1][0];
-        if (m_boatBoardingHoversPerBoatPerTeam[teamNum - 1][boatNum - 1][0] == null)
-        {
-            GameObject newHover = Instantiate(m_boatBoardingHoverPrefabs[globalPlayerNum-1], Vector3.zero, Quaternion.identity);
-
-            newHover.GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
-                color: Color.white,
-                hoverIcon: m_boardingHoverIconsPerTeam[teamNum - 1][0],
-                objectToTrack: boatModelObject,
-                scaleFactor: m_hoverIconScaleFactor,
-                camera: Camera.main
-            );
-
-            m_boatBoardingHoversPerBoatPerTeam[teamNum-1][boatNum-1][0] = newHover;
-        }
+        m_currentBoatLabels[teamNum - 1][boatNum - 1] = (remainingHealth, maxHealth);
     }
 
     IEnumerator UpdateBoatUI(int teamNum, int boatNum)
     {
         GameObject boat = BoatSystem.Instance.m_boatsPerTeam[teamNum-1][boatNum-1];
         BoatData boatData = boat.GetComponent<BoatData>();
-        BoatTimerController boatTimerController = boat.GetComponent<BoatTimerController>();
-        int initialTimeToLive = boatData.GetComponent<BoatData>().m_timeToLive;
-        m_currentBoatLabels[teamNum-1][boatNum-1] = $"{boatData.m_currentTotalGoldStored}/{boatData.m_goldCapacity}";
-
+        m_currentBoatLabels[teamNum-1][boatNum-1] = (boatData.m_remainingHealth, boatData.m_maxHealth);
+        
+        m_boatElements[teamNum-1][boatNum-1] = m_boatUIAsset.Instantiate();
+        m_root.Add(m_boatElements[teamNum-1][boatNum-1]);
+        
+        Label capacityLabel = m_boatElements[teamNum-1][boatNum-1].Q<Label>("capacity-label");
+        
         GameObject boatHoverTrackLocation = null;
 
         for (int childNum = 0; childNum < boat.transform.childCount; childNum++)
@@ -520,14 +445,6 @@ public class InGameHoversUI : UIBase
                 boatHoverTrackLocation = child.gameObject;
             }
         }
-        
-        m_boatElements[teamNum-1][boatNum-1] = m_boatUIAsset.Instantiate();
-        m_root.Add(m_boatElements[teamNum-1][boatNum-1]);
-
-        // RadialProgress timerElement = m_boatElements[teamNum-1][boatNum-1].Q<RadialProgress>("radial-timer");
-        // timerElement.maxTotalProgress = initialTimeToLive;
-
-        Label capacityLabel = m_boatElements[teamNum-1][boatNum-1].Q<Label>("capacity-label");
 
         while (true)
         {
@@ -535,11 +452,9 @@ public class InGameHoversUI : UIBase
             float screenX = Screen.width * screen.x / Camera.main.pixelWidth;
             float screenY = Screen.height * screen.y / Camera.main.pixelHeight;
             m_boatElements[teamNum - 1][boatNum - 1].style.left = screenX;
-            m_boatElements[teamNum-1][boatNum-1].style.top = (Screen.height - screenY) - 50;
+            m_boatElements[teamNum-1][boatNum-1].style.top = (Screen.height - screenY) - 60;
 
-            // timerElement.progress = boatTimerController.m_currentTimeToLive;
-
-            capacityLabel.text = m_currentBoatLabels[teamNum-1][boatNum-1];
+            capacityLabel.style.width = 100f * m_currentBoatLabels[teamNum-1][boatNum-1].Item1 / m_currentBoatLabels[teamNum-1][boatNum-1].Item2;
         
             yield return null;
         }
