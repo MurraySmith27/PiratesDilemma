@@ -29,10 +29,12 @@ public class BombController : MonoBehaviour
     public int m_damagePerBomb = 1;
 
     private bool m_isLit = false;
+
+    private Coroutine m_despawnCoroutine;
     
     void Start()
     {
-        StartCoroutine(DespawnAfterSeconds());
+        m_despawnCoroutine = StartCoroutine(DespawnAfterSeconds());
     }
 
     IEnumerator DespawnAfterSeconds()
@@ -93,6 +95,11 @@ public class BombController : MonoBehaviour
 
     private IEnumerator GenerateExplosion(Vector3 explosionCenter)
     {
+        if (m_despawnCoroutine != null)
+        {
+            StopCoroutine(m_despawnCoroutine);
+        }
+
         m_explosionAudioSource.Play();
         m_hissAudioSource.Stop();
         

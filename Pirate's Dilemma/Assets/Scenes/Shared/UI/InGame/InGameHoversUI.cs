@@ -50,7 +50,7 @@ public class InGameHoversUI : UIBase
 
     private List<VisualElement> m_playerElements;
 
-    private List<List<string>> m_currentBoatLabels;
+    private List<List<(int, int)>> m_currentBoatLabels;
 
     private List<GameObject> m_playerIndicators;
 
@@ -73,7 +73,7 @@ public class InGameHoversUI : UIBase
         
         m_playerElements = new List<VisualElement>();
         
-        m_currentBoatLabels = new List<List<string>>();
+        m_currentBoatLabels = new List<List<(int, int)>>();
 
         m_boatHoversPerTeam = new List<List<GameObject>>();
         
@@ -113,14 +113,14 @@ public class InGameHoversUI : UIBase
         for (int teamNum = 1; teamNum <= PlayerSystem.Instance.m_numTeams; teamNum++)
         {
             m_boatElements.Add(new List<VisualElement>());
-            m_currentBoatLabels.Add(new List<string>());
+            m_currentBoatLabels.Add(new List<(int, int)>());
             m_boatLabelCoroutines.Add(new List<Coroutine>());
             m_boatHoversPerTeam.Add(new List<GameObject>());
             
             for (int boatNum = 1; boatNum <= BoatSystem.Instance.m_numBoatsPerTeam[teamNum-1]; boatNum++)
             {
                 m_boatElements[teamNum-1].Add(null);
-                m_currentBoatLabels[teamNum-1].Add("");
+                m_currentBoatLabels[teamNum-1].Add((1, 1));
                 m_boatLabelCoroutines[teamNum - 1].Add(StartCoroutine(UpdateBoatUI(teamNum, boatNum)));
                 m_boatHoversPerTeam[teamNum-1].Add(null);
             }
@@ -421,28 +421,20 @@ public class InGameHoversUI : UIBase
 
     void BombAddedToBoat(int teamNum, int boatNum, int damage, int remainingHealth, int maxHealth)
     {
-        m_currentBoatLabels[teamNum-1][boatNum-1] = $"{remainingHealth} / {maxHealth}";
-        
-        GameObject boatObject = BoatSystem.Instance.m_boatsPerTeam[teamNum-1][boatNum-1];
-
-        GameObject boatModelObject = null;
-        for (int i = 0; i < boatObject.transform.childCount; i++)
-        {
-            Transform child = boatObject.transform.GetChild(i);
-            if (child.CompareTag("BoatModel"))
-            {
-                boatModelObject = child.gameObject;
-                break;
-            }
-        }
+        m_currentBoatLabels[teamNum - 1][boatNum - 1] = (remainingHealth, maxHealth);
     }
 
     IEnumerator UpdateBoatUI(int teamNum, int boatNum)
     {
         GameObject boat = BoatSystem.Instance.m_boatsPerTeam[teamNum-1][boatNum-1];
         BoatData boatData = boat.GetComponent<BoatData>();
-        m_currentBoatLabels[teamNum-1][boatNum-1] = $"{boatData.m_remainingHealth}/{boatData.m_maxHealth}";
-
+        m_currentBoatLabels[teamNum-1][boatNum-1] = (boatData.m_remainingHealth, boatData.m_maxHealth);
+        
+        m_boatElements[teamNum-1][boatNum-1] = m_boatUIAsset.Instantiate();
+        m_root.Add(m_boatElements[teamNum-1][boatNum-1]);
+        
+        Label capacityLabel = m_boatElements[teamNum-1][boatNum-1].Q<Label>("capacity-label");
+        
         GameObject boatHoverTrackLocation = null;
 
         for (int childNum = 0; childNum < boat.transform.childCount; childNum++)
@@ -453,11 +445,6 @@ public class InGameHoversUI : UIBase
                 boatHoverTrackLocation = child.gameObject;
             }
         }
-        
-        m_boatElements[teamNum-1][boatNum-1] = m_boatUIAsset.Instantiate();
-        m_root.Add(m_boatElements[teamNum-1][boatNum-1]);
-        
-        Label capacityLabel = m_boatElements[teamNum-1][boatNum-1].Q<Label>("capacity-label");
 
         while (true)
         {
@@ -465,11 +452,9 @@ public class InGameHoversUI : UIBase
             float screenX = Screen.width * screen.x / Camera.main.pixelWidth;
             float screenY = Screen.height * screen.y / Camera.main.pixelHeight;
             m_boatElements[teamNum - 1][boatNum - 1].style.left = screenX;
-            m_boatElements[teamNum-1][boatNum-1].style.top = (Screen.height - screenY) - 50;
+            m_boatElements[teamNum-1][boatNum-1].style.top = (Screen.height - screenY) - 60;
 
-            // timerElement.progress = boatTimerController.m_currentTimeToLive;
-
-            capacityLabel.text = m_currentBoatLabels[teamNum-1][boatNum-1];
+            capacityLabel.style.width = 100f * m_currentBoatLabels[teamNum-1][boatNum-1].Item1 / m_currentBoatLabels[teamNum-1][boatNum-1].Item2;
         
             yield return null;
         }
