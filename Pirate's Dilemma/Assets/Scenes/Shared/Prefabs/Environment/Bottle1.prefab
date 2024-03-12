@@ -83,6 +83,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bottle1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 344f963e6836e31498e4722ee866272a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
     - target: {fileID: 8753108670491306055, guid: 344f963e6836e31498e4722ee866272a,
         type: 3}
       propertyPath: m_Materials.Array.size

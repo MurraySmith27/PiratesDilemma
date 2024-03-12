@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2fa9daa2-90f4-44c3-9351-b9e137dd4c15" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level2/Level2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level2/Level2.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerItemController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerItemController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameHoversUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameHoversUI.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +30,7 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.burst@1.8.11/Tests/Runtime/Shared/084-Loops.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.burst@1.8.11/Tests/Runtime/Shared/TestCompilerAttributeBase.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/DiffuseTextureBlend.shader" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/DiffuseVertexColor.shader" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/FaceHighlight.shader" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/LineBillboardMetal.shader" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.probuilder@5.2.2/Content/Shader/PointBillboard.shader" root0="SKIP_HIGHLIGHTING" />
@@ -165,7 +163,7 @@
       <workItem from="1709845510263" duration="684000" />
       <workItem from="1709930712134" duration="804000" />
       <workItem from="1710020903887" duration="10964000" />
-      <workItem from="1710268745053" duration="12350000" />
+      <workItem from="1710268745053" duration="13602000" />
     </task>
     <servers />
   </component>
@@ -194,7 +192,7 @@
               <option value="24230" />
             </startOffsets>
             <endOffsets>
-              <option value="24286" />
+              <option value="24303" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="17" />

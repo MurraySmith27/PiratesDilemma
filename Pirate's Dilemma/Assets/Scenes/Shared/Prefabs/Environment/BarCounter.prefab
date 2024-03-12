@@ -66,7 +66,7 @@ PrefabInstance:
     - target: {fileID: -4566169875137798768, guid: 27c4436b7d9a3f94786deaadf9c3d5f5,
         type: 3}
       propertyPath: m_Layer
-      value: 21
+      value: 26
       objectReference: {fileID: 0}
     - target: {fileID: -3238583738338763811, guid: 27c4436b7d9a3f94786deaadf9c3d5f5,
         type: 3}
@@ -76,12 +76,17 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 27c4436b7d9a3f94786deaadf9c3d5f5,
         type: 3}
       propertyPath: m_Name
-      value: bar_counter
+      value: BarCounter
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 27c4436b7d9a3f94786deaadf9c3d5f5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 26
       objectReference: {fileID: 0}
     - target: {fileID: 6367892618325462179, guid: 27c4436b7d9a3f94786deaadf9c3d5f5,
         type: 3}
       propertyPath: m_Layer
-      value: 21
+      value: 26
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
