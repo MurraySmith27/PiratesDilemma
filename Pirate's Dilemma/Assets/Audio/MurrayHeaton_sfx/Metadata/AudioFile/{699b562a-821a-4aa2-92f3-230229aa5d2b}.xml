@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{699b562a-821a-4aa2-92f3-230229aa5d2b}">
+		<property name="assetPath">
+			<value>Bomb Hiss Sounds/Hiss 1.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>4</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{4c200090-9426-4155-bc33-8200dc82c9ce}</destination>
+		</relationship>
+	</object>
+</objects>
