@@ -27,12 +27,8 @@ public class GameTimerSystem : GameSystem
     }
     
     [SerializeField] private int m_gameStartTimerSeconds = 3;
-    
-    public int m_gameTimerSeconds = 120;
 
     public string m_characterSelectSceneName;
-    
-    [SerializeField] private int m_krakenArrivalTimeRemaining = 60;
     
     [SerializeField] private float m_holdAfterGameEndTime = 1f;
     
@@ -63,7 +59,7 @@ public class GameTimerSystem : GameSystem
     
     public bool m_gamePaused = false;
 
-    private bool m_krakenArrived = false;
+    private Coroutine m_gameCountdownCoroutine;
     
     void Awake()
     {
@@ -100,6 +96,7 @@ public class GameTimerSystem : GameSystem
     {
         if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
         {
+            Debug.Log("CALLING START GAME");
             StartGame();
         }
     }
@@ -122,6 +119,12 @@ public class GameTimerSystem : GameSystem
     {
         m_gamePaused = false;
         StartCoroutine(StartGameCoroutine());
+        BoatSystem.Instance.m_onSinkBoat += EndGame;
+    }
+
+    private void EndGame(int teamNum, int boatNum)
+    {
+        StopGame(m_characterSelectSceneName);
     }
 
     private IEnumerator StartGameCoroutine()
@@ -132,12 +135,16 @@ public class GameTimerSystem : GameSystem
         yield return new WaitForSeconds(m_holdBeforeCountdownTimerTime);
         
         StartCoroutine(StartGameCountdown());
-        m_onGameTimerUpdate(m_gameTimerSeconds);
+        m_onGameTimerUpdate(0);
     }
 
     public void StopGame(string nextSceneToLoadName)
     {
         StartCoroutine(EndGameCoroutine(nextSceneToLoadName));
+        if (m_gameCountdownCoroutine != null)
+        {
+            StopCoroutine(m_gameCountdownCoroutine);
+        }
     }
 
     private IEnumerator StartGameCountdown()
@@ -160,37 +167,25 @@ public class GameTimerSystem : GameSystem
             m_onGameStart();
         }
         
-        StartCoroutine(GlobalCountdown(GameTimerSystem.Instance.m_gameTimerSeconds));
+        m_gameCountdownCoroutine = StartCoroutine(GlobalCountdown());
     }
     
-    IEnumerator GlobalCountdown(int seconds)
+    IEnumerator GlobalCountdown()
     {
-        int count = seconds;
+        int count = 0;
         m_onGameTimerUpdate(count);
 
-        while (count > 0)
+        while (true)
         {
             // Wait for one second
             yield return new WaitForSeconds(1);
+            Debug.Log("GLOBAL COUNTDOWN");
             
             // Decrease the count
-            count--;
-
-            if (count <= m_krakenArrivalTimeRemaining && !m_krakenArrived)
-            {
-                GameObject kraken = GameObject.FindGameObjectWithTag("Kraken");
-
-                if (kraken != null)
-                {
-                    kraken.GetComponent<KrakenController>().StartKrakenArrival();
-                }
-                m_krakenArrived = true;
-            }
+            count++;
             
             m_onGameTimerUpdate(count);
         }
-
-        StartCoroutine(EndGameCoroutine(m_resultsSceneName));
     }
 
     private IEnumerator EndGameCoroutine(string nextSceneToLoadName)

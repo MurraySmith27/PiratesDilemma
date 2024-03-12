@@ -185,7 +185,7 @@ public class InGameUI : UIBase
     
     void OnGameFinish()
     {
-        m_gameStartTimerLabel.text = "Time's Up!";
+        m_gameStartTimerLabel.text = "Game!";
     }
 
     void UpdateScoreUI(List<int> newScores)

@@ -9,7 +9,7 @@ public delegate void PlayerStartDashEvent();
 public delegate void PlayerDashCooldownStartEvent(int teamNum, int playerNum, float cooldownSeconds);
 public delegate void PlayerStartDashChargeEvent();
 
-[RequireComponent(typeof(PlayerInput), typeof(PlayerData), typeof(PlayerGoldController))]
+[RequireComponent(typeof(PlayerInput), typeof(PlayerData), typeof(PlayerItemController))]
 public class PlayerMovementController : MonoBehaviour
 {
     public PlayerDieEvent m_onPlayerDie;
@@ -39,6 +39,7 @@ public class PlayerMovementController : MonoBehaviour
     
     // For when you get pushed
     [SerializeField] private float m_pushDistance;
+    [SerializeField] private float m_explosionPushDistance = 20f;
     [SerializeField] private float m_pushDuration;
 
     //for invulnerability
@@ -58,7 +59,7 @@ public class PlayerMovementController : MonoBehaviour
     private Coroutine m_dashCoroutine;
     private Coroutine m_beingPushedCoroutine;
     
-    private PlayerGoldController m_playerGoldController;
+    private PlayerItemController _mPlayerItemController;
     private PlayerInput m_playerInput;
 
     private InputAction m_dashAction;
@@ -92,11 +93,7 @@ public class PlayerMovementController : MonoBehaviour
     private void FixedUpdate()
     {
         Vector2 moveInput = -m_moveAction.ReadValue<Vector2>().normalized;
-        float angle  = Vector2.SignedAngle(Vector2.right, moveInput);
-        float angleIncrement = 360f / numDirections;
-        angle = Mathf.Round(angle / angleIncrement) * angleIncrement;
-        moveInput = Quarternion.Euler(0, 0, angle) * Vector2.right;
-        if (m_initialized && !m_isDashing && !m_isBeingPushed && !m_playerGoldController.IsOccupied())
+        if (m_initialized && !m_isDashing && !m_isBeingPushed && !_mPlayerItemController.IsOccupied())
         {
             float speed = m_speed;
             if (m_isChargingDash)
@@ -186,7 +183,7 @@ public class PlayerMovementController : MonoBehaviour
 
     public void OnGameStart()
     {
-        m_playerGoldController = GetComponent<PlayerGoldController>();
+        _mPlayerItemController = GetComponent<PlayerItemController>();
         m_playerInput = GetComponent<PlayerInput>();
         
         m_moveAction = m_playerInput.actions["Move"];
@@ -263,7 +260,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnDashButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_initialized && !IsOccupied() && !m_playerGoldController.IsOccupied() && !m_dashOnCooldown && m_playerData.m_goldCarried == 0 && !m_playerGoldController.m_barrelInHand)
+        if (m_initialized && !IsOccupied() && !_mPlayerItemController.IsOccupied() && !m_dashOnCooldown && m_playerData.m_bombsCarried == 0 && !_mPlayerItemController.m_barrelInHand)
         {
             m_isChargingDash = true;
             m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());
@@ -356,7 +353,16 @@ public class PlayerMovementController : MonoBehaviour
 
         m_dashOnCooldown = false;
     }
-    
+
+
+    private void OnTriggerEnter(Collider otherCollider)
+    {
+        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Explosion"))
+        {
+            Vector3 pushDirection = (transform.position - otherCollider.gameObject.transform.position).normalized;
+            GetPushed(new Vector2(pushDirection.x, pushDirection.z), m_explosionPushDistance);
+        }
+    }
 
     private void OnTriggerStay(Collider otherCollider)
     {
@@ -376,7 +382,7 @@ public class PlayerMovementController : MonoBehaviour
             otherTeamNum = 2;
         }
         
-        if (hit.gameObject.layer == LayerMask.NameToLayer("LooseGold"))
+        if (hit.gameObject.layer == LayerMask.NameToLayer("LooseBomb"))
         {
             hit.rigidbody.AddForceAtPosition((hit.gameObject.transform.position - transform.position).normalized *
                                    m_onCollideWithGoldForce * m_characterController.velocity.magnitude, transform.position, ForceMode.Impulse);
@@ -396,12 +402,12 @@ public class PlayerMovementController : MonoBehaviour
                 Vector3 direction = hit.transform.position - transform.position;
                 direction.y = 0;
                 Vector2 dashDirection = new Vector2(direction.x, direction.z).normalized;
-                otherPlayerMovement.GetPushed(dashDirection);
+                otherPlayerMovement.GetPushed(dashDirection, m_pushDistance);
             }
-        } 
+        }
     }
 
-    public void GetPushed(Vector2 dashDirection)
+    public void GetPushed(Vector2 dashDirection, float pushDistance)
     {
         if (m_isChargingDash)
         {
@@ -419,25 +425,25 @@ public class PlayerMovementController : MonoBehaviour
 
         if (!m_isBeingPushed)
         {
-            m_beingPushedCoroutine = StartCoroutine(GetPushedCoroutine(dashDirection));
+            m_beingPushedCoroutine = StartCoroutine(GetPushedCoroutine(dashDirection, pushDistance));
             m_isBeingPushed = true;
 
             m_onPlayerGetPushed();
         }
     }
 
-    private IEnumerator GetPushedCoroutine(Vector2 dashDirection)
+    private IEnumerator GetPushedCoroutine(Vector2 dashDirection, float pushDistance)
     {
         Vector3 initial = transform.position;
-        Vector3 final = initial + new Vector3(dashDirection.x, 0, dashDirection.y) * m_pushDistance;
+        Vector3 final = initial + new Vector3(dashDirection.x, 0, dashDirection.y) * pushDistance;
         
-        float finalDistance = m_pushDistance;
+        float finalDistance = pushDistance;
         
         string[] impassableLayers = new string[] { "StaticObstacle", $"Team{m_playerData.m_teamNum}Impassable"};
         
         //do a raycast, see if we need to stop early because we're hitting a wall.
         RaycastHit hit;
-        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: LayerMask.GetMask(impassableLayers), maxDistance: m_pushDistance))
+        if (Physics.Raycast(initial, (final - initial).normalized, out hit, layerMask: LayerMask.GetMask(impassableLayers), maxDistance: pushDistance))
         {
             finalDistance = hit.distance;
         }
