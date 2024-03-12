@@ -166,6 +166,8 @@ public class PlayerSystem : GameSystem
     private Coroutine m_startGameCountdownCoroutine;
 
     private List<GameObject> m_visualStandIns;
+
+    private bool m_debugMode = false;
     
     private void Awake()
     {
@@ -215,6 +217,29 @@ public class PlayerSystem : GameSystem
         if (Input.GetKeyDown("u"))
         {
             m_numLevelsPlayed++;
+        }
+
+        if (Input.GetKeyDown("i"))
+        {
+            StartCoroutine(TestWithFourPlayers());
+        }
+    }
+
+    private IEnumerator TestWithFourPlayers() {
+
+        
+        m_debugMode = true;
+        for (int i = m_numPlayers; i < m_maxNumPlayers; i++)
+        {
+            OnJoinButtonPressed(new InputAction.CallbackContext());
+            OnReadyUpButtonPressed(i + 1);
+            
+        }
+
+        yield return null;
+
+        for (int i = m_numPlayers; i < m_maxNumPlayers; i++)
+        {
         }
     }
 
@@ -309,15 +334,18 @@ public class PlayerSystem : GameSystem
     
     public void OnJoinButtonPressed(InputAction.CallbackContext ctx)
     {
-        foreach (InputDevice device in m_assignedPlayerDevices.Values)
+        if (!m_debugMode)
         {
-            if (device.deviceId == ctx.control.device.deviceId)
+            foreach (InputDevice device in m_assignedPlayerDevices.Values)
             {
-                //already connected to annother player on this device. Return early.
-                return;
+                if (device.deviceId == ctx.control.device.deviceId)
+                {
+                    //already connected to annother player on this device. Return early.
+                    return;
+                }
             }
         }
-        
+
         int playerNum, teamNum;
         (playerNum, teamNum) = this.AddPlayer();
         
@@ -363,8 +391,11 @@ public class PlayerSystem : GameSystem
         m_players[playerNum - 1].transform.rotation = m_playerSpawnPositions[playerNum - 1].rotation;
 
         PlayerInput playerInput = newPlayerInstance.GetComponentInChildren<PlayerInput>();
-        
-        RegisterDeviceWithPlayer(playerNum, playerInput, ctx.control.device);
+
+        if (!m_debugMode)
+        {
+            RegisterDeviceWithPlayer(playerNum, playerInput, ctx.control.device);
+        }
 
         if (playerNum < m_maxNumPlayers)
         {
@@ -382,8 +413,11 @@ public class PlayerSystem : GameSystem
         
         //after player joins, we also enable the in-game action map so they can test out the controls and ready up
         SwitchToActionMapForPlayer(playerNum, "InGame");
-        
-        playerInput.actions.FindAction("ReadyUp").performed += (ctx => OnReadyUpButtonPressed(playerNum));
+
+        if (!m_debugMode)
+        {
+            playerInput.actions.FindAction("ReadyUp").performed += (ctx => OnReadyUpButtonPressed(playerNum));
+        }
         
         m_playersParents.Add(newPlayerInstance.transform);
         
@@ -682,14 +716,6 @@ public class PlayerSystem : GameSystem
 
         //get spawn positions from gameobject in scene with special tags.
         SetPlayerSpawnPositions();
-        
-        Debug.Log($"loading new scene! Spawn position of player 1: {m_playerSpawnPositions[0].position}");
-        
-        Debug.Log($"loading new scene! Spawn position of player 2: {m_playerSpawnPositions[1].position}");
-        
-        Debug.Log($"loading new scene! Spawn position of player 3: {m_playerSpawnPositions[2].position}");
-        
-        Debug.Log($"loading new scene! Spawn position of player 4: {m_playerSpawnPositions[3].position}");
 
         bool isCharacterSelect = scene.name == GameTimerSystem.Instance.m_characterSelectSceneName;
         //move players to spawn positions
