@@ -26,7 +26,6 @@ public class CharacterSelectUI : UIBase
     private List<VisualElement> m_readyUpHoverElements;
 
     [SerializeField] private List<GameObject> m_renderTextureQuads;
-    [SerializeField] private GameObject m_gameTestScreen;
     private List<UIDocument> m_docs;
 
     [SerializeField] private Sprite m_playstationControllerReadyUpIcon;
@@ -78,9 +77,12 @@ public class CharacterSelectUI : UIBase
         
         for (int i = 0; i < PlayerSystem.Instance.m_maxNumPlayers; i++)
         {
-            m_renderTextureQuads[i].transform.localScale = new Vector3(quadWidthScale, quadHeightScale / 2f, 1);
+            // m_renderTextureQuads[i].transform.localScale = new Vector3(quadWidthScale, quadHeightScale / 2f, 1)p;
             Vector3 currentPos = m_renderTextureQuads[i].transform.position;
-            m_renderTextureQuads[i].transform.position = new Vector3(-quadWidthScale * ((i % 2) - 1.5f), currentPos.y - (2 * (int)(i/2)-1) * quadHeightScale / 4f, currentPos.z);
+            m_renderTextureQuads[i].transform.position =
+                GameObject.FindGameObjectWithTag($"P{i + 1}CharacterSelectSpawn").transform.position;
+            
+            m_renderTextureQuads[i].transform.LookAt(transform.position -Camera.main.transform.position);
             
             m_docs.Add(m_renderTextureQuads[i].GetComponent<UIDocument>());
 
@@ -89,9 +91,6 @@ public class CharacterSelectUI : UIBase
             m_pressToJoinElements.Add(m_docs[i].rootVisualElement);
             m_pressToJoinElements[i].Q<Label>("player-label").text = $"Player {i + 1}";
         }
-
-        m_gameTestScreen.transform.localScale = new Vector3(quadWidthScale * 2f, quadHeightScale, 1);
-        m_gameTestScreen.transform.position += new Vector3(-quadWidthScale, 0, 0);
         
         PlayerSystem.Instance.m_onPlayerJoin += OnPlayerJoin;
         PlayerSystem.Instance.m_onPlayerReadyUpToggle += UpdateReadyUpUI;

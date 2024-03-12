@@ -25,6 +25,8 @@ public class PlayerMovementController : MonoBehaviour
     
     [SerializeField] private float m_speed;
 
+    [SerializeField] private float m_checkMoveValidDistance = 0.1f;
+
     [SerializeField] private float m_onCollideWithGoldForce = 1f;
     
     // For dashing
@@ -111,15 +113,19 @@ public class PlayerMovementController : MonoBehaviour
             if (moveVector.magnitude != 0)
             {
 
+                bool wasOverGround = false;
+
                 //first check what collider is current below the player's position
                 Vector3 bottomOfCharacter = transform.position - new Vector3(0,
                     m_characterController.center.y + m_characterController.height / 2, 0);
 
-                Collider belowCollider = null;
                 RaycastHit hit;
                 if (Physics.Raycast(transform.position, Vector3.down, out hit))
                 {
-                    belowCollider = hit.collider;
+                    if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Killzone"))
+                    {
+                        wasOverGround = true;
+                    }
                 }
 
                 Vector3 motion = new Vector3(moveVector.x, 0, moveVector.y);
@@ -129,7 +135,14 @@ public class PlayerMovementController : MonoBehaviour
                         transform.position + motion, Vector3.down,
                         out hit2))
                 {
-                    if (belowCollider != null && hit2.transform.gameObject.layer == LayerMask.NameToLayer("Killzone"))
+
+                    Collider belowCollider = null;
+                    RaycastHit hit2_1;
+                    if (Physics.Raycast(transform.position - motion, Vector3.down, out hit2_1))
+                    {
+                        belowCollider = hit2_1.collider;
+                    }
+                    if (hit2.transform.gameObject.layer == LayerMask.NameToLayer("Killzone"))
                     {
                         Vector3 closestPoint = belowCollider.ClosestPoint(transform.position + motion);
                         
@@ -145,18 +158,18 @@ public class PlayerMovementController : MonoBehaviour
 
                 m_characterController.Move(motion);
                 
-                //there are some situations where moving would bounce the player off a collider and put them over a
-                //killzone. In those situations, just revert to the original position.
-                RaycastHit hit4;
-                if (Physics.Raycast(
-                        transform.position, Vector3.down,
-                        out hit4))
-                {
-                    if (hit4.transform.gameObject.layer == LayerMask.NameToLayer("Killzone"))
-                    {
-                        m_characterController.Move(prevPosition - transform.position);
-                    }
-                }
+                // there are some situations where moving would bounce the player off a collider and put them over a
+                // killzone. In those situations, just revert to the original position.
+                 RaycastHit hit4;
+                 if (Physics.Raycast(
+                         transform.position, Vector3.down,
+                         out hit4))
+                 {
+                     if (hit4.transform.gameObject.layer == LayerMask.NameToLayer("Killzone") && wasOverGround)
+                     {
+                         m_characterController.Move(prevPosition - transform.position);
+                     }
+                 }
             }
 
             //cast ray to ground from bottom of capsule, move down by ray result
@@ -286,8 +299,12 @@ public class PlayerMovementController : MonoBehaviour
 
     private void PlaceDashTarget()
     {
-        // m_dashTargetGameObject.SetActive(true);
         m_dashTargetGameObject.transform.position = m_feetPosition.position;
+        if (m_moveAction.ReadValue<Vector2>().magnitude <= 0.01f)
+        {
+            return;
+        }
+        // m_dashTargetGameObject.SetActive(true);
         
         m_dashTargetGameObject.transform.position = m_feetPosition.position + transform.forward * m_maxDashDistance;
         
