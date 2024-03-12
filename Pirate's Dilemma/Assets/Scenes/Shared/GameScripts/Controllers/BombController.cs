@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 
 public delegate void LooseBombCollisionEvent();
@@ -17,10 +18,8 @@ public class BombController : MonoBehaviour
     [SerializeField] private GameObject m_fuseFireParticle;
 
     [SerializeField] private bool m_isLoose = false;
-
-    [SerializeField] private AudioSource m_explosionAudioSource;
     
-    [SerializeField] private AudioSource m_hissAudioSource;
+    [SerializeField] private StudioEventEmitter m_hissEventEmitter;
     
     public LooseBombCollisionEvent m_onLooseBombCollision;
 
@@ -33,7 +32,7 @@ public class BombController : MonoBehaviour
     private Coroutine m_despawnCoroutine;
     
     void Start()
-    {
+    {  
         m_despawnCoroutine = StartCoroutine(DespawnAfterSeconds());
     }
 
@@ -51,11 +50,12 @@ public class BombController : MonoBehaviour
 
         if (isLit)
         {
-            m_hissAudioSource.Play();
+            m_hissEventEmitter.Play();
         }
         else
         {
-            m_hissAudioSource.Stop();
+            m_hissEventEmitter.Stop();
+
         }
     }
 
@@ -99,9 +99,7 @@ public class BombController : MonoBehaviour
         {
             StopCoroutine(m_despawnCoroutine);
         }
-
-        m_explosionAudioSource.Play();
-        m_hissAudioSource.Stop();
+        m_hissEventEmitter.Stop();
         
         m_fuseFireParticle.SetActive(false);
         GetComponent<Collider>().enabled = false;

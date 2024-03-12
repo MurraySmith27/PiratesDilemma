@@ -97,11 +97,13 @@ GameObject:
   - component: {fileID: 3806193576749118782}
   - component: {fileID: 8159576825246783168}
   - component: {fileID: 499935073571530274}
-  - component: {fileID: 4657405196688796297}
   - component: {fileID: 3788934220506126850}
   - component: {fileID: 4104745165709088208}
   - component: {fileID: -173002794247489751}
   - component: {fileID: -1103685436052886694}
+  - component: {fileID: 1575094240466470441}
+  - component: {fileID: 7569700150103749090}
+  - component: {fileID: 3117960396655384203}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -221,9 +223,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_bombCapacity: 1
-  m_bombPickupAudioSource: {fileID: 4657405196688796297}
+  m_bombHissEventEmitter: {fileID: 3117960396655384203}
   m_heldBombGameObject: {fileID: 547375710448396446}
-  m_bombHissAudioSource: {fileID: 7454823805179426654}
   m_heldBarrelGameObject: {fileID: 297953741941491675}
   m_throwingTargetGameObject: {fileID: 8660961137410361375}
   m_maxThrowDistance: 7
@@ -266,6 +267,8 @@ MonoBehaviour:
   m_invulnerableTimeOnRespawn: 3
   m_invulnerableMaterial: {fileID: 2100000, guid: 5ede7b2f73d274542aa6e4b631a4185a,
     type: 2}
+  m_tackleSoundEventEmitter: {fileID: 1575094240466470441}
+  m_dashSoundEventEmitter: {fileID: 7569700150103749090}
   m_feetPosition: {fileID: 8814260995174423450}
 --- !u!143 &499935073571530274
 CharacterController:
@@ -293,102 +296,6 @@ CharacterController:
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!82 &4657405196688796297
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3528894974979799562}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 0.617
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!120 &3788934220506126850
 LineRenderer:
   serializedVersion: 2
@@ -5302,6 +5209,99 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &1575094240466470441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3528894974979799562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -832359970
+      Data2: 1076952251
+      Data3: -1070717556
+      Data4: -239425129
+    Path: event:/hit_sfx
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &7569700150103749090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3528894974979799562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1507870239
+      Data2: 1262604202
+      Data3: -124550473
+      Data4: -1797647174
+    Path: event:/dash_sfx
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &3117960396655384203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3528894974979799562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1685878174
+      Data2: 1118560227
+      Data3: 1691634879
+      Data4: -347739895
+    Path: event:/BombHiss_sfx
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3979000730159853127
 GameObject:
   m_ObjectHideFlags: 0
@@ -5619,6 +5619,7 @@ PrefabInstance:
     - {fileID: 7281345515390719502, guid: ea421fdecbc4cef428b431abf643e362, type: 3}
     - {fileID: -3480362166084312967, guid: ea421fdecbc4cef428b431abf643e362, type: 3}
     - {fileID: 7241188248614680902, guid: ea421fdecbc4cef428b431abf643e362, type: 3}
+    - {fileID: 3112087636687778101, guid: ea421fdecbc4cef428b431abf643e362, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -5632,12 +5633,6 @@ GameObject:
 --- !u!1 &2318625492055310260 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7410779535724487874, guid: ea421fdecbc4cef428b431abf643e362,
-    type: 3}
-  m_PrefabInstance: {fileID: 5113002989061708662}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &7454823805179426654 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 2414443834547170344, guid: ea421fdecbc4cef428b431abf643e362,
     type: 3}
   m_PrefabInstance: {fileID: 5113002989061708662}
   m_PrefabAsset: {fileID: 0}

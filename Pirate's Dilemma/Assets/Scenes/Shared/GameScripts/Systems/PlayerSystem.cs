@@ -682,6 +682,14 @@ public class PlayerSystem : GameSystem
 
         //get spawn positions from gameobject in scene with special tags.
         SetPlayerSpawnPositions();
+        
+        Debug.Log($"loading new scene! Spawn position of player 1: {m_playerSpawnPositions[0].position}");
+        
+        Debug.Log($"loading new scene! Spawn position of player 2: {m_playerSpawnPositions[1].position}");
+        
+        Debug.Log($"loading new scene! Spawn position of player 3: {m_playerSpawnPositions[2].position}");
+        
+        Debug.Log($"loading new scene! Spawn position of player 4: {m_playerSpawnPositions[3].position}");
 
         bool isCharacterSelect = scene.name == GameTimerSystem.Instance.m_characterSelectSceneName;
         //move players to spawn positions

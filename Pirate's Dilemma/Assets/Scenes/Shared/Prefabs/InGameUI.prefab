@@ -95,6 +95,7 @@ MonoBehaviour:
   - {fileID: 7234308871107947966, guid: f0d2d420d63e40840be4c55f4c700ed6, type: 3}
   - {fileID: 7234308871107947966, guid: 59a077ebb331b4b42902af24ee2209c4, type: 3}
   m_boatHoverIcon: {fileID: 21300000, guid: 31638b686fe27a743a4ff1a051787cee, type: 3}
+  m_throwBombToBoatControlsHoverRadius: 3
 --- !u!1 &2931290759399913967
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,7 +263,7 @@ MonoBehaviour:
   - ScoreSystem
   m_scoreElementAsset: {fileID: 9197481963319205126, guid: 1592c9d5efb2cdc46845ddd761855c89,
     type: 3}
-  m_gameRulesTutorialSprite: {fileID: 21300000, guid: de7e72055b371104489952c9ca06aea4,
+  m_gameRulesTutorialSprite: {fileID: 21300000, guid: b6e0e801a63d8274ebf64f1ccd950677,
     type: 3}
   m_tutorialPopupObject: {fileID: 3765545985192282897}
   m_useTutorialPopups: 1

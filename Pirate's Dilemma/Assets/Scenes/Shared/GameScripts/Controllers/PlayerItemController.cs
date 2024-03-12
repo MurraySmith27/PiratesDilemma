@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 public delegate void PlayerPickUpBombEvent(int teamNum, int playerNum);
@@ -23,11 +25,9 @@ public class PlayerItemController : MonoBehaviour
 {
     [FormerlySerializedAs("m_goldCapacity")] [SerializeField] public int m_bombCapacity = 3;
 
-    [FormerlySerializedAs("m_goldPickupAudioSource")] [SerializeField] private AudioSource m_bombPickupAudioSource;
+    [FormerlySerializedAs("m_bombPickupEventEmitter")] [FormerlySerializedAs("m_goldPickupAudioSource")] [SerializeField] private StudioEventEmitter m_bombHissEventEmitter;
 
     [FormerlySerializedAs("m_heldGoldGameObject")] [SerializeField] private GameObject m_heldBombGameObject;
-    
-    [SerializeField] private AudioSource m_bombHissAudioSource;
     
     [SerializeField] private GameObject m_heldBarrelGameObject;
 
@@ -119,8 +119,21 @@ public class PlayerItemController : MonoBehaviour
 
     void Start()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
         GameTimerSystem.Instance.m_onGameFinish += OnGameStop;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    {
+        m_isHeldBombLit = false;
+        m_bombHissEventEmitter.Stop();
+        m_heldBombFireParticle.SetActive(false);
+        
+        
+        m_throwing = false;
+        m_heldBombGameObject.SetActive(false);
+        m_heldBarrelGameObject.SetActive(false);
     }
     
     public void OnGameStart()
@@ -322,6 +335,7 @@ public class PlayerItemController : MonoBehaviour
             {
                 looseBomb.GetComponent<BombController>().SetLit(true);
                 m_isHeldBombLit = false;
+                m_bombHissEventEmitter.Stop();
                 m_heldBombFireParticle.SetActive(false);
             }
             
@@ -393,7 +407,6 @@ public class PlayerItemController : MonoBehaviour
 
     private void PickupBomb()
     {
-        m_bombPickupAudioSource.Play();
         m_playerData.m_bombsCarried += 1;
     
         m_heldBombGameObject.SetActive(true);
@@ -412,7 +425,6 @@ public class PlayerItemController : MonoBehaviour
     
     private void PickUpBarrel()
     {
-        m_bombPickupAudioSource.Play();
         m_barrelInHand = true;
         m_heldBarrelGameObject.SetActive(true);
         
@@ -574,9 +586,9 @@ public class PlayerItemController : MonoBehaviour
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("BombLightingArea") &&
             m_playerData.m_bombsCarried > 0)
         {
+            m_bombHissEventEmitter.Play();
             m_isHeldBombLit = true;
             m_heldBombFireParticle.SetActive(true);
-            m_bombHissAudioSource.Play();
         }
     }
     
