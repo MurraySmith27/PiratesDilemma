@@ -721,7 +721,7 @@ public class PlayerSystem : GameSystem
         //move players to spawn positions
         for (int i = 0; i < m_numPlayers; i++)
         {
-            GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
+            GameObject spawnPos = GameObject.FindGameObjectWithTag($"P{i + 1}Spawn");
 
             m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
             m_players[i].transform.localScale = spawnPos.transform.localScale;
@@ -742,7 +742,7 @@ public class PlayerSystem : GameSystem
             for (int i = 0; i < m_numPlayers; i++)
             {
                 PlayerInput playerInput = m_players[i].GetComponentInChildren<PlayerInput>();
-                GameObject spawnPos = GameObject.Find($"P{i + 1}Spawn");
+                GameObject spawnPos = GameObject.FindGameObjectWithTag($"P{i + 1}Spawn");
 
                 m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
                 m_players[i].transform.localScale = spawnPos.transform.localScale;

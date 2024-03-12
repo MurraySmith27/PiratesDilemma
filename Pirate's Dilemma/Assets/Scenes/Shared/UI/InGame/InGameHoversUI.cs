@@ -214,7 +214,6 @@ public class InGameHoversUI : UIBase
                     m_isPlayerNearBomb[i-1] = true;
                 }
                 
-
                 bool nearEnemyBoat = false;
                 foreach (GameObject boat in GameObject.FindGameObjectsWithTag("Boat"))
                 {

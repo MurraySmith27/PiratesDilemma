@@ -436,7 +436,6 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (hit.gameObject.layer == LayerMask.NameToLayer($"Team{otherTeamNum}Player") && m_isDashing)
         {
-            
             PlayerMovementController otherPlayerMovement = hit.gameObject.GetComponent<PlayerMovementController>();
 
             if (otherPlayerMovement.m_invulnerable)
@@ -451,7 +450,6 @@ public class PlayerMovementController : MonoBehaviour
                 direction.y = 0;
                 Vector2 dashDirection = new Vector2(direction.x, direction.z).normalized;
                 m_tackleSoundEventEmitter.Play();
-                Debug.Log("push sound event triggered");
                 otherPlayerMovement.GetPushed(dashDirection, m_pushDistance);
             }
         }

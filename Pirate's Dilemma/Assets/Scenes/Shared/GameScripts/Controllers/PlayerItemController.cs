@@ -503,7 +503,6 @@ public class PlayerItemController : MonoBehaviour
         {
             looseBombRb.isKinematic = false;
             looseBomb.layer = LayerMask.NameToLayer("LooseBomb");
-
         }
 
     }
