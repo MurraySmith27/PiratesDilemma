@@ -20,5 +20,11 @@ public class TestFromCharacterSelect : MonoBehaviour
         EditorApplication.EnterPlaymode();
     }
 
-    
+
+    [MenuItem("PiratesDilemma/ResetStartingScene")]
+    static void ResetStartingScene()
+    {
+        EditorSceneManager.playModeStartScene = null;
+    }
+
 }

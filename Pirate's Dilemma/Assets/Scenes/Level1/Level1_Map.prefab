@@ -1682,8 +1682,8 @@ GameObject:
   - component: {fileID: 2310906423900588262}
   - component: {fileID: 6262710704083242238}
   - component: {fileID: 1169879169693892721}
-  - component: {fileID: 487278973333430965}
   - component: {fileID: 7687674187783831415}
+  - component: {fileID: -5348349916012008814}
   m_Layer: 0
   m_Name: CinemachineBrain
   m_TagString: MainCamera
@@ -1835,14 +1835,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!81 &487278973333430965
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6017818116237265416}
-  m_Enabled: 1
 --- !u!82 &7687674187783831415
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1939,6 +1931,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-5348349916012008814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6017818116237265416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
 --- !u!1 &6030919316963050237
 GameObject:
   m_ObjectHideFlags: 0

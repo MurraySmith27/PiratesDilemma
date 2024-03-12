@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7208470197801482481}
   - component: {fileID: 539647388637634132}
+  - component: {fileID: 4904116105744297506}
   m_Layer: 24
   m_Name: Explosion
   m_TagString: Untagged
@@ -54,6 +55,37 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1.64
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4904116105744297506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3658179560201325224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1780332820
+      Data2: 1133667149
+      Data3: -1901139814
+      Data4: -527577644
+    Path: event:/explosion_sfx
+  Event: 
+  PlayEvent: 11
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 1
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 1
+  OverrideMinDistance: 0
+  OverrideMaxDistance: 200
 --- !u!1001 &7185879978447636146
 PrefabInstance:
   m_ObjectHideFlags: 0

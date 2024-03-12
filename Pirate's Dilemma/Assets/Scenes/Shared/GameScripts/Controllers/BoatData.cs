@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using FMODUnity;
 using UnityEngine;
 
 public class BoatData : MonoBehaviour
@@ -13,5 +14,5 @@ public class BoatData : MonoBehaviour
     // The total health the boat has.
     public int m_maxHealth;
     //The sink audio source
-    public AudioSource m_sinkAudioSource;
+    public StudioEventEmitter m_sinkEventEmitter;
 }

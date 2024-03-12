@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -45,6 +46,10 @@ public class PlayerMovementController : MonoBehaviour
     //for invulnerability
     [SerializeField] private float m_invulnerableTimeOnRespawn = 3f;
     [SerializeField] private Material m_invulnerableMaterial;
+    
+    [SerializeField] private StudioEventEmitter m_tackleSoundEventEmitter;
+
+    [SerializeField] private StudioEventEmitter m_dashSoundEventEmitter;
     
     public Transform m_feetPosition;
     
@@ -167,19 +172,18 @@ public class PlayerMovementController : MonoBehaviour
 
             //cast ray to ground from bottom of capsule, move down by ray result
             float distanceToMoveDown = 9.81f * Time.deltaTime;
-            RaycastHit hit3;
-            if (Physics.Raycast(
-                    transform.position - new Vector3(0,
-                        m_characterController.center.y + m_characterController.height / 2, 0), Vector3.down,
-                    out hit3))
-            {
-                //fall just so we dont intersect it.
-                distanceToMoveDown = hit3.distance;
-            }
+            // RaycastHit hit3;
+            // if (Physics.Raycast(
+            //         transform.position - new Vector3(0,
+            //             m_characterController.center.y + m_characterController.height / 2, 0), Vector3.down,
+            //         out hit3))
+            // {
+            //     //fall just so we dont intersect it.
+            //     distanceToMoveDown = hit3.distance;
+            // }
 
             if (!m_characterController.isGrounded)
             {
-
                 m_characterController.Move(new Vector3(0, -distanceToMoveDown, 0));
             }
             
@@ -273,49 +277,75 @@ public class PlayerMovementController : MonoBehaviour
         if (m_initialized && !IsOccupied() && !_mPlayerItemController.IsOccupied() && !m_dashOnCooldown && m_playerData.m_bombsCarried == 0 && !_mPlayerItemController.m_barrelInHand)
         {
             m_isChargingDash = true;
-            m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());
+            // m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());
+            PlaceDashTarget();
             m_onPlayerStartDashCharge();
+            Vector3 endPosition = m_dashTargetGameObject.transform.position;
+            if ((endPosition - m_feetPosition.position).magnitude > m_minDashDistance)
+            {
+                m_dashSoundEventEmitter.Play();
+                m_dashCoroutine = StartCoroutine(DashCoroutine(endPosition));
+                m_onPlayerStartDash();
+            }
+            else
+            {
+                m_isDashing = false;
+            }
+            m_isChargingDash = false;
         }
     }
 
-    private IEnumerator DashChargeUpCoroutine()
+    private void PlaceDashTarget()
     {
-        m_dashTargetGameObject.SetActive(true);
+        // m_dashTargetGameObject.SetActive(true);
         m_dashTargetGameObject.transform.position = m_feetPosition.position;
-
-        m_dashIndicatorArrowBodyGameObject.SetActive(true);
-
-        float t = 0;
-        while (true)
-        {
         
-            Vector3 initialPos = m_feetPosition.position;
-            Vector3 maxDistancePos = initialPos + transform.forward * m_maxDashDistance;
-            t = Mathf.Min(t + Time.deltaTime / m_timeToChargeToMaxDashRange, 1);
-            
-            Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
+        m_dashTargetGameObject.transform.position = m_feetPosition.position + transform.forward * m_maxDashDistance;
+        
+        
+        string[] impassableLayers = new string[] { "StaticObstacle", $"Team{m_playerData.m_teamNum}Impassable"};
+        
+        RaycastHit hit;
+        if (Physics.Raycast(m_feetPosition.position, 
+                (m_dashTargetGameObject.transform.position - m_feetPosition.position).normalized, 
+                out hit, layerMask: LayerMask.GetMask(impassableLayers), maxDistance: m_maxDashDistance))
+        {
+            m_dashTargetGameObject.transform.position = m_feetPosition.position + ((m_dashTargetGameObject.transform.position - m_feetPosition.position) - m_feetPosition.position) * (hit.distance / m_maxDashDistance);
+        }
 
-            string[] impassableLayers = new string[] { "StaticObstacle", $"Team{m_playerData.m_teamNum}Impassable"};
-            //need to check if the dash target is in a wall. if so truncate the dash.
-            RaycastHit hit;
-            if (Physics.Raycast(initialPos, (targetPos - initialPos).normalized, out hit, layerMask: LayerMask.GetMask(impassableLayers), maxDistance: (targetPos - initialPos).magnitude))
-            {
-                targetPos = initialPos + (maxDistancePos - initialPos) * (hit.distance / m_maxDashDistance);
-            }
-            
-            m_dashTargetGameObject.transform.position = targetPos;
+        // m_dashIndicatorArrowBodyGameObject.SetActive(true);
 
-            m_dashIndicatorArrowBodyGameObject.transform.localScale = new Vector3(
-                m_dashIndicatorArrowBodyGameObject.transform.localScale.x, 
-                m_dashTargetGameObject.transform.localPosition.z - 0.25f, 
-                m_dashIndicatorArrowBodyGameObject.transform.localScale.z
-            );
-            m_dashIndicatorArrowBodyGameObject.transform.localPosition =
-                new Vector3(0, 0, (m_dashTargetGameObject.transform.localPosition.z / 2f));
-            
-            
-            yield return null;
-        }    
+        // float t = 0;
+        // while (true)
+        // {
+        //
+        //     Vector3 initialPos = m_feetPosition.position;
+        //     Vector3 maxDistancePos = initialPos + transform.forward * m_maxDashDistance;
+        //     t = Mathf.Min(t + Time.deltaTime / m_timeToChargeToMaxDashRange, 1);
+        //     
+        //     Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
+        //
+        //     string[] impassableLayers = new string[] { "StaticObstacle", $"Team{m_playerData.m_teamNum}Impassable"};
+        //     //need to check if the dash target is in a wall. if so truncate the dash.
+        //     RaycastHit hit;
+        //     if (Physics.Raycast(initialPos, (targetPos - initialPos).normalized, out hit, layerMask: LayerMask.GetMask(impassableLayers), maxDistance: (targetPos - initialPos).magnitude))
+        //     {
+        //         targetPos = initialPos + (maxDistancePos - initialPos) * (hit.distance / m_maxDashDistance);
+        //     }
+        //     
+        //     m_dashTargetGameObject.transform.position = targetPos;
+        //
+        //     m_dashIndicatorArrowBodyGameObject.transform.localScale = new Vector3(
+        //         m_dashIndicatorArrowBodyGameObject.transform.localScale.x, 
+        //         m_dashTargetGameObject.transform.localPosition.z - 0.25f, 
+        //         m_dashIndicatorArrowBodyGameObject.transform.localScale.z
+        //     );
+        //     m_dashIndicatorArrowBodyGameObject.transform.localPosition =
+        //         new Vector3(0, 0, (m_dashTargetGameObject.transform.localPosition.z / 2f));
+        //     
+        //     
+        //     yield return null;
+        // }    
     }
 
     private void OnDashButtonReleased(InputAction.CallbackContext ctx)
@@ -330,6 +360,7 @@ public class PlayerMovementController : MonoBehaviour
             Vector3 endPosition = m_dashTargetGameObject.transform.position;
             if ((endPosition - m_feetPosition.position).magnitude > m_minDashDistance)
             {
+                m_dashSoundEventEmitter.Play();
                 m_dashCoroutine = StartCoroutine(DashCoroutine(endPosition));
                 m_onPlayerStartDash();
             }
@@ -399,6 +430,7 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (hit.gameObject.layer == LayerMask.NameToLayer($"Team{otherTeamNum}Player") && m_isDashing)
         {
+            
             PlayerMovementController otherPlayerMovement = hit.gameObject.GetComponent<PlayerMovementController>();
 
             if (otherPlayerMovement.m_invulnerable)
@@ -412,6 +444,8 @@ public class PlayerMovementController : MonoBehaviour
                 Vector3 direction = hit.transform.position - transform.position;
                 direction.y = 0;
                 Vector2 dashDirection = new Vector2(direction.x, direction.z).normalized;
+                m_tackleSoundEventEmitter.Play();
+                Debug.Log("push sound event triggered");
                 otherPlayerMovement.GetPushed(dashDirection, m_pushDistance);
             }
         }

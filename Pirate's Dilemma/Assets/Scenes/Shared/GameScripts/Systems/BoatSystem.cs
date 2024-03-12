@@ -21,8 +21,6 @@ public class BoatSystem : GameSystem
     public BoatDamagedEvent m_onBoatDamaged;
 
     [SerializeField] private float m_sinkDistance = 1f;
-    
-    [SerializeField] private AudioSource m_boatSinkSound;
 
     [SerializeField] private int m_boatMaxHealth = 5;
     
@@ -172,22 +170,24 @@ public class BoatSystem : GameSystem
     
     private IEnumerator SinkBoat(int teamNum, int boatNum)
     {
-        m_onSinkBoat(teamNum, boatNum);
-
-        GameObject boat = m_boatsPerTeam[teamNum - 1][boatNum - 1];
-        
-        boat.GetComponent<BoatData>().m_sinkAudioSource.Play();
-        
         //do the animation:
+        GameObject boat = m_boatsPerTeam[teamNum - 1][boatNum - 1];
         Vector3 initialPos = m_boatsPerTeam[teamNum - 1][boatNum - 1].transform.position;
 
         Vector3 finalPos = initialPos + new Vector3(0, -m_sinkDistance, 0);
 
+        boat.GetComponent<BoatData>().m_sinkEventEmitter.Play();
         for (float t = 0; t < 1; t += Time.deltaTime)
         {
             m_boatsPerTeam[teamNum - 1][boatNum - 1].transform.position = Vector3.Lerp(initialPos, finalPos, t);
             yield return null;
         }
+        
+        m_onSinkBoat(teamNum, boatNum);
+
+        
+        
+
     }
     
 }

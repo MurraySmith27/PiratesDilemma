@@ -179,7 +179,6 @@ public class GameTimerSystem : GameSystem
         {
             // Wait for one second
             yield return new WaitForSeconds(1);
-            Debug.Log("GLOBAL COUNTDOWN");
             
             // Decrease the count
             count++;
