@@ -156,11 +156,12 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Dark_Color: {r: 0.11575387, g: 0.24705882, b: 0.1254902, a: 0}
+    - _Dark_Color: {r: 0.5377358, g: 0.37887022, b: 0.022828398, a: 0}
+    - _DefaultEmissionHDR: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Light_Color: {r: 0.20652832, g: 0.6698113, b: 0.13585795, a: 0}
+    - _Light_Color: {r: 0.8773585, g: 0.5850803, b: 0.16140087, a: 0}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _SpecularColor: {r: 0.37271076, g: 0.5660378, b: 0.33908868, a: 0}
+    - _SpecularColor: {r: 0.48235294, g: 0.46864775, b: 0.29411766, a: 0}
   m_BuildTextureStacks: []

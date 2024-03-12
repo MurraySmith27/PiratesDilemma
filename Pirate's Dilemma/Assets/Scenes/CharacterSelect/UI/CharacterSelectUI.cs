@@ -102,7 +102,8 @@ public class CharacterSelectUI : UIBase
 
         VisualElement newReadyUpHover = m_readyUpHover.Instantiate();
         m_readyUpHoverElements.Add(newReadyUpHover);
-        
+
+        newReadyUpHover.Q<Label>("ready-text").text = "Ready";
         m_root.Add(newReadyUpHover);
         
         Vector3 screen = Camera.main.WorldToScreenPoint(m_renderTextureQuads[newPlayerNum - 1].transform.position);
