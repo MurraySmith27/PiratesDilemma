@@ -78,6 +78,11 @@ public class PlayerMovementController : MonoBehaviour
 
     private Coroutine m_dashChargeUpCoroutine;
 
+    // Making "ice-sliding" effect, so there will be a delay in player movement controls
+    private bool iceSliding = false;
+    private Vector3 m_smootherMotion = Vector3.zero;
+    [SerializeField] private float m_smoothIndex = 1f;
+
     
     private void Awake()
     {
@@ -142,9 +147,15 @@ public class PlayerMovementController : MonoBehaviour
                 {
                     motion = Vector3.zero;
                 }
-
-                m_characterController.Move(motion);
-                
+                if (iceSliding)
+                {
+                m_smootherMotion = Vector3.Lerp(m_smootherMotion, motion, m_smoothIndex);
+                m_characterController.Move(m_smootherMotion);
+                }
+                else
+                {
+                    m_characterController.Move(motion);
+                }
                 //there are some situations where moving would bounce the player off a collider and put them over a
                 //killzone. In those situations, just revert to the original position.
                 RaycastHit hit4;
