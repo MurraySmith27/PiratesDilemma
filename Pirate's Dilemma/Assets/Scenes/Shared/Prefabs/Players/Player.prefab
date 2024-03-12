@@ -222,7 +222,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4e2bacc805930941b7c63bf80e6320d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_bombCapacity: 1
   m_bombHissEventEmitter: {fileID: 3117960396655384203}
   m_heldBombGameObject: {fileID: 547375710448396446}
   m_heldBarrelGameObject: {fileID: 297953741941491675}
@@ -5608,6 +5607,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714602978416047080, guid: ea421fdecbc4cef428b431abf643e362,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 7241188248614680902, guid: ea421fdecbc4cef428b431abf643e362,
         type: 3}
