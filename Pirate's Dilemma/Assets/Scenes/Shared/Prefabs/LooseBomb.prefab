@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7241188248614680902}
   - component: {fileID: -3480362166084312967}
   - component: {fileID: 3275352373991742655}
+  - component: {fileID: 8117037243934481899}
   - component: {fileID: 858745380204792737}
   m_Layer: 13
   m_Name: LooseBomb
@@ -107,6 +108,7 @@ MonoBehaviour:
   m_fuseFireParticle: {fileID: 7410779535724487874}
   m_isLoose: 1
   m_hissEventEmitter: {fileID: 3275352373991742655}
+  m_splashEventEmitter: {fileID: 8117037243934481899}
   m_lastHeldTeamNum: 0
   m_damagePerBomb: 1
 --- !u!96 &-3480362166084312967
@@ -242,6 +244,37 @@ MonoBehaviour:
       Data3: 1691634879
       Data4: -347739895
     Path: event:/BombHiss_sfx
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &8117037243934481899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4714602978416047080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 831899241
+      Data2: 1281222569
+      Data3: 1207084177
+      Data4: -451240430
+    Path: event:/splash_sfx
   Event: 
   PlayEvent: 0
   StopEvent: 0

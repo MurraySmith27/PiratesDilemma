@@ -21,6 +21,8 @@ public class BombController : MonoBehaviour
     [SerializeField] private bool m_isLoose = false;
     
     [SerializeField] private StudioEventEmitter m_hissEventEmitter;
+
+    [SerializeField] private StudioEventEmitter m_splashEventEmitter;
     
     public LooseBombCollisionEvent m_onLooseBombCollision;
 
@@ -82,8 +84,6 @@ public class BombController : MonoBehaviour
         {
             //landed in water, bomb splashes in water and fizzles out if lit
             StartCoroutine(GenerateSplash());
-               
-   
         }
     }
 
@@ -140,14 +140,14 @@ public class BombController : MonoBehaviour
         {
             StopCoroutine(m_despawnCoroutine);
         }
-
+        
         if (m_isLit)
         { 
             m_hissEventEmitter.Stop(); 
             m_fuseFireParticle.SetActive(false);  
         }
-        
-        
+
+        m_splashEventEmitter.Play();
         //Add code here for Particle System to emmit water splash later and emmit water splash sound maybe
         
         GetComponent<Collider>().enabled = false;
