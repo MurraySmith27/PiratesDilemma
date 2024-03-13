@@ -46,8 +46,13 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float m_pushDuration;
 
     //for invulnerability
-    [SerializeField] private float m_invulnerableTimeOnRespawn = 3f;
-    [SerializeField] private Material m_invulnerableMaterial;
+    public float m_invulnerableTimeOnRespawn
+    {
+        get;
+
+        private set;
+    } = 3f;
+    
     
     [SerializeField] private StudioEventEmitter m_tackleSoundEventEmitter;
 
@@ -242,35 +247,9 @@ public class PlayerMovementController : MonoBehaviour
 
     private IEnumerator MakeInvulnerableCoroutine(float invulnerableTime)
     {
-        Renderer[] meshRenderers = GetComponentsInChildren<Renderer>();
-        
-        List<List<Material>> materialsPerChild = new List<List<Material>>();
-
-        //add transparent material to all child meshes.
-        foreach (Renderer meshRenderer in meshRenderers)
-        {
-            
-            List<Material> materials = new List<Material>();
-            meshRenderer.GetMaterials(materials);
-            materialsPerChild.Add(materials);
-            List<Material> materialsCopy = new List<Material>(materials);
-            materialsCopy.Add(m_invulnerableMaterial);
-            
-            m_invulnerable = true;
-            meshRenderer.SetMaterials(materialsCopy);
-        }
-
-        
+        m_invulnerable = true;
         yield return new WaitForSeconds(invulnerableTime);
-        
         m_invulnerable = false;
-        
-        
-        //reset all materials
-        for (int i = 0; i < meshRenderers.Length; i++)
-        {
-            meshRenderers[i].SetMaterials(materialsPerChild[i]);
-        }
     }
 
 
@@ -449,7 +428,6 @@ public class PlayerMovementController : MonoBehaviour
                 Vector3 direction = hit.transform.position - transform.position;
                 direction.y = 0;
                 Vector2 dashDirection = new Vector2(direction.x, direction.z).normalized;
-                m_tackleSoundEventEmitter.Play();
                 otherPlayerMovement.GetPushed(dashDirection, m_pushDistance);
             }
         }
@@ -473,6 +451,7 @@ public class PlayerMovementController : MonoBehaviour
 
         if (!m_isBeingPushed)
         {
+            m_tackleSoundEventEmitter.Play();
             m_beingPushedCoroutine = StartCoroutine(GetPushedCoroutine(dashDirection, pushDistance));
             m_isBeingPushed = true;
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using FMODUnity;
 using UnityEngine;
 
@@ -30,10 +31,13 @@ public class BombController : MonoBehaviour
     private bool m_isLit = false;
 
     private Coroutine m_despawnCoroutine;
+
+    private CinemachineImpulseSource m_cinemachineImpulseSource;
     
     void Start()
     {  
         m_despawnCoroutine = StartCoroutine(DespawnAfterSeconds());
+        m_cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     IEnumerator DespawnAfterSeconds()
@@ -108,6 +112,8 @@ public class BombController : MonoBehaviour
         {
             meshRenderer.enabled = false;
         }
+        
+        m_cinemachineImpulseSource.GenerateImpulse();
         
         GameObject explosion = Instantiate(m_explosionPrefab, explosionCenter, Quaternion.identity);
 

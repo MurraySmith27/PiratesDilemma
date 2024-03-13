@@ -2,21 +2,31 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerAnimationController : MonoBehaviour
 {
     private Animator m_animator;
 
+    private CinemachineImpulseSource m_cinemachineImpulseSource;
+    
     private CharacterController m_characterController;
 
     [SerializeField] private GameObject m_sweatParticle;
 
+    [SerializeField] private float m_damageFlashFalloffTime = 0.3f;
+
+    [SerializeField, ColorUsage(true, true)] private Color m_damageFlashColor = Color.white;
+    
     private bool m_initialized = false;
     
     private bool m_lastPosSet = false;
 
     private Vector3 m_lastPos;
+    
+    [SerializeField] private GameObject m_playerModel;
 
     void Awake()
     {
@@ -25,7 +35,11 @@ public class PlayerAnimationController : MonoBehaviour
         m_sweatParticle.SetActive(false);
     }
 
-    // Start is called before the first frame update
+    private void Start()
+    {
+        m_cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
+    }
+    
     public void OnGameStart()
     {
         m_animator = GetComponentInChildren<Animator>();
@@ -38,6 +52,8 @@ public class PlayerAnimationController : MonoBehaviour
         playerMovementController.m_onPlayerStartDash += OnStartDash;
         playerMovementController.m_onPlayerDie += OnDie;
         playerMovementController.m_onDashCooldownStart += OnDashCooldownStart;
+        playerMovementController.m_onPlayerGetPushed += OnGetPushed;
+        
         
 
         PlayerItemController playerItemController = GetComponent<PlayerItemController>();
@@ -47,6 +63,46 @@ public class PlayerAnimationController : MonoBehaviour
         playerItemController.m_onPlayerStartThrow += OnStartThrow;
 
         m_initialized = true;
+    }
+    
+    public void SetInvulnerableMaterial(float invulnerableTime = -1)
+    {
+        if (invulnerableTime == -1)
+        {
+            invulnerableTime = GetComponent<PlayerMovementController>().m_invulnerableTimeOnRespawn;
+        }
+
+        StartCoroutine(SetInvulnerableMaterialCoroutine(invulnerableTime));
+    }
+
+    private IEnumerator SetInvulnerableMaterialCoroutine(float invulnerableTime)
+    {
+        Renderer[] meshRenderers = m_playerModel.GetComponentsInChildren<Renderer>();
+        
+        List<List<Material>> materialsPerChild = new List<List<Material>>();
+
+        //add transparent material to all child meshes.
+        foreach (Renderer meshRenderer in meshRenderers)
+        {
+            List<Material> materials = new List<Material>();
+            meshRenderer.GetMaterials(materials);
+            materials[1].SetFloat("_IsActive", 1f);
+            materialsPerChild.Add(materials);
+            // List<Material> materialsCopy = new List<Material>(materials);
+            // materialsCopy.Add(m_invulnerableMaterial);
+            // meshRenderer.SetMaterials(materialsCopy);
+        }
+
+        
+        yield return new WaitForSeconds(invulnerableTime);
+        
+        
+        //reset all materials
+        for (int i = 0; i < meshRenderers.Length; i++)
+        {
+            // meshRenderers[i].SetMaterials(materialsPerChild[i]);
+            materialsPerChild[i][1].SetFloat("_IsActive", 0f);
+        }
     }
 
     void FixedUpdate()
@@ -112,5 +168,49 @@ public class PlayerAnimationController : MonoBehaviour
     void OnStartThrow()
     {
         m_animator.SetTrigger("StartThrow");
+    }
+
+    void OnGetPushed()
+    {
+        //generate screen shake impulse
+        m_cinemachineImpulseSource.GenerateImpulse();
+        
+        StartCoroutine(CreateDamageFlash());
+    }
+
+    private IEnumerator CreateDamageFlash()
+    {
+        Renderer[] meshRenderers = m_playerModel.GetComponentsInChildren<Renderer>();
+
+        List<List<Material>> materialsPerChild = new List<List<Material>>();
+
+        //add transparent material to all child meshes.
+        foreach (Renderer meshRenderer in meshRenderers)
+        {
+            List<Material> materials = new List<Material>();
+            meshRenderer.GetMaterials(materials);
+            materials[2].SetColor("_FlashColor", m_damageFlashColor);
+            materialsPerChild.Add(materials);
+        }
+
+
+        float currentTime = 0f;
+        while (currentTime < m_damageFlashFalloffTime)
+        {
+            currentTime += Time.deltaTime;
+
+            float currentFlash = 1 - (currentTime / m_damageFlashFalloffTime);
+            foreach (List<Material> childMaterials in materialsPerChild)
+            {
+                childMaterials[2].SetFloat("_FlashAmount", currentFlash);
+            }
+
+            yield return null;
+        }
+
+        foreach (List<Material> childMaterials in materialsPerChild)
+        {
+            childMaterials[2].SetFloat("_FlashAmount", 0f);
+        }
     }
 }
