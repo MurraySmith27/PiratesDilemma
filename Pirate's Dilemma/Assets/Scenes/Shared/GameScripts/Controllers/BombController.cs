@@ -39,6 +39,8 @@ public class BombController : MonoBehaviour
     IEnumerator DespawnAfterSeconds()
     {
         yield return new WaitForSeconds(m_bombAliveSeconds);
+        //Failsafe to stop hiss sound in case bomb doesn't explode on collision or get destroyed when it hits a killbox
+        m_hissEventEmitter.Stop();
         Destroy(this.gameObject);
     }
 
@@ -72,6 +74,13 @@ public class BombController : MonoBehaviour
                 boatDamageController.TakeDamage(m_damagePerBomb);
             }
         }
+        else if (collider.gameObject.layer == LayerMask.NameToLayer("Killzone"))
+        {
+            //landed in water, bomb splashes in water and fizzles out if lit
+            StartCoroutine(GenerateSplash());
+               
+   
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -84,9 +93,9 @@ public class BombController : MonoBehaviour
                 m_onLooseBombCollision();
             }
         }
-
+        
         if (m_isLit)
-        {
+        {   
             StartCoroutine(GenerateExplosion(collision.contacts[0].point));
             
         }
@@ -119,4 +128,27 @@ public class BombController : MonoBehaviour
         Destroy(explosion);
         Destroy(this.gameObject);
     }
+    private IEnumerator GenerateSplash()
+    {
+        if (m_despawnCoroutine != null)
+        {
+            StopCoroutine(m_despawnCoroutine);
+        }
+
+        if (m_isLit)
+        { 
+            m_hissEventEmitter.Stop(); 
+            m_fuseFireParticle.SetActive(false);  
+        }
+        
+        
+        //Add code here for Particle System to emmit water splash later and emmit water splash sound maybe
+        
+        GetComponent<Collider>().enabled = false;
+        GetComponent<TrailRenderer>().enabled = false;
+        
+        yield return new WaitForSeconds(3);
+        Destroy(this.gameObject);
+    }
+    
 }
