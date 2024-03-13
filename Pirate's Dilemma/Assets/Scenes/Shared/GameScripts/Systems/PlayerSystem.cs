@@ -523,7 +523,7 @@ public class PlayerSystem : GameSystem
         
         PlayerItemController playerItemController = m_players[playerNum - 1].GetComponent<PlayerItemController>();
         LockPlayer(playerNum);
-        if (m_players[playerNum-1].GetComponent<PlayerData>().m_bombsCarried > 0)
+        if (m_players[playerNum-1].GetComponent<PlayerData>().m_bombsCarried)
         {
             playerItemController.DropAllBombs();
         }

@@ -23,7 +23,7 @@ public delegate void PlayerStartedThrowEvent();
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData))]
 public class PlayerItemController : MonoBehaviour
 {
-    [FormerlySerializedAs("m_goldCapacity")] [SerializeField] public int m_bombCapacity = 3;
+    // [FormerlySerializedAs("m_goldCapacity")] [SerializeField] public int m_bombCapacity = 1;
 
     [FormerlySerializedAs("m_bombPickupEventEmitter")] [FormerlySerializedAs("m_goldPickupAudioSource")] [SerializeField] private StudioEventEmitter m_bombHissEventEmitter;
 
@@ -144,7 +144,7 @@ public class PlayerItemController : MonoBehaviour
         m_playerMovementController = GetComponent<PlayerMovementController>();
         m_playerMovementController.m_onPlayerGetPushed += OnGetPushed;
         
-        m_playerData.m_bombsCarried = 0;
+        m_playerData.m_bombsCarried = false;
 
         m_interactAction = m_playerInput.actions["Interact"];
         m_interactAction.performed += OnInteractButtonPressed;
@@ -215,14 +215,14 @@ public class PlayerItemController : MonoBehaviour
         bool pickedUpItem = false;
         
    
-        if (m_playerData.m_bombsCarried < m_bombCapacity && !m_barrelInHand)
+        if (!m_playerData.m_bombsCarried && !m_barrelInHand)
         {
             List<GameObject> itemsInScene = GameObject.FindGameObjectsWithTag("LooseBomb").ToList();
             itemsInScene.AddRange(GameObject.FindGameObjectsWithTag("Barrel").ToList()); // Include barrels in the items list
 
             foreach (GameObject item in itemsInScene)
             {
-                if ((item.transform.position - transform.position).magnitude < m_looseItemPickupRadius && m_playerData.m_bombsCarried == 0)
+                if ((item.transform.position - transform.position).magnitude < m_looseItemPickupRadius && !m_playerData.m_bombsCarried)
                 {
                     if(item.CompareTag("Barrel"))
                     {
@@ -294,7 +294,7 @@ public class PlayerItemController : MonoBehaviour
     
     private void OnThrowButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_playerData.m_bombsCarried > 0 && !m_playerMovementController.IsOccupied() && m_readyToThrow)
+        if (m_playerData.m_bombsCarried && !m_playerMovementController.IsOccupied() && m_readyToThrow)
         {
             m_throwing = true;
             //freeze player while charging throw
@@ -353,7 +353,7 @@ public class PlayerItemController : MonoBehaviour
             m_throwingTargetGameObject.SetActive(false);
             
             m_throwing = false;
-
+            Debug.Log("bomb");
             DropAllBombs();
         }
 
@@ -407,7 +407,7 @@ public class PlayerItemController : MonoBehaviour
 
     private void PickupBomb()
     {
-        m_playerData.m_bombsCarried += 1;
+        m_playerData.m_bombsCarried = true;
     
         m_heldBombGameObject.SetActive(true);
 
@@ -517,7 +517,7 @@ public class PlayerItemController : MonoBehaviour
             m_throwingTargetGameObject.SetActive(false);
         }
         
-        if (m_playerData.m_bombsCarried > 0)
+        if (m_playerData.m_bombsCarried)
         {
             SpawnLooseBomb(false);
         }
@@ -527,7 +527,7 @@ public class PlayerItemController : MonoBehaviour
     public void DropAllBombs()
     {
         m_heldBombGameObject.SetActive(false);
-        m_playerData.m_bombsCarried = 0;
+        m_playerData.m_bombsCarried = false;
 
         m_throwing = false;
         if (m_onPlayerDropBomb != null && m_onPlayerDropBomb.GetInvocationList().Length > 0)
@@ -583,8 +583,7 @@ public class PlayerItemController : MonoBehaviour
         //     BoardBoat(otherCollider.gameObject);
         // }
         
-        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("BombLightingArea") &&
-            m_playerData.m_bombsCarried > 0)
+        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("BombLightingArea") && m_playerData.m_bombsCarried)
         {
             m_bombHissEventEmitter.Play();
             m_isHeldBombLit = true;

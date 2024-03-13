@@ -9,5 +9,5 @@ public class PlayerData : MonoBehaviour
 {
     public int m_playerNum;
     public int m_teamNum;
-    [FormerlySerializedAs("m_goldCarried")] public int m_bombsCarried;
+    [FormerlySerializedAs("m_goldCarried")] public bool m_bombsCarried;
 }

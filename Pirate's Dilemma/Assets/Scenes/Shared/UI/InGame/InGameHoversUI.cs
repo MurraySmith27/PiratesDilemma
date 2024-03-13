@@ -287,8 +287,7 @@ public class InGameHoversUI : UIBase
             foreach (GameObject player in PlayerSystem.Instance.m_players)
             {
                 PlayerData playerData = player.GetComponent<PlayerData>();
-                if (playerData.m_teamNum == teamNum &&
-                    playerData.m_bombsCarried != 0)
+                if (playerData.m_teamNum == teamNum && playerData.m_bombsCarried)
                 {
                     //dont destroy hovers
                     destroyHovers = false;
@@ -310,7 +309,7 @@ public class InGameHoversUI : UIBase
 
     private void OnPlayerEnterBombRadius(int teamNum, int playerNum)
     {
-        if (PlayerSystem.Instance.m_players[playerNum - 1].GetComponent<PlayerData>().m_bombsCarried == 0)
+        if (!PlayerSystem.Instance.m_players[playerNum - 1].GetComponent<PlayerData>().m_bombsCarried)
         {
             if (m_playerIndicators[playerNum - 1] != null)
             {
@@ -340,7 +339,7 @@ public class InGameHoversUI : UIBase
     
     private void OnPlayerEnterEnemyBoatRadius(int teamNum, int playerNum)
     {
-        if (PlayerSystem.Instance.m_players[playerNum - 1].GetComponent<PlayerData>().m_bombsCarried > 0)
+        if (PlayerSystem.Instance.m_players[playerNum - 1].GetComponent<PlayerData>().m_bombsCarried)
         {
             if (m_playerIndicators[playerNum - 1] != null)
             {

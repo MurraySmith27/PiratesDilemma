@@ -263,7 +263,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnDashButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_initialized && !IsOccupied() && !_mPlayerItemController.IsOccupied() && !m_dashOnCooldown && m_playerData.m_bombsCarried == 0 && !_mPlayerItemController.m_barrelInHand)
+        if (m_initialized && !IsOccupied() && !_mPlayerItemController.IsOccupied() && !m_dashOnCooldown && !m_playerData.m_bombsCarried && !_mPlayerItemController.m_barrelInHand)
         {
             m_isChargingDash = true;
             // m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());
