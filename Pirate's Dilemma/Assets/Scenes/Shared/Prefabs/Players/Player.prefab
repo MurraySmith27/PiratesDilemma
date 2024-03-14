@@ -235,7 +235,7 @@ MonoBehaviour:
     type: 3}
   m_looseItemPickupRadius: 3.2
   m_bombThrowingAirTime: 1
-  m_bombThrowingPeakHeight: 4
+  m_bombThrowingPeakHeight: 6
   m_trajectoryLineResolution: 10
   m_feetPosition: {fileID: 8814260995174423450}
   m_getOffBoatInputThreshold: 0.5
@@ -266,6 +266,7 @@ MonoBehaviour:
   m_pushDistance: 10
   m_explosionPushDistance: 20
   m_pushDuration: 0.3
+  m_invulnerableTimeOnRespawn: 1
   m_tackleSoundEventEmitter: {fileID: 1575094240466470441}
   m_dashSoundEventEmitter: {fileID: 7569700150103749090}
   m_feetPosition: {fileID: 8814260995174423450}
@@ -5325,7 +5326,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    m_ImpulseDuration: 0.12
+    m_ImpulseDuration: 0.05
     m_ImpulseType: 0
     m_DissipationRate: 0.25
     m_RawSignal: {fileID: 0}

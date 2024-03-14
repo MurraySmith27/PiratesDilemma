@@ -143,6 +143,7 @@ public class PlayerItemController : MonoBehaviour
         m_playerData = GetComponent<PlayerData>();
         m_playerMovementController = GetComponent<PlayerMovementController>();
         m_playerMovementController.m_onPlayerGetPushed += OnGetPushed;
+        m_playerMovementController.m_onPlayerDie += OnPlayerDie;
         
         m_playerData.m_bombsCarried = 0;
 
@@ -150,8 +151,8 @@ public class PlayerItemController : MonoBehaviour
         m_interactAction.performed += OnInteractButtonPressed;
 
         m_throwAction = m_playerInput.actions["Throw"];
-        m_throwAction.performed += OnThrowButtonHeld;
-        m_throwAction.canceled += OnThrowButtonReleased;
+        // m_throwAction.performed += OnThrowButtonHeld;
+        // m_throwAction.canceled += OnThrowButtonReleased;
 
         m_moveAction = m_playerInput.actions["Move"];
         // m_moveAction.performed += OnMoveActionPerformed;
@@ -179,8 +180,8 @@ public class PlayerItemController : MonoBehaviour
     public void OnGameStop()
     {
         m_interactAction.performed -= OnInteractButtonPressed;
-        m_throwAction.performed -= OnThrowButtonHeld;
-        m_throwAction.canceled -= OnThrowButtonReleased;
+        // m_throwAction.performed -= OnThrowButtonHeld;
+        // m_throwAction.canceled -= OnThrowButtonReleased;
         // m_moveAction.performed -= OnMoveActionPerformed;
         
         if (m_throwingCoroutine != null)
@@ -241,7 +242,10 @@ public class PlayerItemController : MonoBehaviour
                 }
             }
         }
-
+        else if (m_playerData.m_bombsCarried > 0)
+        {
+            OnThrowButtonHeld(new InputAction.CallbackContext());
+        }
         // if (!pickedUpItem)
         // {
         //     if (m_playerData.m_bombsCarried < m_bombCapacity && m_inGoldPickupZone)
@@ -259,6 +263,11 @@ public class PlayerItemController : MonoBehaviour
         // }
     }
 
+    private void OnPlayerDie(int playerNum)
+    {
+        DropAllBombs();
+    }
+    
     // public void BoardBoat(GameObject boat)
     // {
     //     if (boat != null)
@@ -300,8 +309,48 @@ public class PlayerItemController : MonoBehaviour
             //freeze player while charging throw
             LineRenderer trajectoryLine = GetComponent<LineRenderer>();
             trajectoryLine.enabled = true;
-            m_throwingCoroutine = StartCoroutine(ExtendLandingPositionCoroutine());
+            // m_throwingCoroutine = StartCoroutine(ExtendLandingPositionCoroutine());
+            
+            m_throwingTargetGameObject.SetActive(true);
+            
+            CharacterController targetCharacterController = m_throwingTargetGameObject.GetComponent<CharacterController>();
+
+            targetCharacterController.Move(transform.forward * m_maxThrowDistance);
+            
             m_onPlayerStartThrowCharge();
+            
+            Vector3 targetPos = m_throwingTargetGameObject.transform.position;
+            
+            GameObject looseBomb = SpawnLooseBomb(true);
+
+            if (m_isHeldBombLit)
+            {
+                looseBomb.GetComponent<BombController>().SetLit(true);
+                m_isHeldBombLit = false;
+                m_bombHissEventEmitter.Stop();
+                m_heldBombFireParticle.SetActive(false);
+            }
+            
+            Coroutine throwBombCoroutine = StartCoroutine(ThrowBombCoroutine(targetPos, looseBomb));
+
+            m_onPlayerStartThrow();
+
+            looseBomb.GetComponent<BombController>().m_onLooseBombCollision +=
+                () =>
+                {
+                    looseBomb.GetComponent<Rigidbody>().isKinematic = false;
+                    StopCoroutine(throwBombCoroutine);
+                };
+
+            targetCharacterController.enabled = false;
+            m_throwingTargetGameObject.transform.position = m_feetPosition.transform.position;
+            targetCharacterController.enabled = true;
+
+            m_throwingTargetGameObject.SetActive(false);
+            
+            m_throwing = false;
+
+            DropAllBombs();
         }
     }
 
@@ -366,10 +415,10 @@ public class PlayerItemController : MonoBehaviour
         Vector3 initialPos = m_throwingTargetGameObject.transform.position;
         
         Vector3 maxDistancePos = initialPos + transform.forward * m_maxThrowDistance;
-
-        float heightDeltaWithFloor = transform.position.y - m_feetPosition.position.y;
         
         LineRenderer trajectoryLine = GetComponent<LineRenderer>();
+
+        float heightDeltaWithFloor = transform.position.y - m_feetPosition.position.y;
 
         CharacterController targetCharacterController = m_throwingTargetGameObject.GetComponent<CharacterController>();
         float t = 0;
@@ -528,6 +577,8 @@ public class PlayerItemController : MonoBehaviour
         m_heldBombGameObject.SetActive(false);
         m_playerData.m_bombsCarried = 0;
 
+        m_bombHissEventEmitter.Stop();
+        
         m_throwing = false;
         if (m_onPlayerDropBomb != null && m_onPlayerDropBomb.GetInvocationList().Length > 0)
         {

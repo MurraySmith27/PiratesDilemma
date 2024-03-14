@@ -46,12 +46,7 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float m_pushDuration;
 
     //for invulnerability
-    public float m_invulnerableTimeOnRespawn
-    {
-        get;
-
-        private set;
-    } = 3f;
+    public float m_invulnerableTimeOnRespawn = 3f;
     
     
     [SerializeField] private StudioEventEmitter m_tackleSoundEventEmitter;
@@ -255,7 +250,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnDashButtonHeld(InputAction.CallbackContext ctx)
     {
-        if (m_initialized && !IsOccupied() && !_mPlayerItemController.IsOccupied() && !m_dashOnCooldown && m_playerData.m_bombsCarried == 0 && !_mPlayerItemController.m_barrelInHand)
+        if (m_initialized && !IsOccupied() && !_mPlayerItemController.IsOccupied() && !m_dashOnCooldown && !_mPlayerItemController.m_barrelInHand)
         {
             m_isChargingDash = true;
             // m_dashChargeUpCoroutine = StartCoroutine(DashChargeUpCoroutine());
@@ -394,7 +389,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Killzone") && !m_isDashing)
         {
-            //player dies.
+            //player dies.I
             m_onPlayerDie(m_playerData.m_playerNum);
         }
     }
