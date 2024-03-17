@@ -109,15 +109,28 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _Fresnel: 0
+    - _FresnelAngle: -1
+    - _FresnelSize: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Light1Attenuation: 0.001
+    - _Light1FlickerStrength: 0
+    - _Light1Intensity: 11.14
+    - _Light2Attenuation: Infinity
+    - _Light2FlickerStrength: 10
+    - _Light2Intensity: 3.62
+    - _Light3Attenuation: 0
+    - _Light3FlickerStrength: 10
+    - _Light3Intensity: 3.4
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _SecondLightAttenuation: 1
     - _ShadowOffset: 0
     - _ShadowSmoothness: 0
     - _Smoothness: 0.5
@@ -130,6 +143,11 @@ Material:
     - _Surface: 0
     - _UseCustomNormalMap: 0
     - _UseEmission: 0
+    - _UseFresnel: 1
+    - _UseLight1: 1
+    - _UseLight2: 1
+    - _UseLight3: 1
+    - _UseSecondLight: 0
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1
@@ -140,10 +158,18 @@ Material:
     - _Dark_Color: {r: 0.08679241, g: 0.07512456, b: 0.07123528, a: 1}
     - _DefaultEmissionHDR: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FresnelIntensity: {r: 1, g: 1, b: 1, a: 0}
+    - _Light1Color: {r: 0.94509804, g: 0.8249807, b: 0.43137252, a: 0.2}
+    - _Light1Position: {r: -5.3319, g: 14.7593975, b: 18.52, a: 0}
+    - _Light2Color: {r: 0.8679245, g: 0.4658459, b: 0, a: 1}
+    - _Light2Position: {r: -6.22, g: 4.2521906, b: 140.58, a: 0}
+    - _Light3Color: {r: 1, g: 0.6509804, b: 0, a: 0.2627451}
+    - _Light3Position: {r: -0.5324759, g: 6.190911, b: 13.16274, a: 0}
     - _Light_Color: {r: 0.17735851, g: 0.15895338, b: 0.15895338, a: 1}
     - _ShadowColor: {r: 0.31132078, g: 0.30985227, b: 0.30985227, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 0, g: 0, b: 0, a: 0}
+    - _TextureTiling: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &6349823467628567065
 MonoBehaviour:

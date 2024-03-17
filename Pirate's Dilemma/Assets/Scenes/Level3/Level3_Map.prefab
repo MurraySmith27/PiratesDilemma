@@ -65,8 +65,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 847724434146542986}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000000008595266, y: 0.86629117, z: -0.49953943, w: 0.000000014905737}
-  m_LocalPosition: {x: -5.8, y: 72.5, z: 40.4}
+  m_LocalRotation: {x: 0.000000009900887, y: 0.85976136, z: -0.510696, w: 0.000000016668237}
+  m_LocalPosition: {x: 1.2, y: 45.9, z: 23.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 2751111114115184606}
   m_Follow: {fileID: 0}
   m_Lens:
-    FieldOfView: 30
+    FieldOfView: 45
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -530,8 +530,8 @@ Transform:
   m_GameObject: {fileID: 1211423480806086673}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: -0.5}
-  m_LocalPosition: {x: -3.03, y: 0, z: 1.0028}
-  m_LocalScale: {x: 1, y: 0.6277279, z: 1.7341819}
+  m_LocalPosition: {x: -2.6253, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 0.6277279, z: 1.8566152}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3775527890106610457}
@@ -1447,7 +1447,7 @@ Transform:
   m_GameObject: {fileID: 2776908988769929740}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -6.2, y: 2, z: 0.5}
+  m_LocalPosition: {x: -6.2, y: 2, z: 2.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1602,8 +1602,8 @@ Transform:
   m_GameObject: {fileID: 3155099919339423058}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1, y: 1, z: 2}
-  m_LocalScale: {x: 1, y: 2, z: 0.20689274}
+  m_LocalPosition: {x: -1, y: 1, z: 4}
+  m_LocalScale: {x: 1, y: 2, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7580684644525770009}
@@ -2827,7 +2827,7 @@ Transform:
   m_GameObject: {fileID: 4638679995082656283}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 7, y: 2, z: 0.5}
+  m_LocalPosition: {x: 7, y: 2, z: 2.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3234,7 +3234,7 @@ Transform:
   m_GameObject: {fileID: 5248373542622578357}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -6.2, y: 2, z: 0.5}
+  m_LocalPosition: {x: -6.2, y: 2, z: 2.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3974,7 +3974,7 @@ Transform:
   m_GameObject: {fileID: 5823777321096841318}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.8, y: 1.66, z: -0.6}
+  m_LocalPosition: {x: 1.1999998, y: 1.66, z: -0.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4755,8 +4755,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6017818116237265416}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000000008595266, y: 0.86629117, z: -0.49953943, w: 0.000000014905737}
-  m_LocalPosition: {x: -5.8, y: 72.5, z: 40.4}
+  m_LocalRotation: {x: -0.000000014953148, y: 0.85976136, z: -0.510696, w: -0.00000002517376}
+  m_LocalPosition: {x: 1.2, y: 45.9, z: 23.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4829,7 +4829,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 30
+  field of view: 45
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
@@ -7861,7 +7861,7 @@ Transform:
   m_GameObject: {fileID: 8205550993190872386}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 7, y: 2, z: 0.5}
+  m_LocalPosition: {x: 7, y: 2, z: 2.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8953,11 +8953,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Kraken
       objectReference: {fileID: 0}
-    - target: {fileID: 1833419509704096900, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_TagString
-      value: Kraken
-      objectReference: {fileID: 0}
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_vcam
@@ -8965,69 +8960,9 @@ PrefabInstance:
       objectReference: {fileID: 954493190424271687}
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
-      propertyPath: m_bobIntensity
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_krakenRiseHeight
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_krakenRiseSeconds
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
       propertyPath: m_mainDirectionalLight
       value: 
       objectReference: {fileID: 1619132109848267649}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_krakenArrivalAgressiveness
-      value: 1.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_krakenArrivalLightAngles.x
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_krakenArrivalLightAngles.y
-      value: 225
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_krakenArrivalLightAngles.z
-      value: 225
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_krakenArrivvalLightColor.b
-      value: 0.7294118
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_krakenArrivvalLightColor.g
-      value: 0.7294118
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_krakenArrivvalLightColor.r
-      value: 0.9372549
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_krakenKillZones.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_krakenArrivalDestrucables.Array.size
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_krakenArrivalDestrucables.Array.data[0]
@@ -9038,31 +8973,6 @@ PrefabInstance:
       propertyPath: m_krakenArrivalDestrucables.Array.data[1]
       value: 
       objectReference: {fileID: 5834807376448597953}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_newSpawnPositionsAfterKraken.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_newSpawnPositionsAfterKraken.Array.data[0]
-      value: 
-      objectReference: {fileID: 1759232625226735307}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_newSpawnPositionsAfterKraken.Array.data[1]
-      value: 
-      objectReference: {fileID: 4456545359877200274}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_newSpawnPositionsAfterKraken.Array.data[2]
-      value: 
-      objectReference: {fileID: 5471196157855301324}
-    - target: {fileID: 2961791554450070478, guid: 3b45661ca15207543b387a7884272d19,
-        type: 3}
-      propertyPath: m_newSpawnPositionsAfterKraken.Array.data[3]
-      value: 
-      objectReference: {fileID: 4027996571370835364}
     - target: {fileID: 7064740615299961290, guid: 3b45661ca15207543b387a7884272d19,
         type: 3}
       propertyPath: m_LocalPosition.x

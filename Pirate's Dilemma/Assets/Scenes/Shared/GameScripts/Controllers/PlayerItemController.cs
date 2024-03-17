@@ -354,7 +354,7 @@ public class PlayerItemController : MonoBehaviour
         }
     }
 
-    public GameObject SpawnLooseBomb(bool isThrowing)
+    public GameObject SpawnLooseBomb(bool isThrowing, bool isLit = false)
     {
         GameObject looseBombObject = Instantiate(m_looseBombPrefab, transform.position, Quaternion.identity);
         looseBombObject.GetComponent<BombController>().m_lastHeldTeamNum = m_playerData.m_teamNum;
@@ -567,7 +567,7 @@ public class PlayerItemController : MonoBehaviour
         
         if (m_playerData.m_bombsCarried > 0)
         {
-            SpawnLooseBomb(false);
+            SpawnLooseBomb(false, m_isHeldBombLit);
         }
         DropAllBombs();
     }
