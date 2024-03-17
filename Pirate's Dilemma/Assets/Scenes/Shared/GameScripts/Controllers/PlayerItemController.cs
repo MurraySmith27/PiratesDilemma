@@ -232,8 +232,11 @@ public class PlayerItemController : MonoBehaviour
                         Destroy(item);
                         break;
                     }
-                    else {
-                        PickupBomb();
+                    else
+                    {
+                        BombController bombController = item.GetComponent<BombController>();
+                        bool isLit = bombController != null && bombController.m_isLit;
+                        PickupBomb(isLit);
                         pickedUpItem = true;
                         Destroy(item);
                         break;
@@ -357,12 +360,15 @@ public class PlayerItemController : MonoBehaviour
     public GameObject SpawnLooseBomb(bool isThrowing, bool isLit = false)
     {
         GameObject looseBombObject = Instantiate(m_looseBombPrefab, transform.position, Quaternion.identity);
-        looseBombObject.GetComponent<BombController>().m_lastHeldTeamNum = m_playerData.m_teamNum;
+        BombController bombController = looseBombObject.GetComponent<BombController>();
+        bombController.m_lastHeldTeamNum = m_playerData.m_teamNum;
+        bombController.m_wasThrown = isThrowing;
+        bombController.SetLit(isLit);
         if (isThrowing)
         {
             looseBombObject.layer = LayerMask.NameToLayer("AirbornLooseBomb");
         }
-
+        
         return looseBombObject;
     }
 
@@ -454,14 +460,19 @@ public class PlayerItemController : MonoBehaviour
         }
     }
 
-    private void PickupBomb()
+    private void PickupBomb(bool isLit)
     {
         m_playerData.m_bombsCarried += 1;
     
         m_heldBombGameObject.SetActive(true);
 
-        m_isHeldBombLit = false;
-        m_heldBombFireParticle.SetActive(false);
+        m_isHeldBombLit = isLit;
+        m_heldBombFireParticle.SetActive(isLit);
+
+        if (isLit)
+        {
+            m_bombHissEventEmitter.Play();
+        }
         
         
         if (m_onPlayerPickupBomb != null && m_onPlayerPickupBomb.GetInvocationList().Length > 0)

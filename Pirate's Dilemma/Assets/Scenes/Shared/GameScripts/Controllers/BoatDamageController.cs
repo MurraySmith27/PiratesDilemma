@@ -40,4 +40,17 @@ public class BoatDamageController : MonoBehaviour
             m_acceptingDamage = false;
         }
     }
+
+    private void OnTriggerEnter(Collider collider)
+    {
+
+        ExplosionController explosionController = collider.gameObject.GetComponent<ExplosionController>();
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Explosion") && explosionController.m_teamNum != m_boatData.m_teamNum)
+        {
+            if (m_acceptingDamage)
+            {
+                TakeDamage(explosionController.m_boatDamage);
+            }
+        }
+    }
 }

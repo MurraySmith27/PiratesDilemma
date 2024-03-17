@@ -120,6 +120,11 @@ public class BoatSystem : GameSystem
     
     void Start()
     {
+
+        GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+        GameTimerSystem.Instance.m_onGameFinish += OnGameFinish;
+        
+        
         m_boatInitialPositionsPerTeam = new List<List<Vector3>>();
         m_boatsPerTeam = new List<List<GameObject>>();
         m_boatTeamAssignments = new List<int>();
@@ -155,6 +160,22 @@ public class BoatSystem : GameSystem
         }
         
         base.SystemReady();
+    }
+
+    private void OnGameStart()
+    {
+        foreach (GameObject boat in m_boats)
+        {
+            boat.GetComponent<BoatDamageController>().m_acceptingDamage = true;
+        }
+    }
+    
+    private void OnGameFinish()
+    {
+        foreach (GameObject boat in m_boats)
+        {
+            boat.GetComponent<BoatDamageController>().m_acceptingDamage = false;
+        }
     }
     
     

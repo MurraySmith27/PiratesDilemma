@@ -274,10 +274,10 @@ public class PlayerMovementController : MonoBehaviour
     private void PlaceDashTarget()
     {
         m_dashTargetGameObject.transform.position = m_feetPosition.position;
-        if (m_moveAction.ReadValue<Vector2>().magnitude <= 0.01f)
-        {
-            return;
-        }
+        // if (m_moveAction.ReadValue<Vector2>().magnitude <= 0.01f)
+        // {
+        //     return;
+        // }
         // m_dashTargetGameObject.SetActive(true);
         
         m_dashTargetGameObject.transform.position = m_feetPosition.position + transform.forward * m_maxDashDistance;
@@ -378,7 +378,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnTriggerEnter(Collider otherCollider)
     {
-        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Explosion"))
+        if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Explosion") && otherCollider.GetComponent<ExplosionController>().m_teamNum != m_playerData.m_teamNum)
         {
             Vector3 pushDirection = (transform.position - otherCollider.gameObject.transform.position).normalized;
             GetPushed(new Vector2(pushDirection.x, pushDirection.z), m_explosionPushDistance);

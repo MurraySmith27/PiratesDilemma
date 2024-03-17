@@ -30,7 +30,9 @@ public class BombController : MonoBehaviour
 
     public int m_damagePerBomb = 1;
 
-    private bool m_isLit = false;
+    public bool m_isLit { get; private set; }
+
+    [HideInInspector] public bool m_wasThrown = false;
 
     private Coroutine m_despawnCoroutine;
 
@@ -45,9 +47,12 @@ public class BombController : MonoBehaviour
     IEnumerator DespawnAfterSeconds()
     {
         yield return new WaitForSeconds(m_bombAliveSeconds);
-        //Failsafe to stop hiss sound in case bomb doesn't explode on collision or get destroyed when it hits a killbox
-        m_hissEventEmitter.Stop();
         Destroy(this.gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        m_hissEventEmitter.Stop();
     }
 
     public void SetLit(bool isLit)
@@ -69,18 +74,8 @@ public class BombController : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.layer == LayerMask.NameToLayer("Boat") && collider.gameObject.GetComponent<BoatData>().m_teamNum != m_lastHeldTeamNum && m_isLit)
-        {
-            //landed in drop zone, score for team. 
-            BoatDamageController boatDamageController = collider.gameObject.GetComponent<BoatDamageController>();
-            if (boatDamageController.m_acceptingDamage)
-            {
-                
-                StartCoroutine(GenerateExplosion(transform.position));
-                boatDamageController.TakeDamage(m_damagePerBomb);
-            }
-        }
-        else if (collider.gameObject.layer == LayerMask.NameToLayer("Killzone"))
+        
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Killzone"))
         {
             //landed in water, bomb splashes in water and fizzles out if lit
             StartCoroutine(GenerateSplash());
@@ -98,15 +93,13 @@ public class BombController : MonoBehaviour
             }
         }
         
-        if (m_isLit)
+        if (m_isLit && m_wasThrown)
         {   
-            StartCoroutine(GenerateExplosion(collision.contacts[0].point));
-            
+            GenerateExplosion(collision.contacts[0].point);
         }
-    
     }
 
-    private IEnumerator GenerateExplosion(Vector3 explosionCenter)
+    private void GenerateExplosion(Vector3 explosionCenter)
     {
         if (m_despawnCoroutine != null)
         {
@@ -126,14 +119,16 @@ public class BombController : MonoBehaviour
         
         GameObject explosion = Instantiate(m_explosionPrefab, explosionCenter, Quaternion.identity);
 
-        yield return new WaitForSeconds(m_explosionAliveSeconds);
+        ExplosionController explosionController = explosion.GetComponent<ExplosionController>();
+
+        explosionController.m_explosionAliveSeconds = m_explosionAliveSeconds;
+        explosionController.m_explosionAnimationSeconds = m_explosionAnimationSeconds;
+        explosionController.m_teamNum = m_lastHeldTeamNum;
+        explosionController.m_boatDamage = m_damagePerBomb;
         
-        explosion.GetComponent<Collider>().enabled = false;
-        yield return new WaitForSeconds(m_explosionAnimationSeconds - m_explosionAliveSeconds);
-        
-        Destroy(explosion);
         Destroy(this.gameObject);
     }
+    
     private IEnumerator GenerateSplash()
     {
         if (m_despawnCoroutine != null)

@@ -76,7 +76,6 @@ public class GameTimerSystem : GameSystem
 
     void Start()
     {
-        
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
         

@@ -221,25 +221,23 @@ public class PlayerSystem : GameSystem
 
         if (Input.GetKeyDown("i"))
         {
-            StartCoroutine(TestWithFourPlayers());
+            TestWithFourPlayers();
         }
     }
 
-    private IEnumerator TestWithFourPlayers() {
+    private void TestWithFourPlayers() {
 
         
         m_debugMode = true;
         for (int i = m_numPlayers; i < m_maxNumPlayers; i++)
         {
             OnJoinButtonPressed(new InputAction.CallbackContext());
-            OnReadyUpButtonPressed(i + 1);
             
         }
 
-        yield return null;
-
-        for (int i = m_numPlayers; i < m_maxNumPlayers; i++)
+        for (int i = 0; i < m_maxNumPlayers; i++)
         {
+            OnReadyUpButtonPressed(i + 1);
         }
     }
 

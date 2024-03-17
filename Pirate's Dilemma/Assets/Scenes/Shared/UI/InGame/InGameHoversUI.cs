@@ -441,10 +441,17 @@ public class InGameHoversUI : UIBase
             for (int nestedChildNum = 0; nestedChildNum < child.childCount; nestedChildNum++)
             {
                 Transform grandChild = child.GetChild(nestedChildNum);
-                if (grandChild.CompareTag("BoatHoverTrackLocation"))
+                for (int greatGrandChildNum = 0; greatGrandChildNum < grandChild.childCount; greatGrandChildNum++)
                 {
-                    boatHoverTrackLocation = grandChild.gameObject;
+                    Transform greatGrandChild = grandChild.GetChild(greatGrandChildNum);
+                    
+                    if (greatGrandChild.CompareTag("BoatHoverTrackLocation"))
+                    {
+                        boatHoverTrackLocation = greatGrandChild.gameObject;
+                    }
+                    
                 }
+                
             }
         }
         VisualElement healthSection  = m_boatElements[teamNum-1][boatNum-1].Q<VisualElement>("health-section");

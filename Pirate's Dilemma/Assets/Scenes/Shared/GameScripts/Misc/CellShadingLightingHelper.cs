@@ -15,13 +15,12 @@ public class CellShadingLightingHelper : MonoBehaviour
     
     void Awake()
     {
-        if (Application.isEditor && !Application.isPlaying)
-        {
-            SceneManager.sceneLoaded += GetAllCellShadedMaterials;
-            SceneManager.sceneLoaded += SetStaticLights;
+        SceneManager.sceneLoaded -= GetAllCellShadedMaterials;
+        SceneManager.sceneLoaded += GetAllCellShadedMaterials;
+        SceneManager.sceneLoaded -= SetStaticLights;
+        SceneManager.sceneLoaded += SetStaticLights;
 
-            DontDestroyOnLoad(this.gameObject);
-        }
+        DontDestroyOnLoad(this.gameObject);
     }
 
 
@@ -35,7 +34,6 @@ public class CellShadingLightingHelper : MonoBehaviour
             
             if (mats.Count > 0 && mats[0] != null && mats[0].shader != null && mats[0].shader.name.Contains("CellShading"))
             {
-                Debug.Log("adding cell shaded object!");
                 m_cellShadedMaterialGameObjects.Add(renderer.gameObject);
             }
         }
@@ -61,11 +59,12 @@ public class CellShadingLightingHelper : MonoBehaviour
                 Light lightComponent = staticLight.GetComponent<Light>();
                 
                 Renderer renderer = cellShadedGameObject.GetComponent<Renderer>();
+                
+                renderer.sharedMaterial.SetFloat($"_UseLight{i}", 1f);
+                
                 renderer.sharedMaterial.SetVector($"_Light{i}Position", staticLight.transform.position);
                 
                 renderer.sharedMaterial.SetVector($"_Light{i}Color", lightComponent.color);
-                
-                renderer.sharedMaterial.SetFloat($"_UseLight{i}", 1f);
                 
                 renderer.sharedMaterial.SetFloat($"_Light{i}Intensity", lightComponent.intensity);
                 
