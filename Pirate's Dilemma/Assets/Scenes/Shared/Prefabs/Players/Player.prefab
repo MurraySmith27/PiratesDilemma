@@ -266,7 +266,7 @@ MonoBehaviour:
   m_pushDistance: 10
   m_explosionPushDistance: 20
   m_pushDuration: 0.3
-  m_onGetHitShutterDistance: 0.01
+  m_onGetHitShutterDistance: 0.5
   m_playerContactFreezeFrames: 6
   m_invulnerableTimeOnRespawn: 1
   m_tackleSoundEventEmitter: {fileID: 1575094240466470441}

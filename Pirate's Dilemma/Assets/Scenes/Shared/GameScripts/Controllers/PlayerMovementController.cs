@@ -378,6 +378,11 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         m_isDashing = false;
+        StartCoroutine(DashCooldown());
+    }
+
+    private IEnumerator DashCooldown()
+    {
         m_dashOnCooldown = true;
         m_onDashCooldownStart(m_playerData.m_teamNum, m_playerData.m_playerNum, m_dashCooldown);
         yield return new WaitForSeconds(m_dashCooldown);
@@ -427,6 +432,7 @@ public class PlayerMovementController : MonoBehaviour
                 //stop dashing
                 StopCoroutine(m_dashCoroutine);
                 m_isDashing = false;
+                StartCoroutine(DashCooldown());
             }
             else if (otherPlayerMovement != null)
             {
@@ -451,6 +457,7 @@ public class PlayerMovementController : MonoBehaviour
         m_isFreezingDuringContact = false;
         StopCoroutine(m_dashCoroutine);
         m_isDashing = false;
+        StartCoroutine(DashCooldown());
     }
 
     public void GetPushed(Vector2 dashDirection, float pushDistance, Vector3 contactPosition)
