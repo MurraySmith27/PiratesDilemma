@@ -431,7 +431,7 @@ public class PlayerMovementController : MonoBehaviour
             else if (otherPlayerMovement != null)
             {
                 //pushing other player. pause other coroutine
-                StartCoroutine(FreezeDashForFrames(m_playerContactFreezeFrames));
+                StartCoroutine(FreezeDashForFramesThenStop(m_playerContactFreezeFrames));
                 
                 Vector3 direction = hit.transform.position - transform.position;
                 direction.y = 0;
@@ -441,7 +441,7 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
-    private IEnumerator FreezeDashForFrames(int n)
+    private IEnumerator FreezeDashForFramesThenStop(int n)
     {
         m_isFreezingDuringContact = true;
         for (int i = 0; i < n; i++)
@@ -449,6 +449,8 @@ public class PlayerMovementController : MonoBehaviour
             yield return null;
         }
         m_isFreezingDuringContact = false;
+        StopCoroutine(m_dashCoroutine);
+        m_isDashing = false;
     }
 
     public void GetPushed(Vector2 dashDirection, float pushDistance, Vector3 contactPosition)
@@ -482,9 +484,9 @@ public class PlayerMovementController : MonoBehaviour
         Vector3 posBeforeShuttering = transform.position;
         for (int i = 0; i < m_playerContactFreezeFrames; i++)
         {
-            m_characterController.Move(m_onGetHitShutterDistance * new Vector3(Random.Range(-1f, 1f), 0,  Random.Range(-1f, 1f)));
+            WarpToPosition(posBeforeShuttering + m_onGetHitShutterDistance * new Vector3(Random.Range(-1f, 1f), 0,  Random.Range(-1f, 1f)));
             yield return null;
-            m_characterController.Move(posBeforeShuttering - transform.position);
+            WarpToPosition(posBeforeShuttering);
         }
         
         Vector3 initial = transform.position;
