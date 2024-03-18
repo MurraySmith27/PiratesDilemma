@@ -60,11 +60,22 @@ public class GameTimerSystem : GameSystem
     public bool m_gamePaused = false;
 
     private Coroutine m_gameCountdownCoroutine;
+
+
+    void Update()
+    {
+        if (Input.GetKeyDown("o"))
+        {
+            EndGame(0,0);
+        }
+    }
+    
     
     void Awake()
     {
         if (_instance != null && _instance != this)
         {
+            
             Destroy(this.gameObject);
         }
         else
@@ -95,7 +106,6 @@ public class GameTimerSystem : GameSystem
     {
         if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
         {
-            Debug.Log("CALLING START GAME");
             StartGame();
         }
     }

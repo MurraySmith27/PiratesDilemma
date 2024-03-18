@@ -17,6 +17,15 @@ public class BoatAnimationController : MonoBehaviour
     {
         GameTimerSystem.Instance.m_onGameStart -= OnGameStart; //remove first just to be safe awake gets called each scene load
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
+        
+        GameTimerSystem.Instance.m_onGameFinish -= OnGameFinish;
+        GameTimerSystem.Instance.m_onGameFinish += OnGameFinish;
+    }
+
+    void OnDestroy()
+    {
+        GameTimerSystem.Instance.m_onGameStart -= OnGameStart;
+        GameTimerSystem.Instance.m_onGameFinish -= OnGameFinish;
     }
 
 
@@ -29,6 +38,14 @@ public class BoatAnimationController : MonoBehaviour
 
         boatDamageController.m_onBoatDamaged += OnBoatDamaged;
     }
+
+    private void OnGameFinish()
+    {
+        BoatDamageController boatDamageController = GetComponent<BoatDamageController>();
+
+        boatDamageController.m_onBoatDamaged -= OnBoatDamaged;
+    }
+    
     private IEnumerator EnterIdleAfterRandomDelay()
     {
         yield return new WaitForSeconds(Random.Range(0f, 2f));

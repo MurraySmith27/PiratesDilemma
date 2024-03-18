@@ -116,11 +116,13 @@ public class BoatSystem : GameSystem
             base.OnDestroy();
             _instance = null;
         }
+        GameTimerSystem.Instance.m_onGameStart -= OnGameStart;
+        GameTimerSystem.Instance.m_onGameFinish -= OnGameFinish;
     }
     
     void Start()
     {
-
+        
         GameTimerSystem.Instance.m_onGameStart += OnGameStart;
         GameTimerSystem.Instance.m_onGameFinish += OnGameFinish;
         
