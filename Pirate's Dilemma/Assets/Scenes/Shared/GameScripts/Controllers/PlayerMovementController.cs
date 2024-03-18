@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-public delegate void PlayerGetPushedEvent();
+public delegate void PlayerGetPushedEvent(Vector3 contactPosition);
 public delegate void PlayerStartDashEvent();
 public delegate void PlayerDashCooldownStartEvent(int teamNum, int playerNum, float cooldownSeconds);
 public delegate void PlayerStartDashChargeEvent();
@@ -44,6 +44,10 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float m_pushDistance;
     [SerializeField] private float m_explosionPushDistance = 20f;
     [SerializeField] private float m_pushDuration;
+    [SerializeField] private float m_onGetHitShutterDistance = 0.2f;
+    
+    //for dashing and getting hit
+    [SerializeField] private int m_playerContactFreezeFrames = 6;
 
     //for invulnerability
     public float m_invulnerableTimeOnRespawn = 3f;
@@ -79,6 +83,8 @@ public class PlayerMovementController : MonoBehaviour
     private CharacterController m_characterController;
 
     private Coroutine m_dashChargeUpCoroutine;
+
+    private bool m_isFreezingDuringContact = false;
 
     
     private void Awake()
@@ -210,6 +216,7 @@ public class PlayerMovementController : MonoBehaviour
         m_isDashing = false;
         m_dashOnCooldown = false;
         m_isBeingPushed = false;
+        m_isFreezingDuringContact = false;
 
         m_dashAction.performed += OnDashButtonHeld;
         m_dashAction.canceled += OnDashButtonReleased;
@@ -360,7 +367,10 @@ public class PlayerMovementController : MonoBehaviour
         Vector3 pos;
         for (float t = 0; t < 1; t += Time.deltaTime / m_dashDuration)
         {
-            yield return new WaitForFixedUpdate();
+            yield return new WaitUntil(() =>
+            {
+                return m_isFreezingDuringContact == false;
+            });
 
             float progress = Mathf.Pow(t, 1f / 3f);
             pos = initialPos + (endPos - initialPos) * progress - transform.position;
@@ -381,7 +391,7 @@ public class PlayerMovementController : MonoBehaviour
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Explosion") && otherCollider.GetComponent<ExplosionController>().m_teamNum != m_playerData.m_teamNum)
         {
             Vector3 pushDirection = (transform.position - otherCollider.gameObject.transform.position).normalized;
-            GetPushed(new Vector2(pushDirection.x, pushDirection.z), m_explosionPushDistance);
+            GetPushed(new Vector2(pushDirection.x, pushDirection.z), m_explosionPushDistance, otherCollider.ClosestPoint(transform.position));
         }
     }
 
@@ -420,15 +430,28 @@ public class PlayerMovementController : MonoBehaviour
             }
             else if (otherPlayerMovement != null)
             {
+                //pushing other player. pause other coroutine
+                StartCoroutine(FreezeDashForFrames(m_playerContactFreezeFrames));
+                
                 Vector3 direction = hit.transform.position - transform.position;
                 direction.y = 0;
                 Vector2 dashDirection = new Vector2(direction.x, direction.z).normalized;
-                otherPlayerMovement.GetPushed(dashDirection, m_pushDistance);
+                otherPlayerMovement.GetPushed(dashDirection, m_pushDistance, hit.point);
             }
         }
     }
 
-    public void GetPushed(Vector2 dashDirection, float pushDistance)
+    private IEnumerator FreezeDashForFrames(int n)
+    {
+        m_isFreezingDuringContact = true;
+        for (int i = 0; i < n; i++)
+        {
+            yield return null;
+        }
+        m_isFreezingDuringContact = false;
+    }
+
+    public void GetPushed(Vector2 dashDirection, float pushDistance, Vector3 contactPosition)
     {
         if (m_isChargingDash)
         {
@@ -449,13 +472,21 @@ public class PlayerMovementController : MonoBehaviour
             m_tackleSoundEventEmitter.Play();
             m_beingPushedCoroutine = StartCoroutine(GetPushedCoroutine(dashDirection, pushDistance));
             m_isBeingPushed = true;
-
-            m_onPlayerGetPushed();
+            m_onPlayerGetPushed(contactPosition);
         }
     }
 
     private IEnumerator GetPushedCoroutine(Vector2 dashDirection, float pushDistance)
     {
+
+        Vector3 posBeforeShuttering = transform.position;
+        for (int i = 0; i < m_playerContactFreezeFrames; i++)
+        {
+            m_characterController.Move(m_onGetHitShutterDistance * new Vector3(Random.Range(-1f, 1f), 0,  Random.Range(-1f, 1f)));
+            yield return null;
+            m_characterController.Move(posBeforeShuttering - transform.position);
+        }
+        
         Vector3 initial = transform.position;
         Vector3 final = initial + new Vector3(dashDirection.x, 0, dashDirection.y) * pushDistance;
         

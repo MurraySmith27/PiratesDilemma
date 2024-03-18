@@ -17,6 +17,12 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private GameObject m_sweatParticle;
 
     [SerializeField] private float m_damageFlashFalloffTime = 0.3f;
+    
+    [SerializeField] private GameObject m_onHitParticlePrefab;
+
+    [SerializeField] private float m_onHitParticleDuration = 1f;
+
+    [SerializeField] private float m_onHitParticleSize = 3f;
 
     [SerializeField, ColorUsage(true, true)] private Color m_damageFlashColor = Color.white;
     
@@ -170,11 +176,20 @@ public class PlayerAnimationController : MonoBehaviour
         m_animator.SetTrigger("StartThrow");
     }
 
-    void OnGetPushed()
+    void OnGetPushed(Vector3 contactPosition)
     {
         //generate screen shake impulse
         m_cinemachineImpulseSource.GenerateImpulse();
+
+        GameObject hitParticle = Instantiate(m_onHitParticlePrefab, contactPosition, Quaternion.LookRotation(contactPosition - transform.position));
+
+        foreach (ParticleSystem system in hitParticle.GetComponentsInChildren<ParticleSystem>())
+        {
+            system.transform.localScale *= m_onHitParticleSize;
+        }
         
+        Destroy(hitParticle, m_onHitParticleDuration);
+            
         StartCoroutine(CreateDamageFlash());
     }
 

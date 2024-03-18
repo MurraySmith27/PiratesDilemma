@@ -567,7 +567,7 @@ public class PlayerItemController : MonoBehaviour
 
     }
 
-    private void OnGetPushed()
+    private void OnGetPushed(Vector3 contactPosition)
     {
         if (m_throwing)
         {

@@ -266,6 +266,8 @@ MonoBehaviour:
   m_pushDistance: 10
   m_explosionPushDistance: 20
   m_pushDuration: 0.3
+  m_onGetHitShutterDistance: 0.01
+  m_playerContactFreezeFrames: 6
   m_invulnerableTimeOnRespawn: 1
   m_tackleSoundEventEmitter: {fileID: 1575094240466470441}
   m_dashSoundEventEmitter: {fileID: 7569700150103749090}
@@ -284,6 +286,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_sweatParticle: {fileID: 504876755394416719}
   m_damageFlashFalloffTime: 0.3
+  m_onHitParticlePrefab: {fileID: 6065985910767874118, guid: 8f51537572cbd7a40ad475f5403e0d13,
+    type: 3}
+  m_onHitParticleDuration: 1
+  m_onHitParticleSize: 3
   m_damageFlashColor: {r: 2.89173, g: 0.23188405, b: 0.23188405, a: 1}
   m_playerModel: {fileID: 6162987746853092250}
 --- !u!143 &499935073571530274
