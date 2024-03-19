@@ -212,7 +212,6 @@ GameObject:
   - component: {fileID: 562810839554190984}
   - component: {fileID: 143683580529713856}
   - component: {fileID: 3423543549318430801}
-  - component: {fileID: 4341117695174238098}
   m_Layer: 26
   m_Name: SignPost
   m_TagString: Untagged
@@ -285,24 +284,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4341117695174238098
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8023858843119220212}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 8.570637, y: 2, z: 3.0739987}
-  m_Center: {x: -0.34735584, y: 0, z: 1.0369991}

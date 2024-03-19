@@ -223,12 +223,6 @@ public class PlayerSystem : GameSystem
         {
             TestWithFourPlayers();
         }
-
-        for (int i = 0; i < m_numPlayers; i++)
-        {
-            PlayerInput playerInput = m_players[i].GetComponentInChildren<PlayerInput>();
-            Debug.Log($"player {i+1} ready up enabled?: {playerInput.actions.FindAction("ReadyUp").enabled}, {m_playerControlSchemesList[i].FindAction("ReadyUp").enabled}");
-        }
     }
 
     private void TestWithFourPlayers() {
@@ -726,7 +720,6 @@ public class PlayerSystem : GameSystem
         SetPlayerSpawnPositions();
 
         bool isCharacterSelect = scene.name == GameTimerSystem.Instance.m_characterSelectSceneName;
-        Debug.Log($"loading new scnee. is character select: {isCharacterSelect}");
         //move players to spawn positions
         for (int i = 0; i < m_numPlayers; i++)
         {
@@ -740,7 +733,6 @@ public class PlayerSystem : GameSystem
             m_playerControlSchemesList[i].FindAction("ReadyUp").performed -= (ctx => OnReadyUpButtonPressed(i+1));
             
             playerInput = m_players[i].GetComponentInChildren<PlayerInput>();
-            Debug.LogWarning("DISABLING PLAYER INPUT WAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             playerInput.actions.FindAction("ReadyUp").Disable();
             playerInput.actions.FindAction("ReadyUp").performed -= (ctx => OnReadyUpButtonPressed(i+1));
 

@@ -177,10 +177,6 @@ MonoBehaviour:
     m_ActionName: InGame/Throw[/Keyboard/space,/DualShock4GamepadHID/buttonSouth,/XInputControllerWindows/buttonSouth,/DualShock4GamepadHID1/buttonSouth]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 9a027261-c551-4004-b35b-058000f7c83a
-    m_ActionName: InGame/ReadyUp[/Keyboard/n]
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: 45e605d1-29fa-4050-9edd-524907b79f02
     m_ActionName: CharacterSelect/Join[/Keyboard/enter]
   - m_PersistentCalls:
@@ -191,6 +187,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: f072e145-0240-43be-bb03-9cecd31f98d8
     m_ActionName: UI/Select[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 752a4686-6a2f-4aa4-853e-cde563f75139
+    m_ActionName: CharacterSelect/ReadyUp[/Keyboard/enter]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: CharacterSelect
@@ -6091,7 +6091,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 98b54951ae354fc45b3c47d86278cf3e, type: 2}
+      objectReference: {fileID: 2100000, guid: bf07f17e7e83aad468123f655417d962, type: 2}
     - target: {fileID: 2236237030686087061, guid: ee3cfaea2f1e16143bb3bdd0a842c606,
         type: 3}
       propertyPath: m_Materials.Array.data[1]
