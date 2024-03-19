@@ -223,16 +223,19 @@ public class PlayerSystem : GameSystem
         {
             TestWithFourPlayers();
         }
+
+        for (int i = 0; i < m_numPlayers; i++)
+        {
+            PlayerInput playerInput = m_players[i].GetComponentInChildren<PlayerInput>();
+            Debug.Log($"player {i+1} ready up enabled?: {playerInput.actions.FindAction("ReadyUp").enabled}, {m_playerControlSchemesList[i].FindAction("ReadyUp").enabled}");
+        }
     }
 
     private void TestWithFourPlayers() {
-
-        
         m_debugMode = true;
         for (int i = m_numPlayers; i < m_maxNumPlayers; i++)
         {
             OnJoinButtonPressed(new InputAction.CallbackContext());
-            
         }
 
         for (int i = 0; i < m_maxNumPlayers; i++)
@@ -499,6 +502,11 @@ public class PlayerSystem : GameSystem
         PlayerInput playerInput = m_players[m_numPlayers - 1].GetComponent<PlayerInput>();
         playerInput.actions.FindAction("Join").performed -= OnJoinButtonPressed;
         playerInput.actions.FindAction("Join").Disable();
+        for (int i = 0; i < m_numPlayers; i++)
+        {
+            m_players[i].GetComponent<PlayerInput>().actions.FindAction("ReadyUp").Disable();
+        }
+
         GameTimerSystem.Instance.StopGame(m_gameScenesToLoadNames[m_numLevelsPlayed % m_gameScenesToLoadNames.Count]);
         m_numLevelsPlayed++;
     }
@@ -543,6 +551,7 @@ public class PlayerSystem : GameSystem
             m_players[playerNum - 1].GetComponent<PlayerAnimationController>();
 
         playerAnimationController.SetInvulnerableMaterial();
+        playerAnimationController.OnRespawn();
         
         if (m_onPlayerRespawn != null && m_onPlayerRespawn.GetInvocationList().Length > 0)
         {
@@ -675,9 +684,6 @@ public class PlayerSystem : GameSystem
 
     public void SwitchToActionMapForPlayer(int playerNum, string actionMapName)
     {
-        m_playerControlSchemesList[playerNum - 1].CharacterSelect.Disable();
-        m_playerInputObjects[playerNum - 1].actions.Enable();
-        
         m_playerInputObjects[playerNum - 1].actions.FindActionMap(actionMapName).Enable();
     }
 
@@ -720,15 +726,23 @@ public class PlayerSystem : GameSystem
         SetPlayerSpawnPositions();
 
         bool isCharacterSelect = scene.name == GameTimerSystem.Instance.m_characterSelectSceneName;
+        Debug.Log($"loading new scnee. is character select: {isCharacterSelect}");
         //move players to spawn positions
         for (int i = 0; i < m_numPlayers; i++)
         {
             GameObject spawnPos = GameObject.FindGameObjectWithTag($"P{i + 1}Spawn");
-
+            PlayerInput playerInput = m_players[i].GetComponentInChildren<PlayerInput>();
+            
             m_players[i].GetComponent<PlayerMovementController>().WarpToPosition(spawnPos.transform.position);
             m_players[i].transform.localScale = spawnPos.transform.localScale;
             m_players[i].transform.rotation = spawnPos.transform.rotation;
             m_playerControlSchemesList[i].FindAction("ReadyUp").Disable();
+            m_playerControlSchemesList[i].FindAction("ReadyUp").performed -= (ctx => OnReadyUpButtonPressed(i+1));
+            
+            playerInput = m_players[i].GetComponentInChildren<PlayerInput>();
+            Debug.LogWarning("DISABLING PLAYER INPUT WAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            playerInput.actions.FindAction("ReadyUp").Disable();
+            playerInput.actions.FindAction("ReadyUp").performed -= (ctx => OnReadyUpButtonPressed(i+1));
 
             
             PlayerItemController playerItemController = m_players[i].GetComponent<PlayerItemController>();
@@ -777,6 +791,7 @@ public class PlayerSystem : GameSystem
 
             if (m_numPlayers < m_maxNumPlayers)
             {
+                m_playerControlSchemesList[m_numPlayers].CharacterSelect.Disable();
                 m_playerControlSchemesList[m_numPlayers].CharacterSelect.Disable();
             }
         }

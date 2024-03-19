@@ -133,15 +133,41 @@ public class PlayerAnimationController : MonoBehaviour
         
     }
 
-    void OnDashCooldownStart(int teamNum, int playerNum, float cooldownSeconds)
+    public void OnRespawn()
     {
-        StartCoroutine(Sweat(cooldownSeconds));
+        m_animator.SetTrigger("Respawn");
     }
 
-    private IEnumerator Sweat(float cooldownSeconds)
+    void OnDashCooldownStart(int teamNum, int playerNum, float cooldownSeconds)
+    {
+        StartCoroutine(DashCooldownAnims(cooldownSeconds));
+    }
+
+    private IEnumerator DashCooldownAnims(float cooldownSeconds)
     {
         m_sweatParticle.SetActive(true);
-        yield return new WaitForSeconds(cooldownSeconds);
+        
+        Renderer[] meshRenderers = m_playerModel.GetComponentsInChildren<Renderer>();
+        
+        float t = 0;
+        while (t < cooldownSeconds)
+        {
+            foreach (Renderer meshRenderer in meshRenderers)
+            {
+                List<Material> materials = new List<Material>();
+                meshRenderer.GetMaterials(materials);
+                materials[3].SetFloat("_CooldownProgress", t / cooldownSeconds);
+            }
+            
+            yield return null;
+            t += Time.deltaTime;
+        }
+        foreach (Renderer meshRenderer in meshRenderers)
+        {
+            List<Material> materials = new List<Material>();
+            meshRenderer.GetMaterials(materials);
+            materials[3].SetFloat("_CooldownProgress",1f);
+        }
         m_sweatParticle.SetActive(false);
     }
     
@@ -150,9 +176,36 @@ public class PlayerAnimationController : MonoBehaviour
         m_animator.SetTrigger("StartDashCharge");
     }
 
-    void OnStartDash()
+    void OnStartDash(float dashDurationSeconds)
     {
         m_animator.SetTrigger("StartDash");
+        StartCoroutine(DashShaderAnim(dashDurationSeconds));
+    }
+
+    private IEnumerator DashShaderAnim(float dashDurationSeconds)
+    {
+        Renderer[] meshRenderers = m_playerModel.GetComponentsInChildren<Renderer>();
+        
+        float t = 0;
+        while (t < dashDurationSeconds)
+        {
+            foreach (Renderer meshRenderer in meshRenderers)
+            {
+                List<Material> materials = new List<Material>();
+                meshRenderer.GetMaterials(materials);
+                materials[3].SetFloat("_CooldownProgress", 1f - (t / dashDurationSeconds));
+            }
+            
+            yield return null;
+            t += Time.deltaTime;
+        }
+        foreach (Renderer meshRenderer in meshRenderers)
+        {
+            List<Material> materials = new List<Material>();
+            meshRenderer.GetMaterials(materials);
+            materials[3].SetFloat("_CooldownProgress",0f);
+        }
+        
     }
 
     void OnDie(int playerNum)
@@ -178,6 +231,17 @@ public class PlayerAnimationController : MonoBehaviour
 
     void OnGetPushed(Vector3 contactPosition)
     {
+        
+        //reset dash cooldown effect
+        Renderer[] meshRenderers = m_playerModel.GetComponentsInChildren<Renderer>();
+        
+        foreach (Renderer meshRenderer in meshRenderers)
+        {
+            List<Material> materials = new List<Material>();
+            meshRenderer.GetMaterials(materials);
+            materials[3].SetFloat("_CooldownProgress",1f);
+        }
+        
         //generate screen shake impulse
         m_cinemachineImpulseSource.GenerateImpulse();
 

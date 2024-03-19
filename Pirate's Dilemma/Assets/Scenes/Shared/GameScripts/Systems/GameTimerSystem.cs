@@ -57,6 +57,8 @@ public class GameTimerSystem : GameSystem
     public GameTimerUpdateEvent m_onGameTimerUpdate;
     public GameTimerUpdateEvent m_onStartGameTimerUpdate;
     
+    public bool m_gameStarted { get; private set; }
+    
     public bool m_gamePaused = false;
 
     private Coroutine m_gameCountdownCoroutine;
@@ -89,6 +91,8 @@ public class GameTimerSystem : GameSystem
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        m_gameStarted = false;
         
         base.SystemReady();
     }
@@ -112,21 +116,28 @@ public class GameTimerSystem : GameSystem
 
     public void PauseGame()
     {
-        Time.timeScale = 0;
-        m_gamePaused = true;
-        m_onGamePause();
+        if (m_gameStarted && !m_gamePaused)
+        {
+            Time.timeScale = 0;
+            m_gamePaused = true;
+            m_onGamePause();
+        }
     }
 
     public void UnPauseGame()
     {
-        Time.timeScale = 1f;
-        m_gamePaused = false;
-        m_onGameUnpause();
+        if (m_gameStarted && m_gamePaused)
+        {
+            Time.timeScale = 1f;
+            m_gamePaused = false;
+            m_onGameUnpause();
+        }
     }
 
     public void StartGame()
     {
         m_gamePaused = false;
+        m_gameStarted = false;
         StartCoroutine(StartGameCoroutine());
         BoatSystem.Instance.m_onSinkBoat += EndGame;
     }
@@ -149,6 +160,7 @@ public class GameTimerSystem : GameSystem
 
     public void StopGame(string nextSceneToLoadName)
     {
+        m_gameStarted = false;
         StartCoroutine(EndGameCoroutine(nextSceneToLoadName));
         if (m_gameCountdownCoroutine != null)
         {
@@ -170,7 +182,8 @@ public class GameTimerSystem : GameSystem
             count--;
             m_onStartGameTimerUpdate(count);    
         }
-        
+
+        m_gameStarted = true;
         if (m_onGameStart?.GetInvocationList()?.Length > 0)
         {
             m_onGameStart();

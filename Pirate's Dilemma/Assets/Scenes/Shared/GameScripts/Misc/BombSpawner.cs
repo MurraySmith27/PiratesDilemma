@@ -58,7 +58,7 @@ public class BombSpawner : MonoBehaviour
         m_lastBombSpawnedTimeStamp = -1;
         GameTimerSystem.Instance.m_onGameTimerUpdate += OnTimerUpdate;
     }
-
+    
     private IEnumerator SimulateTimerUpdate()
     {
         

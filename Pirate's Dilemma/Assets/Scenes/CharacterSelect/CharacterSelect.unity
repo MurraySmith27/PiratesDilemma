@@ -986,8 +986,8 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 1, g: 0.6509804, b: 0, a: 0.2627451}
-  m_Intensity: 3.4
+  m_Color: {r: 1, g: 0.61922556, b: 0, a: 0.2627451}
+  m_Intensity: 4.02
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1614,6 +1614,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 6949864690993609553, guid: a45431fa1026ee94abe65f5f9b089163,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7008452127326604268, guid: a45431fa1026ee94abe65f5f9b089163,
         type: 3}
@@ -2312,6 +2317,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1713809333328761445, guid: fa837950df16ae74c966d0e174bf7d67,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1713809333328761445, guid: fa837950df16ae74c966d0e174bf7d67,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1713809333328761445, guid: fa837950df16ae74c966d0e174bf7d67,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a12506a5148acef4594059aae7edc62a, type: 2}
     - target: {fileID: 4264240050300890443, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.w

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 
 public delegate void PlayerGetPushedEvent(Vector3 contactPosition);
-public delegate void PlayerStartDashEvent();
+public delegate void PlayerStartDashEvent(float dashDurationSeconds);
 public delegate void PlayerDashCooldownStartEvent(int teamNum, int playerNum, float cooldownSeconds);
 public delegate void PlayerStartDashChargeEvent();
 
@@ -268,7 +268,7 @@ public class PlayerMovementController : MonoBehaviour
             {
                 m_dashSoundEventEmitter.Play();
                 m_dashCoroutine = StartCoroutine(DashCoroutine(endPosition));
-                m_onPlayerStartDash();
+                m_onPlayerStartDash(m_dashDuration);
             }
             else
             {
@@ -349,7 +349,7 @@ public class PlayerMovementController : MonoBehaviour
             {
                 m_dashSoundEventEmitter.Play();
                 m_dashCoroutine = StartCoroutine(DashCoroutine(endPosition));
-                m_onPlayerStartDash();
+                m_onPlayerStartDash(m_dashDuration);
             }
             else
             {

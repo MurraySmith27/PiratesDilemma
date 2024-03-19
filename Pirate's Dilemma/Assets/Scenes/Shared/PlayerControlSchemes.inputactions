@@ -40,15 +40,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "ReadyUp",
-                    "type": "Button",
-                    "id": "9a027261-c551-4004-b35b-058000f7c83a",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -238,28 +229,6 @@
                     "action": "Throw",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "26f5e01e-8028-4355-8385-c352ce6999e4",
-                    "path": "<Keyboard>/enter",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ReadyUp",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "365c290f-2c56-4910-9473-ac370e258b78",
-                    "path": "<Gamepad>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ReadyUp",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         },
@@ -271,6 +240,15 @@
                     "name": "Join",
                     "type": "Button",
                     "id": "45e605d1-29fa-4050-9edd-524907b79f02",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ReadyUp",
+                    "type": "Button",
+                    "id": "752a4686-6a2f-4aa4-853e-cde563f75139",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -297,6 +275,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Join",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ef37b70e-67de-42f5-ac04-56b4e58a44b1",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReadyUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e7b768d4-c79e-44c6-9219-48c04de8016a",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReadyUp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

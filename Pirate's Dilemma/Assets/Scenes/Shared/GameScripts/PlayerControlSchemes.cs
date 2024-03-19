@@ -62,15 +62,6 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""ReadyUp"",
-                    ""type"": ""Button"",
-                    ""id"": ""9a027261-c551-4004-b35b-058000f7c83a"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -260,28 +251,6 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
                     ""action"": ""Throw"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""26f5e01e-8028-4355-8385-c352ce6999e4"",
-                    ""path"": ""<Keyboard>/enter"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ReadyUp"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""365c290f-2c56-4910-9473-ac370e258b78"",
-                    ""path"": ""<Gamepad>/start"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ReadyUp"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -293,6 +262,15 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
                     ""name"": ""Join"",
                     ""type"": ""Button"",
                     ""id"": ""45e605d1-29fa-4050-9edd-524907b79f02"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ReadyUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""752a4686-6a2f-4aa4-853e-cde563f75139"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -319,6 +297,28 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Join"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ef37b70e-67de-42f5-ac04-56b4e58a44b1"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ReadyUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e7b768d4-c79e-44c6-9219-48c04de8016a"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ReadyUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -426,10 +426,10 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
         m_InGame_Interact = m_InGame.FindAction("Interact", throwIfNotFound: true);
         m_InGame_Dash = m_InGame.FindAction("Dash", throwIfNotFound: true);
         m_InGame_Throw = m_InGame.FindAction("Throw", throwIfNotFound: true);
-        m_InGame_ReadyUp = m_InGame.FindAction("ReadyUp", throwIfNotFound: true);
         // CharacterSelect
         m_CharacterSelect = asset.FindActionMap("CharacterSelect", throwIfNotFound: true);
         m_CharacterSelect_Join = m_CharacterSelect.FindAction("Join", throwIfNotFound: true);
+        m_CharacterSelect_ReadyUp = m_CharacterSelect.FindAction("ReadyUp", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Pause = m_UI.FindAction("Pause", throwIfNotFound: true);
@@ -499,7 +499,6 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
     private readonly InputAction m_InGame_Interact;
     private readonly InputAction m_InGame_Dash;
     private readonly InputAction m_InGame_Throw;
-    private readonly InputAction m_InGame_ReadyUp;
     public struct InGameActions
     {
         private @PlayerControlSchemes m_Wrapper;
@@ -508,7 +507,6 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
         public InputAction @Interact => m_Wrapper.m_InGame_Interact;
         public InputAction @Dash => m_Wrapper.m_InGame_Dash;
         public InputAction @Throw => m_Wrapper.m_InGame_Throw;
-        public InputAction @ReadyUp => m_Wrapper.m_InGame_ReadyUp;
         public InputActionMap Get() { return m_Wrapper.m_InGame; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -530,9 +528,6 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
             @Throw.started += instance.OnThrow;
             @Throw.performed += instance.OnThrow;
             @Throw.canceled += instance.OnThrow;
-            @ReadyUp.started += instance.OnReadyUp;
-            @ReadyUp.performed += instance.OnReadyUp;
-            @ReadyUp.canceled += instance.OnReadyUp;
         }
 
         private void UnregisterCallbacks(IInGameActions instance)
@@ -549,9 +544,6 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
             @Throw.started -= instance.OnThrow;
             @Throw.performed -= instance.OnThrow;
             @Throw.canceled -= instance.OnThrow;
-            @ReadyUp.started -= instance.OnReadyUp;
-            @ReadyUp.performed -= instance.OnReadyUp;
-            @ReadyUp.canceled -= instance.OnReadyUp;
         }
 
         public void RemoveCallbacks(IInGameActions instance)
@@ -574,11 +566,13 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_CharacterSelect;
     private List<ICharacterSelectActions> m_CharacterSelectActionsCallbackInterfaces = new List<ICharacterSelectActions>();
     private readonly InputAction m_CharacterSelect_Join;
+    private readonly InputAction m_CharacterSelect_ReadyUp;
     public struct CharacterSelectActions
     {
         private @PlayerControlSchemes m_Wrapper;
         public CharacterSelectActions(@PlayerControlSchemes wrapper) { m_Wrapper = wrapper; }
         public InputAction @Join => m_Wrapper.m_CharacterSelect_Join;
+        public InputAction @ReadyUp => m_Wrapper.m_CharacterSelect_ReadyUp;
         public InputActionMap Get() { return m_Wrapper.m_CharacterSelect; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -591,6 +585,9 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
             @Join.started += instance.OnJoin;
             @Join.performed += instance.OnJoin;
             @Join.canceled += instance.OnJoin;
+            @ReadyUp.started += instance.OnReadyUp;
+            @ReadyUp.performed += instance.OnReadyUp;
+            @ReadyUp.canceled += instance.OnReadyUp;
         }
 
         private void UnregisterCallbacks(ICharacterSelectActions instance)
@@ -598,6 +595,9 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
             @Join.started -= instance.OnJoin;
             @Join.performed -= instance.OnJoin;
             @Join.canceled -= instance.OnJoin;
+            @ReadyUp.started -= instance.OnReadyUp;
+            @ReadyUp.performed -= instance.OnReadyUp;
+            @ReadyUp.canceled -= instance.OnReadyUp;
         }
 
         public void RemoveCallbacks(ICharacterSelectActions instance)
@@ -693,11 +693,11 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
-        void OnReadyUp(InputAction.CallbackContext context);
     }
     public interface ICharacterSelectActions
     {
         void OnJoin(InputAction.CallbackContext context);
+        void OnReadyUp(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
