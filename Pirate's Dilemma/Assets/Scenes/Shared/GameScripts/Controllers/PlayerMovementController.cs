@@ -484,7 +484,7 @@ public class PlayerMovementController : MonoBehaviour
             m_onPlayerGetPushed(contactPosition);
         }
     }
-
+    
     private IEnumerator GetPushedCoroutine(Vector2 dashDirection, float pushDistance)
     {
 

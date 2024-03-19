@@ -11,8 +11,11 @@ public delegate void GameStartEvent();
 public delegate void GameFinishEvent();
 public delegate void GamePauseEvent();
 public delegate void GameUnpauseEvent();
+public delegate void GameFreezeEvent();
+public delegate void GameUnFreezeEvent();
 public delegate void GameSceneLoadedEvent();
 public delegate void GameSceneUnloadedEvent();
+public delegate void ReadyToStartGameTimerEvent();
 public delegate void GameTimerUpdateEvent(int currentTimerValueSeconds);
 
 public class GameTimerSystem : GameSystem
@@ -30,7 +33,7 @@ public class GameTimerSystem : GameSystem
 
     public string m_characterSelectSceneName;
     
-    [SerializeField] private float m_holdAfterGameEndTime = 1f;
+    [SerializeField] private float m_holdAfterGameEndTime = 2f;
     
     [SerializeField] private float m_holdBeforeCountdownTimerTime = 1f;
 
@@ -46,6 +49,10 @@ public class GameTimerSystem : GameSystem
     
     public GameFinishEvent m_onGameFinish;
 
+    public GameFreezeEvent m_onGameFreeze;
+
+    public GameUnFreezeEvent m_onGameUnFreeze;
+
     public GamePauseEvent m_onGamePause;
 
     public GameUnpauseEvent m_onGameUnpause;
@@ -53,6 +60,8 @@ public class GameTimerSystem : GameSystem
     public GameSceneLoadedEvent m_onGameSceneLoaded;
     
     public GameSceneUnloadedEvent m_onGameSceneUnloaded;
+
+    public ReadyToStartGameTimerEvent m_onReadyToStartGameTimer;
     
     public GameTimerUpdateEvent m_onGameTimerUpdate;
     public GameTimerUpdateEvent m_onStartGameTimerUpdate;
@@ -118,9 +127,21 @@ public class GameTimerSystem : GameSystem
     {
         if (m_gameStarted && !m_gamePaused)
         {
-            Time.timeScale = 0;
-            m_gamePaused = true;
-            m_onGamePause();
+            FreezeGame();
+            if (m_onGamePause != null && m_onGamePause.GetInvocationList().Length > 0)
+            {
+                m_onGamePause();
+            }
+        }
+    }
+
+    public void FreezeGame()
+    {
+        Time.timeScale = 0;
+        m_gamePaused = true;
+        if (m_onGameFreeze != null && m_onGameFreeze.GetInvocationList().Length > 0)
+        {
+            m_onGameFreeze();
         }
     }
 
@@ -128,9 +149,21 @@ public class GameTimerSystem : GameSystem
     {
         if (m_gameStarted && m_gamePaused)
         {
-            Time.timeScale = 1f;
-            m_gamePaused = false;
-            m_onGameUnpause();
+            UnFreezeGame();
+            if (m_onGameUnpause != null && m_onGameUnpause.GetInvocationList().Length > 0)
+            {
+                m_onGameUnpause();
+            }
+        }
+    }
+
+    public void UnFreezeGame()
+    {
+        Time.timeScale = 1f;
+        m_gamePaused = false;
+        if (m_onGameUnFreeze != null && m_onGameUnFreeze.GetInvocationList().Length > 0)
+        {
+            m_onGameUnFreeze();
         }
     }
 
@@ -152,7 +185,13 @@ public class GameTimerSystem : GameSystem
         m_onGameSceneLoaded();
         yield return new WaitForSeconds(m_gameSceneLoadedBufferSeconds);
 
+        if (m_onReadyToStartGameTimer != null && m_onReadyToStartGameTimer.GetInvocationList().Length > 0)
+        {
+            m_onReadyToStartGameTimer();
+        }
+        
         yield return new WaitForSeconds(m_holdBeforeCountdownTimerTime);
+        
         
         StartCoroutine(StartGameCountdown());
         m_onGameTimerUpdate(0);

@@ -135,11 +135,11 @@ Material:
     - _HasOutline: 1
     - _HighlightIntensity: 0.6
     - _Light1Attenuation: 0.001
-    - _Light1FlickerStrength: 10
-    - _Light1Intensity: 3.62
+    - _Light1FlickerStrength: 0
+    - _Light1Intensity: 11.14
     - _Light2Attenuation: Infinity
-    - _Light2FlickerStrength: 0
-    - _Light2Intensity: 11.14
+    - _Light2FlickerStrength: 10
+    - _Light2Intensity: 3.62
     - _Light3Attenuation: 0
     - _Light3FlickerStrength: 10
     - _Light3Intensity: 4.02
@@ -180,10 +180,10 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FresnelIntensity: {r: 1, g: 1, b: 1, a: 0}
     - _HighlightColor: {r: 0, g: 0, b: 0, a: 0}
-    - _Light1Color: {r: 0.8679245, g: 0.4658459, b: 0, a: 1}
-    - _Light1Position: {r: -6.22, g: 4.2521906, b: 140.58, a: 0}
-    - _Light2Color: {r: 0.9528302, g: 0.49602422, b: 0, a: 0.1764706}
-    - _Light2Position: {r: -5.3319, g: 14.7593975, b: 18.52, a: 0}
+    - _Light1Color: {r: 0.9528302, g: 0.49602422, b: 0, a: 0.1764706}
+    - _Light1Position: {r: -5.3319, g: 14.7593975, b: 18.52, a: 0}
+    - _Light2Color: {r: 0.8679245, g: 0.4658459, b: 0, a: 1}
+    - _Light2Position: {r: -6.22, g: 4.2521906, b: 140.58, a: 0}
     - _Light3Color: {r: 1, g: 0.61922556, b: 0, a: 0.2627451}
     - _Light3Position: {r: -0.5324759, g: 6.190911, b: 13.16274, a: 0}
     - _Light_Color: {r: 0.50377166, g: 0.28235295, b: 0.5568628, a: 0}

@@ -1,6 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:VisualElement name="game-start-label-root" style="flex-grow: 1; justify-content: center; align-items: center; align-self: center; position: absolute; width: 100%; height: 100%;">
-        <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="game-start-label" style="position: relative; left: auto; top: auto; -unity-font-style: bold; font-size: 100px; color: rgb(255, 0, 0); -unity-text-align: middle-center; justify-content: flex-start; align-items: center; flex-shrink: 1; flex-grow: 1; padding-top: 4px; align-self: center; padding-left: 1px; padding-right: 1px;" />
+        <ui:VisualElement name="game-start-label" style="flex-grow: 1; position: absolute; left: auto; top: auto; justify-content: center; align-items: center; align-self: center; width: 30%; height: 30%;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="full-banner-root" style="flex-grow: 1; justify-content: center; align-items: center; align-self: center; position: absolute; width: 100%; height: 100%;">
+        <ui:VisualElement style="flex-grow: 1;" />
+        <ui:VisualElement name="game-start-label-row" style="flex-grow: 2; flex-direction: row;">
+            <ui:VisualElement style="flex-grow: 1;" />
+            <ui:VisualElement name="full-banner-element" style="flex-grow: 4; flex-shrink: 4; background-color: rgba(0, 0, 0, 0); -unity-slice-scale: 0;" />
+            <ui:VisualElement style="flex-grow: 1;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;" />
     </ui:VisualElement>
     <ui:VisualElement name="root" style="flex-grow: 1; align-items: auto; justify-content: flex-start; flex-direction: row; position: relative; width: 100%; height: 100%;">
         <ui:VisualElement name="screen-spacer" style="flex-grow: 7; flex-shrink: 7; position: relative; height: 100%;" />
