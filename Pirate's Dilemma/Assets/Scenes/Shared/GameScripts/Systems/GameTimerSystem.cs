@@ -13,6 +13,7 @@ public delegate void GamePauseEvent();
 public delegate void GameUnpauseEvent();
 public delegate void GameFreezeEvent();
 public delegate void GameUnFreezeEvent();
+public delegate void CharacterSelectEndEvent();
 public delegate void GameSceneLoadedEvent();
 public delegate void GameSceneUnloadedEvent();
 public delegate void ReadyToStartGameTimerEvent();
@@ -37,6 +38,8 @@ public class GameTimerSystem : GameSystem
     
     [SerializeField] private float m_holdBeforeCountdownTimerTime = 1f;
 
+    [SerializeField] private float m_holdAfterCharacterSelectEndTime = 3f;
+
     [SerializeField] private float m_gameSceneLoadedBufferSeconds = 0.5f;
     
     [SerializeField] private float m_gameSceneUnloadedBufferSeconds = 0.5f;
@@ -56,6 +59,8 @@ public class GameTimerSystem : GameSystem
     public GamePauseEvent m_onGamePause;
 
     public GameUnpauseEvent m_onGameUnpause;
+
+    public CharacterSelectEndEvent m_onCharacterSelectEnd;
     
     public GameSceneLoadedEvent m_onGameSceneLoaded;
     
@@ -200,11 +205,50 @@ public class GameTimerSystem : GameSystem
     public void StopGame(string nextSceneToLoadName)
     {
         m_gameStarted = false;
-        StartCoroutine(EndGameCoroutine(nextSceneToLoadName));
-        if (m_gameCountdownCoroutine != null)
+        if (SceneManager.GetActiveScene().name == m_characterSelectSceneName)
         {
-            StopCoroutine(m_gameCountdownCoroutine);
+            StartCoroutine(EndCharacterSelectCoroutine(nextSceneToLoadName));
         }
+        else if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
+        {
+            StartCoroutine(EndGameCoroutine(nextSceneToLoadName));
+            if (m_gameCountdownCoroutine != null)
+            {
+                StopCoroutine(m_gameCountdownCoroutine);
+            }
+        }
+    }
+    
+    private IEnumerator EndCharacterSelectCoroutine(string nextSceneToLoadName)
+    {
+        m_onCharacterSelectEnd();
+        
+        yield return new WaitForSeconds(m_holdAfterCharacterSelectEndTime);
+        
+        m_onGameSceneUnloaded();
+        
+        yield return new WaitForSeconds(m_gameSceneUnloadedBufferSeconds);
+        
+        SceneManager.LoadScene(nextSceneToLoadName);
+    }
+    
+    private IEnumerator EndGameCoroutine(string nextSceneToLoadName)
+    {
+        //set time to half speed
+        float endGameTimeScale = 0.5f;
+        Time.timeScale = endGameTimeScale;
+        
+        m_onGameFinish();
+        
+        yield return new WaitForSeconds(m_holdAfterGameEndTime * endGameTimeScale);
+        
+        m_onGameSceneUnloaded();
+        
+        yield return new WaitForSeconds(m_gameSceneUnloadedBufferSeconds);
+        
+        SceneManager.LoadScene(nextSceneToLoadName);
+
+        Time.timeScale = 1f;
     }
 
     private IEnumerator StartGameCountdown()
@@ -246,25 +290,6 @@ public class GameTimerSystem : GameSystem
             
             m_onGameTimerUpdate(count);
         }
-    }
-
-    private IEnumerator EndGameCoroutine(string nextSceneToLoadName)
-    {
-        //set time to half speed
-        float endGameTimeScale = 0.5f;
-        Time.timeScale = endGameTimeScale;
-        
-        m_onGameFinish();
-        
-        yield return new WaitForSeconds(m_holdAfterGameEndTime * endGameTimeScale);
-        
-        m_onGameSceneUnloaded();
-        
-        yield return new WaitForSeconds(m_gameSceneUnloadedBufferSeconds);
-        
-        SceneManager.LoadScene(nextSceneToLoadName);
-
-        Time.timeScale = 1f;
     }
     
 }

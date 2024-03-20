@@ -211,7 +211,7 @@ public class PlayerSystem : GameSystem
         base.SystemReady();
     }
     
-    //TODO: REmove this placehodler code:
+    //TODO: REmove this placeholder code:
     void Update()
     {
         if (Input.GetKeyDown("u"))
