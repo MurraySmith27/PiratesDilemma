@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -31,7 +33,8 @@ public class SingleBombSpawner : MonoBehaviour
 
     private void Update()
     {
-        if (m_initialized && m_currentBomb == null && SceneManager.GetActiveScene().name == m_singleBombStage)
+        List<GameObject> bombs = GameObject.FindGameObjectsWithTag("LooseBomb").ToList().Concat(GameObject.FindGameObjectsWithTag("BombInHand").ToList()).ToList();
+        if (m_initialized && m_currentBomb == null && bombs.Count == 0 && SceneManager.GetActiveScene().name == m_singleBombStage)
         {
             SpawnBomb();
         }
@@ -52,6 +55,7 @@ public class SingleBombSpawner : MonoBehaviour
         if (m_bombSpawnPosition != null && m_bombPrefab != null)
         {
             m_currentBomb = Instantiate(m_bombPrefab, m_bombSpawnPosition.position, Quaternion.identity);
+            m_currentBomb.GetComponent<BombController>().SetLit(true);
         }
     }
 }
