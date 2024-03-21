@@ -79,9 +79,10 @@ public class PlayerMovementController : MonoBehaviour
     private Coroutine m_dashChargeUpCoroutine;
 
     // Making "ice-sliding" effect, so there will be a delay in player movement controls
-    public bool iceSliding = true;
+    [SerializeField] public bool iceSliding = true;
     private Vector3 m_smootherMotion = Vector3.zero;
     [SerializeField] public float m_smoothIndex = 0.3f;
+    [SerializeField] public const float m_slidingAfterwards = 5.0f;
 
     
     private void Awake()
@@ -169,6 +170,14 @@ public class PlayerMovementController : MonoBehaviour
                     {
                         m_characterController.Move(prevPosition - transform.position);
                     }
+                }
+            }
+            else
+            {
+                if (iceSliding)
+                {
+                    m_smootherMotion = Vector3.Lerp(m_smootherMotion, Vector3.zero, m_smoothIndex);
+                    m_characterController.Move(m_smootherMotion / m_slidingAfterwards);
                 }
             }
 
