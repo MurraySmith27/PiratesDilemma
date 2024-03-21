@@ -1497,6 +1497,7 @@ MonoBehaviour:
   - Level1
   - Level2
   - Level3
+  - Level4
   m_gamePaused: 0
 --- !u!4 &1660667910
 Transform:
@@ -2173,12 +2174,12 @@ PrefabInstance:
     - target: {fileID: 4264240050300890443, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.000000022257508
+      value: -0.000000022257511
       objectReference: {fileID: 0}
     - target: {fileID: 4264240050300890443, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.000000013066652
+      value: -0.000000013066654
       objectReference: {fileID: 0}
     - target: {fileID: 7580684644525770009, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
@@ -2253,12 +2254,12 @@ PrefabInstance:
     - target: {fileID: 8619921798994050774, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.000000022257508
+      value: -0.000000022257511
       objectReference: {fileID: 0}
     - target: {fileID: 8619921798994050774, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.000000013066652
+      value: -0.000000013066654
       objectReference: {fileID: 0}
     - target: {fileID: 8619921798994050774, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}

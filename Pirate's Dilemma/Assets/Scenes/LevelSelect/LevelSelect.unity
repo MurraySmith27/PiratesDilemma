@@ -166,7 +166,7 @@ GameObject:
   - component: {fileID: 241699360}
   - component: {fileID: 241699359}
   m_Layer: 0
-  m_Name: Spline
+  m_Name: LevelDotsSpline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -193,7 +193,7 @@ MonoBehaviour:
     Probability: 0
   m_Method: 0
   m_Space: 0
-  m_Spacing: {x: 3, y: 3}
+  m_Spacing: {x: 4, y: 4}
   m_Up: 1
   m_Forward: 2
   m_PositionOffset:
@@ -760,7 +760,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 552645690}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.4319961, y: -0.00000009014482, z: 0.000000043179146, w: 0.9018755}
+  m_LocalRotation: {x: 0.4319961, y: -0.00000012118085, z: 0.00000005804532, w: 0.9018755}
   m_LocalPosition: {x: -33.699997, y: 20.24, z: -46.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -963,7 +963,7 @@ GameObject:
   - component: {fileID: 862076512}
   - component: {fileID: 862076513}
   m_Layer: 0
-  m_Name: Player
+  m_Name: LevelSelectIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1024,7 +1024,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   m_levelSelectSpline: {fileID: 241699360}
-  m_numLevels: 3
+  m_numLevels: 4
   m_timeToMoveBetweenLevels: 3
   m_shipMeshObject: {fileID: 1329069573}
 --- !u!1 &1056518077
@@ -1092,7 +1092,7 @@ MonoBehaviour:
   m_systemDependencies:
   - GameTimerSystem
   m_transitionTime: 0.5
-  m_startCovered: 0
+  m_startCovered: 1
 --- !u!1 &1174677849
 GameObject:
   m_ObjectHideFlags: 0
@@ -1734,7 +1734,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2131965822}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.4319961, y: -0.00000009014482, z: 0.000000043179146, w: 0.9018755}
+  m_LocalRotation: {x: 0.4319961, y: -0.00000012118085, z: 0.00000005804532, w: 0.9018755}
   m_LocalPosition: {x: -33.699997, y: 20.24, z: -46.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
