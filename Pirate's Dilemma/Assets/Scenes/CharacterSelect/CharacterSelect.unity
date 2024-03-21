@@ -503,6 +503,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_systemDependencies:
   - PlayerSystem
+  - GameTimerSystem
   m_screenSpaceUIDoc: {fileID: 310474083}
   m_readyUpHover: {fileID: 9197481963319205126, guid: c53cdccbf2a72f449aed808be412b57f,
     type: 3}
@@ -1485,11 +1486,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_gameStartTimerSeconds: 3
   m_characterSelectSceneName: CharacterSelect
+  m_levelSelectSceneName: LevelSelect
   m_holdAfterGameEndTime: 1
   m_holdBeforeCountdownTimerTime: 1
   m_holdAfterCharacterSelectEndTime: 3
   m_gameSceneLoadedBufferSeconds: 0.55
-  m_gameSceneUnloadedBufferSeconds: 3
+  m_gameSceneUnloadedBufferSeconds: 0.55
   m_resultsSceneName: CharacterSelect
   m_levelSceneNames:
   - Level1
@@ -2017,9 +2019,7 @@ MonoBehaviour:
   m_startGameCountdownSeconds: 3
   m_leavePreviousSceneBufferTime: 0.5
   m_gameScenesToLoadNames:
-  - Level1
-  - Level2
-  - Level3
+  - LevelSelect
 --- !u!1 &1841775409
 GameObject:
   m_ObjectHideFlags: 0

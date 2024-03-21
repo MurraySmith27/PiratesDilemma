@@ -94,6 +94,8 @@ public class CharacterSelectUI : UIBase
         
         PlayerSystem.Instance.m_onPlayerJoin += OnPlayerJoin;
         PlayerSystem.Instance.m_onPlayerReadyUpToggle += UpdateReadyUpUI;
+
+        GameTimerSystem.Instance.m_onCharacterSelectEnd += OnCharacterSelectEnd;
     }
 
     void OnPlayerJoin(int newPlayerNum)
@@ -159,6 +161,14 @@ public class CharacterSelectUI : UIBase
             camera: m_testControlsCamera);
 
         UpdateReadyUpUI(newPlayerNum, false);
+    }
+
+    private void OnCharacterSelectEnd()
+    {
+        foreach (VisualElement elem in m_readyUpHoverElements)
+        {
+            elem.style.visibility = Visibility.Hidden;
+        }
     }
 
     private void UpdateReadyUpUI(int playerNum, bool isReady)

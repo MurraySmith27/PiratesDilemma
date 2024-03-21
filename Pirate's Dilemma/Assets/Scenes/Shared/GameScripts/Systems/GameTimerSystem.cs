@@ -33,6 +33,8 @@ public class GameTimerSystem : GameSystem
     [SerializeField] private int m_gameStartTimerSeconds = 3;
 
     public string m_characterSelectSceneName;
+
+    public string m_levelSelectSceneName = "LevelSelect";
     
     [SerializeField] private float m_holdAfterGameEndTime = 2f;
     
@@ -209,6 +211,10 @@ public class GameTimerSystem : GameSystem
         {
             StartCoroutine(EndCharacterSelectCoroutine(nextSceneToLoadName));
         }
+        else if (SceneManager.GetActiveScene().name == m_levelSelectSceneName)
+        {
+            StartCoroutine(EndLevelSelectSceneCoroutine(nextSceneToLoadName));
+        }
         else if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
         {
             StartCoroutine(EndGameCoroutine(nextSceneToLoadName));
@@ -217,6 +223,19 @@ public class GameTimerSystem : GameSystem
                 StopCoroutine(m_gameCountdownCoroutine);
             }
         }
+    }
+    
+    private IEnumerator EndLevelSelectSceneCoroutine(string nextSceneToLoadName)
+    {
+        m_onCharacterSelectEnd();
+        
+        yield return new WaitForSeconds(m_holdAfterCharacterSelectEndTime);
+        
+        m_onGameSceneUnloaded();
+        
+        yield return new WaitForSeconds(m_gameSceneUnloadedBufferSeconds);
+        
+        SceneManager.LoadScene(nextSceneToLoadName);
     }
     
     private IEnumerator EndCharacterSelectCoroutine(string nextSceneToLoadName)

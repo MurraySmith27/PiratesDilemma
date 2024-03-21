@@ -21,7 +21,8 @@ public class LevelSelectController : MonoBehaviour
     
     private int m_currentLevelNum;
 
-    private InputAction m_interactAction;
+    private InputAction m_selectAction;
+    private InputAction m_backAction;
     private InputAction m_moveAction;
 
     private PlayerInput m_player1PlayerInput;
@@ -33,8 +34,14 @@ public class LevelSelectController : MonoBehaviour
         m_currentLevelNum = 1;
         m_player1PlayerInput = PlayerSystem.Instance.m_players[0].GetComponent<PlayerInput>();
 
-        m_interactAction = m_player1PlayerInput.actions.FindAction("Interact");
-        m_interactAction.performed += EnterCurrentlySelectedLevel;
+        m_player1PlayerInput.actions.FindActionMap("UI").Enable();
+        m_player1PlayerInput.actions.FindActionMap("UI").Enable();
+
+        m_selectAction = m_player1PlayerInput.actions.FindAction("Select");
+        m_selectAction.performed += EnterCurrentlySelectedLevel;
+
+        m_backAction = m_player1PlayerInput.actions.FindAction("Back");
+        m_backAction.performed += BackToCharacterSelect;
         
         m_moveAction = m_player1PlayerInput.actions.FindAction("Move");
         m_moveAction.performed += OnMovePerformed;
@@ -44,7 +51,8 @@ public class LevelSelectController : MonoBehaviour
 
     void OnDestroy()
     {
-        m_player1PlayerInput.actions.FindAction("Interact").performed -= EnterCurrentlySelectedLevel;
+        m_player1PlayerInput.actions.FindAction("Select").performed -= EnterCurrentlySelectedLevel;
+        m_player1PlayerInput.actions.FindAction("Back").performed -= EnterCurrentlySelectedLevel;
         m_player1PlayerInput.actions.FindAction("Move").performed -= OnMovePerformed;
     }
     
@@ -52,8 +60,13 @@ public class LevelSelectController : MonoBehaviour
     {
         if (m_currentLevelNum != -1)
         {
-            Debug.Log($"Entering current level! Level num: {m_currentLevelNum}");
+            GameTimerSystem.Instance.StopGame(GameTimerSystem.Instance.m_levelSceneNames[m_currentLevelNum-1]);
         }
+    }
+
+    private void BackToCharacterSelect(InputAction.CallbackContext ctx)
+    {
+        GameTimerSystem.Instance.StopGame(GameTimerSystem.Instance.m_characterSelectSceneName);   
     }
 
     private void OnMovePerformed(InputAction.CallbackContext ctx)
