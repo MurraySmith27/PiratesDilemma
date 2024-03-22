@@ -41,6 +41,8 @@ public class GameTimerSystem : GameSystem
     [SerializeField] private float m_holdBeforeCountdownTimerTime = 1f;
 
     [SerializeField] private float m_holdAfterCharacterSelectEndTime = 3f;
+    
+    [SerializeField] private float m_holdAfterLevelSelectEndTime = 3f;
 
     [SerializeField] private float m_gameSceneLoadedBufferSeconds = 0.5f;
     
@@ -227,9 +229,12 @@ public class GameTimerSystem : GameSystem
     
     private IEnumerator EndLevelSelectSceneCoroutine(string nextSceneToLoadName)
     {
+        
+        m_onGameFinish();
+        
         m_onCharacterSelectEnd();
         
-        yield return new WaitForSeconds(m_holdAfterCharacterSelectEndTime);
+        yield return new WaitForSeconds(m_holdAfterLevelSelectEndTime);
         
         m_onGameSceneUnloaded();
         
@@ -240,6 +245,9 @@ public class GameTimerSystem : GameSystem
     
     private IEnumerator EndCharacterSelectCoroutine(string nextSceneToLoadName)
     {
+        
+        m_onGameFinish();
+        
         m_onCharacterSelectEnd();
         
         yield return new WaitForSeconds(m_holdAfterCharacterSelectEndTime);

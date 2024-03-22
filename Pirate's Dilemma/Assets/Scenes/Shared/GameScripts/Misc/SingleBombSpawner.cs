@@ -8,9 +8,14 @@ public class SingleBombSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject m_bombPrefab;
     [SerializeField] private Transform m_bombSpawnPosition;
+
+    [SerializeField]
+    private float m_bombSpawnDelayTimer = 3f;
     private GameObject m_currentBomb;
     private bool m_initialized;
-    private string m_singleBombStage = "Level4"; 
+    private string m_singleBombStage = "Level4";
+
+    private bool m_spawningBomb = false;
 
     void Start()
     {
@@ -34,9 +39,10 @@ public class SingleBombSpawner : MonoBehaviour
     private void Update()
     {
         List<GameObject> bombs = GameObject.FindGameObjectsWithTag("LooseBomb").ToList().Concat(GameObject.FindGameObjectsWithTag("BombInHand").ToList()).ToList();
-        if (m_initialized && m_currentBomb == null && bombs.Count == 0 && SceneManager.GetActiveScene().name == m_singleBombStage)
+        if (m_initialized && m_currentBomb == null && bombs.Count == 0 && SceneManager.GetActiveScene().name == m_singleBombStage && !m_spawningBomb)
         {
-            SpawnBomb();
+            StartCoroutine(SpawnBomb());
+            
         }
     }
 
@@ -50,12 +56,16 @@ public class SingleBombSpawner : MonoBehaviour
         m_initialized = false;
     }
 
-    private void SpawnBomb()
+    private IEnumerator SpawnBomb()
     {
+        m_spawningBomb = true;
+; yield return new WaitForSeconds(m_bombSpawnDelayTimer);
         if (m_bombSpawnPosition != null && m_bombPrefab != null)
         {
             m_currentBomb = Instantiate(m_bombPrefab, m_bombSpawnPosition.position, Quaternion.identity);
             m_currentBomb.GetComponent<BombController>().SetLit(true);
         }
+
+        m_spawningBomb = false;
     }
 }

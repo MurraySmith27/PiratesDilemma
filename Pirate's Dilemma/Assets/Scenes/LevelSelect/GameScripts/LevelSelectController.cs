@@ -18,6 +18,10 @@ public class LevelSelectController : MonoBehaviour
     [SerializeField] private float m_timeToMoveBetweenLevels = 1f;
 
     [SerializeField] private GameObject m_shipMeshObject;
+
+    [SerializeField] private int m_lineRendererDensity;
+
+    [SerializeField] private LineRenderer m_lineRenderer;
     
     private int m_currentLevelNum;
 
@@ -35,7 +39,6 @@ public class LevelSelectController : MonoBehaviour
         m_player1PlayerInput = PlayerSystem.Instance.m_players[0].GetComponent<PlayerInput>();
 
         m_player1PlayerInput.actions.FindActionMap("UI").Enable();
-        m_player1PlayerInput.actions.FindActionMap("UI").Enable();
 
         m_selectAction = m_player1PlayerInput.actions.FindAction("Select");
         m_selectAction.performed += EnterCurrentlySelectedLevel;
@@ -47,13 +50,31 @@ public class LevelSelectController : MonoBehaviour
         m_moveAction.performed += OnMovePerformed;
 
         transform.position = m_levelSelectSpline.transform.GetChild(0).position;
+
+        DrawLineRendererPoints();
     }
 
     void OnDestroy()
     {
+        m_player1PlayerInput.actions.FindActionMap("UI").Disable();
+        
         m_player1PlayerInput.actions.FindAction("Select").performed -= EnterCurrentlySelectedLevel;
         m_player1PlayerInput.actions.FindAction("Back").performed -= EnterCurrentlySelectedLevel;
         m_player1PlayerInput.actions.FindAction("Move").performed -= OnMovePerformed;
+    }
+
+    void DrawLineRendererPoints()
+    {
+        List<Vector3> lineRendererPositions = new();
+        for (int i = 0; i < m_lineRendererDensity + 1; i++)
+        {
+            Vector3 position = m_levelSelectSpline.EvaluatePosition((float)i / (float)m_lineRendererDensity);
+            
+            lineRendererPositions.Add(position);
+        }
+
+        m_lineRenderer.positionCount = m_lineRendererDensity + 1;
+        m_lineRenderer.SetPositions(lineRendererPositions.ToArray());
     }
     
     private void EnterCurrentlySelectedLevel(InputAction.CallbackContext ctx)
@@ -74,6 +95,10 @@ public class LevelSelectController : MonoBehaviour
         if (m_currentLevelNum != -1)
         {
             Vector2 moveAmount = m_moveAction.ReadValue<Vector2>();
+            if (moveAmount.magnitude < 0.1f)
+            {
+                return;
+            }
             Vector3 currentLevelDotPosition = m_levelSelectSpline.EvaluatePosition((m_currentLevelNum - 1f) / (m_numLevels - 1f));
 
             Vector3 nextLevelPosition = m_levelSelectSpline.EvaluatePosition(m_currentLevelNum / (m_numLevels - 1f));
