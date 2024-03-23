@@ -20,12 +20,16 @@ public class CharacterSelectCameraAnimation : MonoBehaviour
     
     [SerializeField] private float m_exitSceneAnimationDuration = 1f;
 
+    [SerializeField] private GameObject m_finalVCam;
+
 
     public void Start()
     {
         StartCoroutine(EnterSceneCameraAnimation());
         
         GameTimerSystem.Instance.m_onCharacterSelectEnd += OnAllPlayersReadyUp;
+        
+        m_finalVCam.SetActive(false);
     }
     
     public void OnDestroy()
@@ -60,32 +64,34 @@ public class CharacterSelectCameraAnimation : MonoBehaviour
 
     public void OnAllPlayersReadyUp()
     {
-        StartCoroutine(ExitSceneCameraAnimation());
+        
+        m_finalVCam.SetActive(true);
+        // StartCoroutine(ExitSceneCameraAnimation());
     }
     
-    private IEnumerator ExitSceneCameraAnimation()
-    {
-        float initialPercentage = m_enterSceneAnimationStoppingPercentage;
-
-        float finalPercentage = m_exitSceneAnimationStoppingPercentage;
-
-        float t = 0;
-        while (t <= m_exitSceneAnimationDuration)
-        {
-            float distanceAlong = m_exitSceneCameraAnimationCurve.Evaluate(t / m_exitSceneAnimationDuration) * (finalPercentage - initialPercentage) + initialPercentage;
-            Vector3 currentPosition = m_animationSpline.EvaluatePosition(distanceAlong);
-            Vector3 lookDirection = m_animationSpline.EvaluateTangent(distanceAlong);
-            if (lookDirection != Vector3.zero)
-            {
-                transform.rotation = Quaternion.LookRotation(lookDirection);
-            }
-            transform.position = currentPosition;
-            yield return null;
-            t += Time.deltaTime;
-        }
-
-        transform.position = m_animationSpline.EvaluatePosition(finalPercentage);
-    }
+    // private IEnumerator ExitSceneCameraAnimation()
+    // {
+        // float initialPercentage = m_enterSceneAnimationStoppingPercentage;
+        //
+        // float finalPercentage = m_exitSceneAnimationStoppingPercentage;
+        //
+        // float t = 0;
+        // while (t <= m_exitSceneAnimationDuration)
+        // {
+        //     float distanceAlong = m_exitSceneCameraAnimationCurve.Evaluate(t / m_exitSceneAnimationDuration) * (finalPercentage - initialPercentage) + initialPercentage;
+        //     Vector3 currentPosition = m_animationSpline.EvaluatePosition(distanceAlong);
+        //     Vector3 lookDirection = m_animationSpline.EvaluateTangent(distanceAlong);
+        //     if (lookDirection != Vector3.zero)
+        //     {
+        //         transform.rotation = Quaternion.LookRotation(lookDirection);
+        //     }
+        //     transform.position = currentPosition;
+        //     yield return null;
+        //     t += Time.deltaTime;
+        // }
+        //
+        // transform.position = m_animationSpline.EvaluatePosition(finalPercentage);
+    // }
     
     
 }

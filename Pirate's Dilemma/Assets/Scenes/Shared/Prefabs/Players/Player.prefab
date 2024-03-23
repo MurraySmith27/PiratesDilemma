@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 1575094240466470441}
   - component: {fileID: 7569700150103749090}
   - component: {fileID: 3117960396655384203}
+  - component: {fileID: 4192873364133222961}
   - component: {fileID: 9188760197982640998}
   m_Layer: 0
   m_Name: Player
@@ -191,6 +192,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 752a4686-6a2f-4aa4-853e-cde563f75139
     m_ActionName: CharacterSelect/ReadyUp[/Keyboard/enter]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0cf48ffe-0c93-4de2-b195-0d2623e7b17b
+    m_ActionName: UI/Back[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: CharacterSelect
@@ -290,6 +295,7 @@ MonoBehaviour:
     type: 3}
   m_onHitParticleDuration: 1
   m_onHitParticleSize: 3
+  m_splashEventEmitter: {fileID: 4192873364133222961}
   m_damageFlashColor: {r: 2.89173, g: 0.23188405, b: 0.23188405, a: 1}
   m_playerModel: {fileID: 6550420467975036842}
 --- !u!143 &499935073571530274
@@ -5300,6 +5306,37 @@ MonoBehaviour:
       Data3: 1691634879
       Data4: -347739895
     Path: event:/BombHiss_sfx
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &4192873364133222961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3528894974979799562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 831899241
+      Data2: 1281222569
+      Data3: 1207084177
+      Data4: -451240430
+    Path: event:/splash_sfx
   Event: 
   PlayEvent: 0
   StopEvent: 0

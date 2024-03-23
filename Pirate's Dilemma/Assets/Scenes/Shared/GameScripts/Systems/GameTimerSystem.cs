@@ -232,8 +232,6 @@ public class GameTimerSystem : GameSystem
         
         m_onGameFinish();
         
-        m_onCharacterSelectEnd();
-        
         yield return new WaitForSeconds(m_holdAfterLevelSelectEndTime);
         
         m_onGameSceneUnloaded();

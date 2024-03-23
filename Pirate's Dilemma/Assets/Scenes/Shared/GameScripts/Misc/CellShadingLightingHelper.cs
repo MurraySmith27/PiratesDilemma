@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -60,6 +61,7 @@ public class CellShadingLightingHelper : MonoBehaviour
                 
                 Renderer renderer = cellShadedGameObject.GetComponent<Renderer>();
                 
+            renderer.sharedMaterial.SetTexture("_Shading_Ramp", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/Sprites/UI/Textures/toon-ramp-2.png"));
                 renderer.sharedMaterial.SetFloat($"_UseLight{i}", 1f);
                 
                 renderer.sharedMaterial.SetVector($"_Light{i}Position", staticLight.transform.position);

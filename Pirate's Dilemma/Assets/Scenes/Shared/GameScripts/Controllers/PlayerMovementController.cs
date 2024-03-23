@@ -398,13 +398,10 @@ public class PlayerMovementController : MonoBehaviour
             Vector3 pushDirection = (transform.position - otherCollider.gameObject.transform.position).normalized;
             GetPushed(new Vector2(pushDirection.x, pushDirection.z), m_explosionPushDistance, otherCollider.ClosestPoint(transform.position));
         }
-    }
-
-    private void OnTriggerStay(Collider otherCollider)
-    {
+        
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Killzone") && !m_isDashing)
         {
-            //player dies.I
+            //player dies.
             m_onPlayerDie(m_playerData.m_playerNum);
         }
     }

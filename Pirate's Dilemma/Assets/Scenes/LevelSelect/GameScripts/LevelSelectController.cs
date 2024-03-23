@@ -22,6 +22,10 @@ public class LevelSelectController : MonoBehaviour
     [SerializeField] private int m_lineRendererDensity;
 
     [SerializeField] private LineRenderer m_lineRenderer;
+
+    [SerializeField] private GameObject m_afterLevelSelectVCam;
+    
+    [SerializeField] private GameObject m_backToCharacterSelectVCam;
     
     private int m_currentLevelNum;
 
@@ -32,6 +36,8 @@ public class LevelSelectController : MonoBehaviour
     private PlayerInput m_player1PlayerInput;
 
     private Coroutine m_moveCoroutine;
+
+    private bool m_levelSelected;
         
     void Start()
     {
@@ -50,6 +56,8 @@ public class LevelSelectController : MonoBehaviour
         m_moveAction.performed += OnMovePerformed;
 
         transform.position = m_levelSelectSpline.transform.GetChild(0).position;
+
+        m_levelSelected = false;
 
         DrawLineRendererPoints();
     }
@@ -81,18 +89,22 @@ public class LevelSelectController : MonoBehaviour
     {
         if (m_currentLevelNum != -1)
         {
+            m_afterLevelSelectVCam.SetActive(true);
             GameTimerSystem.Instance.StopGame(GameTimerSystem.Instance.m_levelSceneNames[m_currentLevelNum-1]);
+            m_levelSelected = true;
         }
     }
 
     private void BackToCharacterSelect(InputAction.CallbackContext ctx)
     {
+        m_backToCharacterSelectVCam.SetActive(true);
+        m_levelSelected = true;
         GameTimerSystem.Instance.StopGame(GameTimerSystem.Instance.m_characterSelectSceneName);   
     }
 
     private void OnMovePerformed(InputAction.CallbackContext ctx)
     {
-        if (m_currentLevelNum != -1)
+        if (m_currentLevelNum != -1 && ! m_levelSelected)
         {
             Vector2 moveAmount = m_moveAction.ReadValue<Vector2>();
             if (moveAmount.magnitude < 0.1f)
@@ -157,8 +169,8 @@ public class LevelSelectController : MonoBehaviour
         
         m_animator.SetTrigger("IsMoving");
 
-        float t = 0;
-        while (t <= m_timeToMoveBetweenLevels)
+        float t = m_timeToMoveBetweenLevels * 0.1f;
+        while (t <= m_timeToMoveBetweenLevels * 0.9f)
         {
             float progress = m_betweenLevelDotsAnimationCurve.Evaluate(t / m_timeToMoveBetweenLevels);
             
@@ -190,6 +202,9 @@ public class LevelSelectController : MonoBehaviour
         
         m_animator.SetTrigger("IsDoneMoving");
 
+        
+        transform.position = m_levelSelectSpline.EvaluatePosition(finalPercentageAlongSpline);
+        
         m_currentLevelNum = levelNum;
     }
 }

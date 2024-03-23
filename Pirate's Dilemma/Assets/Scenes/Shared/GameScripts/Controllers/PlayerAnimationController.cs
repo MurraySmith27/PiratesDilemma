@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -23,6 +24,8 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private float m_onHitParticleDuration = 1f;
 
     [SerializeField] private float m_onHitParticleSize = 3f;
+    
+    [SerializeField] private StudioEventEmitter m_splashEventEmitter;
 
     [SerializeField, ColorUsage(true, true)] private Color m_damageFlashColor = Color.white;
     
@@ -30,7 +33,10 @@ public class PlayerAnimationController : MonoBehaviour
     
     private bool m_lastPosSet = false;
 
+    private bool m_alive = true;
+
     private Vector3 m_lastPos;
+    
     
     [SerializeField] private GameObject m_playerModel;
 
@@ -69,6 +75,8 @@ public class PlayerAnimationController : MonoBehaviour
         playerItemController.m_onPlayerStartThrow += OnStartThrow;
 
         m_initialized = true;
+
+        m_alive = true;
     }
     
     public void SetInvulnerableMaterial(float invulnerableTime = -1)
@@ -135,6 +143,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     public void OnRespawn()
     {
+        m_alive = true;
         m_animator.SetTrigger("Respawn");
     }
 
@@ -210,7 +219,12 @@ public class PlayerAnimationController : MonoBehaviour
 
     void OnDie(int playerNum)
     {
-        m_animator.SetTrigger("OnDeath");
+        if (m_alive)
+        {
+            m_splashEventEmitter.Play();
+            m_animator.SetTrigger("OnDeath");
+            m_alive = false;
+        }
     }
     
     void OnPickupBomb(int teamNum, int playerNum)
