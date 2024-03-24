@@ -93,7 +93,7 @@ public class BombController : MonoBehaviour
             }
         }
         
-        if (m_isLit && m_wasThrown)
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Boat") && m_isLit && m_wasThrown)
         {   
             GenerateExplosion(collision.contacts[0].point);
         }

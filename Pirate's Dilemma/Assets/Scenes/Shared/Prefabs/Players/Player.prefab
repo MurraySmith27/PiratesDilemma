@@ -101,7 +101,6 @@ GameObject:
   - component: {fileID: 3788934220506126850}
   - component: {fileID: 1575094240466470441}
   - component: {fileID: 7569700150103749090}
-  - component: {fileID: 3117960396655384203}
   - component: {fileID: 4192873364133222961}
   - component: {fileID: 9188760197982640998}
   m_Layer: 0
@@ -228,8 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_bombCapacity: 1
-  m_bombHissEventEmitter: {fileID: 3117960396655384203}
-  m_heldBombGameObject: {fileID: 547375710448396446}
+  m_heldBombTransform: {fileID: 0}
   m_heldBarrelGameObject: {fileID: 297953741941491675}
   m_throwingTargetGameObject: {fileID: 8660961137410361375}
   m_maxThrowDistance: 7
@@ -478,37 +476,6 @@ MonoBehaviour:
       Data3: -124550473
       Data4: -1797647174
     Path: event:/dash_sfx
-  Event: 
-  PlayEvent: 0
-  StopEvent: 0
-  AllowFadeout: 1
-  TriggerOnce: 0
-  Preload: 0
-  AllowNonRigidbodyDoppler: 0
-  Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: 1
-  OverrideMaxDistance: 20
---- !u!114 &3117960396655384203
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3528894974979799562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CollisionTag: 
-  EventReference:
-    Guid:
-      Data1: 1685878174
-      Data2: 1118560227
-      Data3: 1691634879
-      Data4: -347739895
-    Path: event:/BombHiss_sfx
   Event: 
   PlayEvent: 0
   StopEvent: 0
@@ -10647,12 +10614,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea421fdecbc4cef428b431abf643e362, type: 3}
---- !u!1 &547375710448396446 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4714602978416047080, guid: ea421fdecbc4cef428b431abf643e362,
-    type: 3}
-  m_PrefabInstance: {fileID: 5113002989061708662}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2318625492055310260 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7410779535724487874, guid: ea421fdecbc4cef428b431abf643e362,
