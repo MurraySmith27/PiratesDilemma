@@ -764,6 +764,8 @@ public class PlayerSystem : GameSystem
                 m_players[i].GetComponent<PlayerItemController>().OnGameStart();
                 m_players[i].GetComponent<PlayerAnimationController>().OnGameStart();
                 m_visualStandIns[i].SetActive(true);
+                
+                m_visualStandIns[i].GetComponent<Animator>().SetTrigger("Idle");
 
                 m_readyPlayers[i] = false;
                 

@@ -29,6 +29,10 @@ public class PlayerAnimationController : MonoBehaviour
 
     [SerializeField, ColorUsage(true, true)] private Color m_damageFlashColor = Color.white;
     
+    [SerializeField] private GameObject m_playerModel;
+
+    [SerializeField] private GameObject m_playerTrailParticleSystem; 
+        
     private bool m_initialized = false;
     
     private bool m_lastPosSet = false;
@@ -36,9 +40,10 @@ public class PlayerAnimationController : MonoBehaviour
     private bool m_alive = true;
 
     private Vector3 m_lastPos;
+
+    private PlayerData m_playerData;
     
     
-    [SerializeField] private GameObject m_playerModel;
 
     void Awake()
     {
@@ -50,6 +55,11 @@ public class PlayerAnimationController : MonoBehaviour
     private void Start()
     {
         m_cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
+
+        m_playerData = GetComponent<PlayerData>();
+        
+        m_playerTrailParticleSystem.SetActive(true);
+        
     }
     
     public void OnGameStart()
@@ -57,6 +67,7 @@ public class PlayerAnimationController : MonoBehaviour
         m_animator = GetComponentInChildren<Animator>();
         m_animator.Play("Idle", 0);
         m_characterController = GetComponent<CharacterController>();
+        m_playerTrailParticleSystem.SetActive(true);
         
         PlayerMovementController playerMovementController = GetComponent<PlayerMovementController>();
 
@@ -145,6 +156,7 @@ public class PlayerAnimationController : MonoBehaviour
     {
         m_alive = true;
         m_animator.SetTrigger("Respawn");
+        m_playerTrailParticleSystem.SetActive(true);
     }
 
     void OnDashCooldownStart(int teamNum, int playerNum, float cooldownSeconds)
@@ -223,6 +235,8 @@ public class PlayerAnimationController : MonoBehaviour
         {
             m_splashEventEmitter.Play();
             m_animator.SetTrigger("OnDeath");
+            m_animator.SetBool("CarryingBomb", false);
+            m_playerTrailParticleSystem.SetActive(false);
             m_alive = false;
         }
     }
@@ -230,7 +244,7 @@ public class PlayerAnimationController : MonoBehaviour
     void OnPickupBomb(int teamNum, int playerNum)
     {
         m_animator.SetTrigger("StartPickup");
-        m_animator.SetBool("CarryingGold", true);
+        m_animator.SetBool("CarryingBomb", true);
     }
     
     void OnStartThrowCharge()
@@ -241,10 +255,12 @@ public class PlayerAnimationController : MonoBehaviour
     void OnStartThrow()
     {
         m_animator.SetTrigger("StartThrow");
+        m_animator.SetBool("CarryingBomb", false);
     }
 
     void OnGetPushed(Vector3 contactPosition)
     {
+        m_animator.SetBool("CarryingBomb", false);
         
         //reset dash cooldown effect
         Renderer[] meshRenderers = m_playerModel.GetComponentsInChildren<Renderer>();
