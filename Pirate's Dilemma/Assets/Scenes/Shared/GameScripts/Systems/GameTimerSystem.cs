@@ -90,7 +90,7 @@ public class GameTimerSystem : GameSystem
     {
         if (Input.GetKeyDown("o"))
         {
-            EndGame(0,0);
+            EndGame(1,0);
         }
     }
     

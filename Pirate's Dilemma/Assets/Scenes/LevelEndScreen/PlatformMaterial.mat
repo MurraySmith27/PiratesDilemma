@@ -151,8 +151,8 @@ Material:
     - _Surface: 0
     - _UseCustomNormalMap: 0
     - _UseEmission: 0
-    - _UseLight1: 1
-    - _UseLight2: 1
+    - _UseLight1: 0
+    - _UseLight2: 0
     - _UseLight3: 0
     - _UseSecondLight: 0
     - _WorkflowMode: 1
@@ -165,9 +165,9 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FresnelIntensity: {r: 1, g: 1, b: 1, a: 0}
     - _Light1Color: {r: 0.4811321, g: 0.45007017, b: 0.28675473, a: 1}
-    - _Light1Position: {r: -5.2465034, g: 2.8659658, b: 0, a: 0}
+    - _Light1Position: {r: 5.25, g: 4.958457, b: 0, a: 0}
     - _Light2Color: {r: 0.4811321, g: 0.45007017, b: 0.28675473, a: 1}
-    - _Light2Position: {r: 5.2465034, g: 2.8659658, b: 0, a: 0}
+    - _Light2Position: {r: -5.25, g: 4.958457, b: 0, a: 0}
     - _Light3Color: {r: 0, g: 0, b: 0, a: 0}
     - _Light3Position: {r: 0, g: 0, b: 0, a: 0}
     - _Light_Color: {r: 0.7058824, g: 0.39767575, b: 0.11764704, a: 0}
