@@ -83,8 +83,13 @@ public class PlayerMovementController : MonoBehaviour
     private CharacterController m_characterController;
 
     private Coroutine m_dashChargeUpCoroutine;
-
+    
     private bool m_isFreezingDuringContact = false;
+    // Making "ice-sliding" effect, so there will be a delay in player movement controls
+    [SerializeField] public bool iceSliding = true;
+    private Vector3 m_smootherMotion = Vector3.zero;
+    [SerializeField] public float m_smoothIndex = 0.3f;
+    [SerializeField] public const float m_slidingAfterwards = 5.0f;
 
     
     private void Awake()
@@ -161,21 +166,54 @@ public class PlayerMovementController : MonoBehaviour
                 {
                     motion = Vector3.zero;
                 }
-
-                m_characterController.Move(motion);
-                
-                // there are some situations where moving would bounce the player off a collider and put them over a
-                // killzone. In those situations, just revert to the original position.
-                 RaycastHit hit4;
-                 if (Physics.Raycast(
-                         transform.position, Vector3.down,
-                         out hit4))
-                 {
-                     if (hit4.transform.gameObject.layer == LayerMask.NameToLayer("Killzone") && wasOverGround)
-                     {
-                         m_characterController.Move(prevPosition - transform.position);
-                     }
-                 }
+// <<<<<<< HEAD
+//
+//                 m_characterController.Move(motion);
+//                 
+//                 // there are some situations where moving would bounce the player off a collider and put them over a
+//                 // killzone. In those situations, just revert to the original position.
+//                  RaycastHit hit4;
+//                  if (Physics.Raycast(
+//                          transform.position, Vector3.down,
+//                          out hit4))
+//                  {
+//                      if (hit4.transform.gameObject.layer == LayerMask.NameToLayer("Killzone") && wasOverGround)
+//                      {
+//                          m_characterController.Move(prevPosition - transform.position);
+//                      }
+//                  }
+// =======
+                if (iceSliding)
+                {
+                    motion = motion / (speed * Time.deltaTime);
+                    m_smootherMotion = Vector3.Lerp(m_smootherMotion, motion, m_smoothIndex);
+                    m_characterController.Move(m_smootherMotion * speed * Time.deltaTime);
+                    motion = motion * speed * Time.deltaTime;
+                }
+                else
+                {
+                    m_characterController.Move(motion);
+                }
+                //there are some situations where moving would bounce the player off a collider and put them over a
+                //killzone. In those situations, just revert to the original position.
+                RaycastHit hit4;
+                if (Physics.Raycast(
+                        transform.position, Vector3.down,
+                        out hit4))
+                {
+                    if (hit4.transform.gameObject.layer == LayerMask.NameToLayer("Killzone"))
+                    {
+                        m_characterController.Move(prevPosition - transform.position);
+                    }
+                }
+            }
+            else
+            {
+                if (iceSliding)
+                {
+                    m_smootherMotion = Vector3.Lerp(m_smootherMotion, Vector3.zero, m_smoothIndex);
+                    m_characterController.Move(m_smootherMotion / m_slidingAfterwards);
+                }
             }
 
             //cast ray to ground from bottom of capsule, move down by ray result
