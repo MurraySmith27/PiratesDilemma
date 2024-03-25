@@ -273,6 +273,8 @@ MonoBehaviour:
   m_tackleSoundEventEmitter: {fileID: 1575094240466470441}
   m_dashSoundEventEmitter: {fileID: 7569700150103749090}
   m_feetPosition: {fileID: 8814260995174423450}
+  iceSliding: 1
+  m_smoothIndex: 0.02
 --- !u!114 &4104745165709088208
 MonoBehaviour:
   m_ObjectHideFlags: 0

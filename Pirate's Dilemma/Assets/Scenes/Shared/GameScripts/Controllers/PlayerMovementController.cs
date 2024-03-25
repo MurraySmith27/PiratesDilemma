@@ -88,7 +88,7 @@ public class PlayerMovementController : MonoBehaviour
     // Making "ice-sliding" effect, so there will be a delay in player movement controls
     [SerializeField] public bool iceSliding = true;
     private Vector3 m_smootherMotion = Vector3.zero;
-    [SerializeField] public float m_smoothIndex = 0.3f;
+    [SerializeField] public float m_smoothIndex = 0.02f;
     [SerializeField] public const float m_slidingAfterwards = 5.0f;
 
     
@@ -185,6 +185,7 @@ public class PlayerMovementController : MonoBehaviour
 // =======
                 if (iceSliding)
                 {
+                    Debug.Log(m_smoothIndex);
                     motion = motion / (speed * Time.deltaTime);
                     m_smootherMotion = Vector3.Lerp(m_smootherMotion, motion, m_smoothIndex);
                     m_characterController.Move(m_smootherMotion * speed * Time.deltaTime);
