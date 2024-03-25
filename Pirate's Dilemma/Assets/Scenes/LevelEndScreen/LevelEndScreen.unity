@@ -242,8 +242,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 104168585}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.013091651, y: 0.9701247, z: -0.2362113, w: -0.05376769}
-  m_LocalPosition: {x: 5.603778, y: 28.620306, z: 50.398903}
+  m_LocalRotation: {x: -0.03967079, y: 0.95961213, z: -0.21496053, w: -0.17709562}
+  m_LocalPosition: {x: 21.052864, y: 30.19055, z: 55.095993}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10365,7 +10365,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 390355881}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.013091651, y: 0.9701247, z: -0.2362113, w: -0.05376769}
+  m_LocalRotation: {x: -0.03967079, y: 0.95961213, z: -0.21496053, w: -0.17709562}
   m_LocalPosition: {x: 20.217615, y: 30.2, z: 58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10490,7 +10490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Path: {fileID: 131974573}
-  m_PathPosition: 0.87
+  m_PathPosition: 1
   m_PositionUnits: 2
   m_PathOffset: {x: 0, y: 0, z: 0}
   m_XDamping: 0
@@ -36213,6 +36213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_levelEndSceneController: {fileID: 1879978620}
+  m_loserSlotRenderTextures: []
 --- !u!114 &1996470263
 MonoBehaviour:
   m_ObjectHideFlags: 0
