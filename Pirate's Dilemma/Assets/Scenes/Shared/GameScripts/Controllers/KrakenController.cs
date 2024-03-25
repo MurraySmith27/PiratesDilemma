@@ -27,7 +27,7 @@ public class KrakenController : MonoBehaviour
     
     [SerializeField] private Color m_krakenArrivvalLightColor;
 
-    [SerializeField] private CinemachineVirtualCamera m_vcam;
+    [SerializeField] private GameObject m_camera;
 
     [SerializeField] private List<GameObject> m_krakenArrivalDestrucables;
     
@@ -79,7 +79,7 @@ public class KrakenController : MonoBehaviour
         Quaternion finalLightRotation = Quaternion.Euler(m_krakenArrivalLightAngles);
         
         //begin screen shake
-        CameraController cameraController = Camera.main.GetComponent<CinemachineBrain>().ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CameraController>();
+        CameraController cameraController = m_camera.GetComponent<CameraController>();
         cameraController.StartScreenShake();
 
         Light directionalLight = m_mainDirectionalLight.GetComponent<Light>();
