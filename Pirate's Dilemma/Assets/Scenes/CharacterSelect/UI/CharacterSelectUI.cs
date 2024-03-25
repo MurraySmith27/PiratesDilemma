@@ -154,7 +154,7 @@ public class CharacterSelectUI : UIBase
         int teamAssignment = PlayerSystem.Instance.m_playerTeamAssignments[newPlayerNum - 1];
         
         genericIndicatorInstance.GetComponent<GenericIndicatorController>().StartIndicator(0.1f, 
-            PlayerSystem.Instance.m_teamColors[teamAssignment - 1],
+            PlayerSystem.Instance.m_teamData[teamAssignment - 1].color,
             hoverIcon: m_playerNumberIcons[newPlayerNum - 1], 
             objectToTrack: PlayerSystem.Instance.m_players[newPlayerNum - 1],
             scaleFactor: 0.1f,

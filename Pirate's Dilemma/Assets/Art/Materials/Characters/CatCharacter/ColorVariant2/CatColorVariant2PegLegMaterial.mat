@@ -117,13 +117,13 @@ Material:
     - _GlossyReflections: 0
     - _Light1Attenuation: 0.001
     - _Light1FlickerStrength: 10
-    - _Light1Intensity: 6.55
+    - _Light1Intensity: 4.02
     - _Light2Attenuation: Infinity
-    - _Light2FlickerStrength: 10
-    - _Light2Intensity: 6.55
+    - _Light2FlickerStrength: 0
+    - _Light2Intensity: 10.85
     - _Light3Attenuation: 0
-    - _Light3FlickerStrength: 0
-    - _Light3Intensity: 10.85
+    - _Light3FlickerStrength: 10
+    - _Light3Intensity: 3.62
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -144,8 +144,8 @@ Material:
     - _UseCustomNormalMap: 0
     - _UseEmission: 0
     - _UseFresnel: 1
-    - _UseLight1: 1
-    - _UseLight2: 1
+    - _UseLight1: 0
+    - _UseLight2: 0
     - _UseLight3: 0
     - _UseSecondLight: 0
     - _WorkflowMode: 1
@@ -159,12 +159,12 @@ Material:
     - _DefaultEmissionHDR: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FresnelIntensity: {r: 1, g: 1, b: 1, a: 0}
-    - _Light1Color: {r: 0.4811321, g: 0.45007017, b: 0.28675473, a: 1}
-    - _Light1Position: {r: 22.973732, g: 5.40219, b: -23.217213, a: 0}
-    - _Light2Color: {r: 0.4811321, g: 0.45007017, b: 0.28675473, a: 1}
-    - _Light2Position: {r: -34.15057, g: 5.40219, b: -6.3999996, a: 0}
-    - _Light3Color: {r: 0.9528302, g: 0.49602422, b: 0, a: 0.1764706}
-    - _Light3Position: {r: -5.3319, g: 14.7593975, b: 18.52, a: 0}
+    - _Light1Color: {r: 1, g: 0.61922556, b: 0, a: 0.2627451}
+    - _Light1Position: {r: -0.5324759, g: 6.190911, b: 13.16274, a: 0}
+    - _Light2Color: {r: 0.9528302, g: 0.49602422, b: 0, a: 0.1764706}
+    - _Light2Position: {r: -5.3319, g: 14.7593975, b: 18.52, a: 0}
+    - _Light3Color: {r: 0.8679245, g: 0.4658459, b: 0, a: 1}
+    - _Light3Position: {r: -6.2284274, g: 4.3879175, b: 140.50522, a: 0}
     - _Light_Color: {r: 0.28627452, g: 0.18431373, b: 0.09019608, a: 1}
     - _SecondLightPosition: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0.31132078, g: 0.30985227, b: 0.30985227, a: 0}

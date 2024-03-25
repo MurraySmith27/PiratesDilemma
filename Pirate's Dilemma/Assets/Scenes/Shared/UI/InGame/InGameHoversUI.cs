@@ -102,7 +102,7 @@ public class InGameHoversUI : UIBase
             int teamAssignment = PlayerSystem.Instance.m_playerTeamAssignments[i];
         
             m_playerIndicators[i].GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
-                PlayerSystem.Instance.m_teamColors[teamAssignment - 1],
+                PlayerSystem.Instance.m_teamData[teamAssignment - 1].color,
                 hoverIcon: m_playerNumberIcons[i],
                 objectToTrack: PlayerSystem.Instance.m_players[i],
                 scaleFactor: m_hoverIconScaleFactor,
@@ -320,7 +320,7 @@ public class InGameHoversUI : UIBase
                 new Vector3(0, 0, 0), Quaternion.identity);
 
             m_playerIndicators[playerNum - 1].GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
-                PlayerSystem.Instance.m_teamColors[teamNum - 1],
+                PlayerSystem.Instance.m_teamData[teamNum - 1].color,
                 hoverIcon: m_bombInteractButtonIcon,
                 objectToTrack: PlayerSystem.Instance.m_players[playerNum - 1],
                 scaleFactor: m_hoverIconScaleFactor,
@@ -350,7 +350,7 @@ public class InGameHoversUI : UIBase
                 new Vector3(0, 0, 0), Quaternion.identity);
 
             m_playerIndicators[playerNum - 1].GetComponent<GenericIndicatorController>().StartIndicator(0.05f,
-                PlayerSystem.Instance.m_teamColors[teamNum - 1],
+                PlayerSystem.Instance.m_teamData[teamNum - 1].color,
                 hoverIcon: m_bombInteractButtonIcon,
                 objectToTrack: PlayerSystem.Instance.m_players[playerNum - 1],
                 scaleFactor: m_hoverIconScaleFactor,

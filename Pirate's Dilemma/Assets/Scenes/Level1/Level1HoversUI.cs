@@ -53,7 +53,7 @@ public class Level1UIHovers : UIBase
 
         //at the start of this level, players 3 and 4 should start with arrows to their respective gold piles
         m_playerArrowIndicators[2].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
-            PlayerSystem.Instance.m_teamColors[0],
+            PlayerSystem.Instance.m_teamData[0].color,
             scaleFactor: m_arrowScaleFactor,
             objectToTrack: PlayerSystem.Instance.m_players[2],
             objectToPointTo: m_goldPickupZonePerTeam[0],
@@ -61,7 +61,7 @@ public class Level1UIHovers : UIBase
             );
         
         m_playerArrowIndicators[3].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
-            PlayerSystem.Instance.m_teamColors[1],
+            PlayerSystem.Instance.m_teamData[1].color,
             scaleFactor: m_arrowScaleFactor,
             objectToTrack: PlayerSystem.Instance.m_players[3],
             objectToPointTo: m_goldPickupZonePerTeam[1],
@@ -75,7 +75,7 @@ public class Level1UIHovers : UIBase
         if (playerNum == 1)
         {
             m_playerArrowIndicators[0].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
-                PlayerSystem.Instance.m_teamColors[0],
+                PlayerSystem.Instance.m_teamData[0].color,
                 scaleFactor: m_arrowScaleFactor,
                 objectToTrack: PlayerSystem.Instance.m_players[0],
                 objectToPointTo: m_goldDropZonePerTeam[0],
@@ -85,7 +85,7 @@ public class Level1UIHovers : UIBase
         else if (playerNum == 2)
         {
             m_playerArrowIndicators[1].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
-                PlayerSystem.Instance.m_teamColors[1],
+                PlayerSystem.Instance.m_teamData[1].color,
                 scaleFactor: m_arrowScaleFactor,
                 objectToTrack: PlayerSystem.Instance.m_players[1],
                 objectToPointTo: m_goldDropZonePerTeam[1],
@@ -112,7 +112,7 @@ public class Level1UIHovers : UIBase
             if (teamBoat.GetComponent<BoatData>().m_remainingHealth > 0)
             {
                 m_playerArrowIndicators[0].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
-                    PlayerSystem.Instance.m_teamColors[0],
+                    PlayerSystem.Instance.m_teamData[0].color,
                     scaleFactor: m_arrowScaleFactor,
                     objectToTrack: PlayerSystem.Instance.m_players[0],
                     objectToPointTo: teamBoat,
@@ -128,7 +128,7 @@ public class Level1UIHovers : UIBase
             if (teamBoat.GetComponent<BoatData>().m_remainingHealth > 0)
             {
                 m_playerArrowIndicators[1].GetComponent<ArrowIndicatorController>().StartArrowIndicatorController(m_heightAboveToHover,
-                    PlayerSystem.Instance.m_teamColors[1],
+                    PlayerSystem.Instance.m_teamData[1].color,
                     scaleFactor: m_arrowScaleFactor,
                     objectToTrack: PlayerSystem.Instance.m_players[1],
                     objectToPointTo: teamBoat,

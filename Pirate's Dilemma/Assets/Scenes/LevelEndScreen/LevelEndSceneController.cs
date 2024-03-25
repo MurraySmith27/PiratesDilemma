@@ -4,6 +4,11 @@ using Cinemachine;
 using UnityEngine;
 using UnityEngine.Splines;
 
+
+public delegate void ImpactBackgroundAppearEvent();
+
+public delegate void ImpactBackgroundDisappearEvent();
+
 public class LevelEndSceneController : MonoBehaviour
 {
     [SerializeField] private float m_platformRiseTime;
@@ -41,9 +46,15 @@ public class LevelEndSceneController : MonoBehaviour
     [SerializeField] private List<GameObject> m_fireWorksParticles;
 
     [SerializeField] private float m_delayBeforeFireworks = 1f;
+
+    public ImpactBackgroundAppearEvent m_onImpactBackgroundAppear;
+
+    public ImpactBackgroundDisappearEvent m_onImpactBackgroundDisappear;
     
     [HideInInspector] public int m_winningTeamNum;
 
+    
+    
     
     public void StartEndLevelScene()
     {
@@ -144,6 +155,7 @@ public class LevelEndSceneController : MonoBehaviour
         
         //at the end slow down frames a lot
         Time.timeScale = 0.1f;
+        m_onImpactBackgroundAppear();
         m_impactBackgroundGameObject.SetActive(true);
         m_impactBackgroundParticleObject.SetActive(true);
         foreach (GameObject visualStandIn in winnerVisualStandIns)
@@ -185,6 +197,7 @@ public class LevelEndSceneController : MonoBehaviour
         
         m_impactBackgroundGameObject.SetActive(false);
         m_impactBackgroundParticleObject.SetActive(false);
+        m_onImpactBackgroundDisappear();
 
         yield return new WaitForSeconds(m_delayBeforeFireworks);
 

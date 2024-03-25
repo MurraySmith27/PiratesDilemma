@@ -250,7 +250,10 @@ public class GameTimerSystem : GameSystem
         
         yield return new WaitForSeconds(m_holdAfterLevelSelectEndTime);
         
-        m_onGameSceneUnloaded();
+        if (m_onGameSceneUnloaded != null && m_onGameSceneUnloaded.GetInvocationList().Length > 0)
+        {
+            m_onGameSceneUnloaded();
+        }
         
         yield return new WaitForSeconds(m_gameSceneUnloadedBufferSeconds);
         
@@ -265,9 +268,12 @@ public class GameTimerSystem : GameSystem
         m_onCharacterSelectEnd();
         
         yield return new WaitForSeconds(m_holdAfterCharacterSelectEndTime);
-        
-        m_onGameSceneUnloaded();
-        
+
+        if (m_onGameSceneUnloaded != null && m_onGameSceneUnloaded.GetInvocationList().Length > 0)
+        {
+            m_onGameSceneUnloaded();
+        }
+
         yield return new WaitForSeconds(m_gameSceneUnloadedBufferSeconds);
         
         SceneManager.LoadScene(nextSceneToLoadName);
@@ -283,7 +289,10 @@ public class GameTimerSystem : GameSystem
         
         yield return new WaitForSeconds(m_holdAfterGameEndTime * endGameTimeScale);
         
-        m_onGameSceneUnloaded();
+        if (m_onGameSceneUnloaded != null && m_onGameSceneUnloaded.GetInvocationList().Length > 0)
+        {
+            m_onGameSceneUnloaded();
+        }
         
         yield return new WaitForSeconds(m_gameSceneUnloadedBufferSeconds);
         

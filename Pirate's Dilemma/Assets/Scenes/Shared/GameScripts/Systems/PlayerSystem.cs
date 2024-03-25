@@ -8,6 +8,14 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 
+[System.Serializable]
+public class TeamData
+{
+    public Color color;
+    public string name;
+}
+
+
 public delegate void PlayerDieEvent(int playerNum);
 public delegate void PlayerRespawnEvent(int playerNum);
 public delegate void PlayerJoinEvent(int newPlayerNum);
@@ -24,7 +32,9 @@ public class PlayerSystem : GameSystem
     
     public int m_maxNumPlayers = 4;
 
-    public List<Color> m_teamColors;
+    public List<TeamData> m_teamDataOptions; //this stores all options for team data.
+    
+    [HideInInspector] public List<TeamData> m_teamData; //this stores the currently selected ones.
     
     public List<GameObject> m_team1playerPrefabs;
     
@@ -195,6 +205,10 @@ public class PlayerSystem : GameSystem
             m_isPlayerDying = new List<bool>();
             m_readyPlayers = new List<bool>();
             m_visualStandIns = new List<GameObject>();
+
+            m_teamData = new List<TeamData>();
+            m_teamData.Add(m_teamDataOptions[0]);
+            m_teamData.Add(m_teamDataOptions[1]);
 
             m_numLevelsPlayed = 0;
         

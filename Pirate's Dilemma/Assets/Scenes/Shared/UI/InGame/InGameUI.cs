@@ -89,7 +89,7 @@ public class InGameUI : UIBase
             m_teamScoreLabels.Add(scoreElement.Q<Label>("score-label"));
             root.Q<VisualElement>("score-board").Add(scoreElement);
             m_teamScoreLabels[i].text = $"0";
-            m_teamScoreLabels[i].parent.style.backgroundColor = PlayerSystem.Instance.m_teamColors[i];
+            m_teamScoreLabels[i].parent.style.backgroundColor = PlayerSystem.Instance.m_teamData[i].color;
         }
         
         m_leaderBoardLabel.text = "Scores:";
