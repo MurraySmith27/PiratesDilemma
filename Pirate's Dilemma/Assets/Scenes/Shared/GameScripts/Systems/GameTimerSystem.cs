@@ -35,6 +35,8 @@ public class GameTimerSystem : GameSystem
     public string m_characterSelectSceneName;
 
     public string m_levelSelectSceneName = "LevelSelect";
+
+    public string m_levelEndSceneName = "LevelEndScreen";
     
     [SerializeField] private float m_holdAfterGameEndTime = 2f;
     
@@ -81,12 +83,14 @@ public class GameTimerSystem : GameSystem
 
     private Coroutine m_gameCountdownCoroutine;
 
+    private int m_winningTeamNum;
+
 
     void Update()
     {
         if (Input.GetKeyDown("o"))
         {
-            EndGame(0,0);
+            EndGame(1,0);
         }
     }
     
@@ -126,9 +130,16 @@ public class GameTimerSystem : GameSystem
     
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        if (m_levelSceneNames.Contains(currentSceneName))
         {
             StartGame();
+        }
+        else if (currentSceneName == m_levelEndSceneName)
+        {
+            LevelEndSceneController levelEndSceneController = FindObjectOfType<LevelEndSceneController>();
+            levelEndSceneController.m_winningTeamNum = m_winningTeamNum;
+            levelEndSceneController.StartEndLevelScene();
         }
     }
 
@@ -186,7 +197,12 @@ public class GameTimerSystem : GameSystem
 
     private void EndGame(int teamNum, int boatNum)
     {
-        StopGame(m_characterSelectSceneName);
+        m_winningTeamNum = 1;
+        if (teamNum == 1)
+        {
+            m_winningTeamNum = 2;
+        }
+        StopGame(m_levelEndSceneName);
     }
 
     private IEnumerator StartGameCoroutine()
@@ -231,8 +247,6 @@ public class GameTimerSystem : GameSystem
     {
         
         m_onGameFinish();
-        
-        m_onCharacterSelectEnd();
         
         yield return new WaitForSeconds(m_holdAfterLevelSelectEndTime);
         

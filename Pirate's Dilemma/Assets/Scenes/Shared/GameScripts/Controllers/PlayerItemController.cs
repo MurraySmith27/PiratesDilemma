@@ -25,9 +25,9 @@ public class PlayerItemController : MonoBehaviour
 {
     [FormerlySerializedAs("m_goldCapacity")] [SerializeField] public int m_bombCapacity = 3;
 
-    [FormerlySerializedAs("m_bombPickupEventEmitter")] [FormerlySerializedAs("m_goldPickupAudioSource")] [SerializeField] private StudioEventEmitter m_bombHissEventEmitter;
-
-    [FormerlySerializedAs("m_heldGoldGameObject")] [SerializeField] private GameObject m_heldBombGameObject;
+    [SerializeField] private Transform m_heldBombPositionTransform = null;
+    
+    private GameObject m_heldBombGameObject = null;
     
     [SerializeField] private GameObject m_heldBarrelGameObject;
 
@@ -52,8 +52,6 @@ public class PlayerItemController : MonoBehaviour
     [SerializeField] private Transform m_feetPosition;
     
     [SerializeField] private float m_getOffBoatInputThreshold = 0.5f;
-
-    [SerializeField] private GameObject m_heldBombFireParticle;
     
     public PlayerPickUpBombEvent m_onPlayerPickupBomb;
 
@@ -70,9 +68,7 @@ public class PlayerItemController : MonoBehaviour
     // public PlayerEnterGoldDropZoneEvent m_onPlayerEnterGoldDropZone;
     //
     // public PlayerExitGoldDropZoneEvent m_onPlayerExitGoldDropZone;
-
-
-    private bool m_isHeldBombLit;
+    
     
     private PlayerInput m_playerInput;
     private PlayerMovementController m_playerMovementController;
@@ -126,13 +122,7 @@ public class PlayerItemController : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        m_isHeldBombLit = false;
-        m_bombHissEventEmitter.Stop();
-        m_heldBombFireParticle.SetActive(false);
-        
-        
         m_throwing = false;
-        m_heldBombGameObject.SetActive(false);
         m_heldBarrelGameObject.SetActive(false);
     }
     
@@ -167,7 +157,6 @@ public class PlayerItemController : MonoBehaviour
         m_playerOriginalParent = transform.parent;
         
         m_throwing = false;
-        m_heldBombGameObject.SetActive(false);
         m_heldBarrelGameObject.SetActive(false);
         
         m_isBoardedOnBoat = false;
@@ -236,9 +225,8 @@ public class PlayerItemController : MonoBehaviour
                     {
                         BombController bombController = item.GetComponent<BombController>();
                         bool isLit = bombController != null && bombController.m_isLit;
-                        PickupBomb(isLit);
+                        PickupBomb(item);
                         pickedUpItem = true;
-                        Destroy(item);
                         break;
                     }
 
@@ -268,7 +256,7 @@ public class PlayerItemController : MonoBehaviour
 
     private void OnPlayerDie(int playerNum)
     {
-        DropAllBombs();
+        DropAllBombs(false);
     }
     
     // public void BoardBoat(GameObject boat)
@@ -323,16 +311,12 @@ public class PlayerItemController : MonoBehaviour
             m_onPlayerStartThrowCharge();
             
             Vector3 targetPos = m_throwingTargetGameObject.transform.position;
-            
-            GameObject looseBomb = SpawnLooseBomb(true);
 
-            if (m_isHeldBombLit)
-            {
-                looseBomb.GetComponent<BombController>().SetLit(true);
-                m_isHeldBombLit = false;
-                m_bombHissEventEmitter.Stop();
-                m_heldBombFireParticle.SetActive(false);
-            }
+            GameObject looseBomb = m_heldBombGameObject;
+
+            BombController bombController = looseBomb.GetComponent<BombController>();
+            
+            bombController.m_wasThrown = true;
             
             Coroutine throwBombCoroutine = StartCoroutine(ThrowBombCoroutine(targetPos, looseBomb));
 
@@ -353,128 +337,21 @@ public class PlayerItemController : MonoBehaviour
             
             m_throwing = false;
 
-            DropAllBombs();
+            DropAllBombs(true);
         }
     }
 
-    public GameObject SpawnLooseBomb(bool isThrowing, bool isLit = false)
+    private void PickupBomb(GameObject item)
     {
-        GameObject looseBombObject = Instantiate(m_looseBombPrefab, transform.position, Quaternion.identity);
-        BombController bombController = looseBombObject.GetComponent<BombController>();
-        bombController.m_lastHeldTeamNum = m_playerData.m_teamNum;
-        bombController.m_wasThrown = isThrowing;
-        bombController.SetLit(isLit);
-        if (isThrowing)
-        {
-            looseBombObject.layer = LayerMask.NameToLayer("AirbornLooseBomb");
-        }
+        m_playerData.m_bombsCarried++;
+
+        m_heldBombGameObject = item;
+
+        item.GetComponent<Rigidbody>().isKinematic = true;
         
-        return looseBombObject;
-    }
-
-    private void OnThrowButtonReleased(InputAction.CallbackContext ctx)
-    {
-        if (m_throwingCoroutine != null && m_throwing)
-        {
-            StopCoroutine(m_throwingCoroutine);
-            
-            LineRenderer trajectoryLine = GetComponent<LineRenderer>();
-            trajectoryLine.enabled = false;
-            
-            
-            Vector3 targetPos = m_throwingTargetGameObject.transform.position;
-            
-            GameObject looseBomb = SpawnLooseBomb(true);
-
-            if (m_isHeldBombLit)
-            {
-                looseBomb.GetComponent<BombController>().SetLit(true);
-                m_isHeldBombLit = false;
-                m_bombHissEventEmitter.Stop();
-                m_heldBombFireParticle.SetActive(false);
-            }
-            
-            Coroutine throwBombCoroutine = StartCoroutine(ThrowBombCoroutine(targetPos, looseBomb));
-
-            m_onPlayerStartThrow();
-
-            looseBomb.GetComponent<BombController>().m_onLooseBombCollision +=
-                () =>
-                {
-                    looseBomb.GetComponent<Rigidbody>().isKinematic = false;
-                    StopCoroutine(throwBombCoroutine);
-                };
-            
-            m_throwingTargetGameObject.SetActive(false);
-            
-            m_throwing = false;
-
-            DropAllBombs();
-        }
-
-    }
-
-    private IEnumerator ExtendLandingPositionCoroutine()
-    {
-        m_throwingTargetGameObject.transform.position = m_feetPosition.position;
-
-        Vector3 initialPos = m_throwingTargetGameObject.transform.position;
-        
-        Vector3 maxDistancePos = initialPos + transform.forward * m_maxThrowDistance;
-        
-        LineRenderer trajectoryLine = GetComponent<LineRenderer>();
-
-        float heightDeltaWithFloor = transform.position.y - m_feetPosition.position.y;
-
-        CharacterController targetCharacterController = m_throwingTargetGameObject.GetComponent<CharacterController>();
-        float t = 0;
-        while (true)
-        {
-            t = Mathf.Min(t + Time.deltaTime * m_timeToGetMaxThrowRange, 1);
-            maxDistancePos = initialPos + transform.forward * m_maxThrowDistance;
-          
-            trajectoryLine.positionCount = m_trajectoryLineResolution;
-            
-            Vector3 targetPos = initialPos + (maxDistancePos - initialPos) * t;
-            targetCharacterController.Move(targetPos - m_throwingTargetGameObject.transform.position);
-
-            float currentDistance = ((maxDistancePos - initialPos) * t).magnitude / m_throwHeightDecreaseFactor;
-            
-            List<Vector3> linePositions = new List<Vector3>();
-            for (int i = 0; i < m_trajectoryLineResolution; i++)
-            {
-                //progress along line
-                float t2 = i / (float)m_trajectoryLineResolution;
-                float currentHeight = -(t2 * currentDistance - currentDistance) * (t2 * currentDistance + (heightDeltaWithFloor / currentDistance));
-                Vector3 currentPositionAlongLine = initialPos + (targetPos - initialPos) * t2;
-                linePositions.Add(new Vector3(currentPositionAlongLine.x, currentHeight, currentPositionAlongLine.z));
-            }
-            
-            trajectoryLine.SetPositions(linePositions.ToArray());
-            
-            yield return null;
-            if (!m_throwingTargetGameObject.activeInHierarchy)
-            {
-                m_throwingTargetGameObject.SetActive(true);
-            }
-        }
-    }
-
-    private void PickupBomb(bool isLit)
-    {
-        m_playerData.m_bombsCarried += 1;
-    
-        m_heldBombGameObject.SetActive(true);
-
-        m_isHeldBombLit = isLit;
-        m_heldBombFireParticle.SetActive(isLit);
-
-        if (isLit)
-        {
-            m_bombHissEventEmitter.Play();
-        }
-        
-        
+        item.transform.position = m_heldBombPositionTransform.position;
+        item.transform.LookAt(Vector3.up);
+        item.transform.parent = m_heldBombPositionTransform.parent;
         if (m_onPlayerPickupBomb != null && m_onPlayerPickupBomb.GetInvocationList().Length > 0)
         {
             m_onPlayerPickupBomb(m_playerData.m_teamNum, m_playerData.m_playerNum);
@@ -576,24 +453,29 @@ public class PlayerItemController : MonoBehaviour
             m_throwingTargetGameObject.SetActive(false);
         }
         
-        if (m_playerData.m_bombsCarried > 0)
-        {
-            SpawnLooseBomb(false, m_isHeldBombLit);
-        }
-        DropAllBombs();
+        DropAllBombs(false);
     }
     
-    public void DropAllBombs()
+    public void DropAllBombs(bool isThrown)
     {
-        m_heldBombGameObject.SetActive(false);
-        m_playerData.m_bombsCarried = 0;
-
-        m_bombHissEventEmitter.Stop();
-        
-        m_throwing = false;
-        if (m_onPlayerDropBomb != null && m_onPlayerDropBomb.GetInvocationList().Length > 0)
+        if (m_playerData.m_bombsCarried > 0)
         {
-            m_onPlayerDropBomb(m_playerData.m_teamNum, m_playerData.m_playerNum);
+            m_playerData.m_bombsCarried = 0;
+
+            BombController bombController = m_heldBombGameObject.GetComponent<BombController>();
+            bombController.m_lastHeldTeamNum = m_playerData.m_teamNum;
+
+            m_heldBombGameObject.GetComponent<Rigidbody>().isKinematic = isThrown;
+
+            m_heldBombGameObject.transform.parent = null;
+            m_heldBombGameObject.transform.position = m_feetPosition.position;
+            m_heldBombGameObject = null;
+
+            m_throwing = false;
+            if (m_onPlayerDropBomb != null && m_onPlayerDropBomb.GetInvocationList().Length > 0)
+            {
+                m_onPlayerDropBomb(m_playerData.m_teamNum, m_playerData.m_playerNum);
+            }
         }
     }
 
@@ -647,9 +529,7 @@ public class PlayerItemController : MonoBehaviour
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("BombLightingArea") &&
             m_playerData.m_bombsCarried > 0)
         {
-            m_bombHissEventEmitter.Play();
-            m_isHeldBombLit = true;
-            m_heldBombFireParticle.SetActive(true);
+            m_heldBombGameObject.GetComponent<BombController>().SetLit(true);
         }
     }
     

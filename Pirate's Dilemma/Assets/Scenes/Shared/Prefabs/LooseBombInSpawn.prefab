@@ -9719,6 +9719,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4439121130772400346, guid: ea421fdecbc4cef428b431abf643e362,
+        type: 3}
+      propertyPath: m_Layer
+      value: 27
+      objectReference: {fileID: 0}
     - target: {fileID: 4714602978416047080, guid: ea421fdecbc4cef428b431abf643e362,
         type: 3}
       propertyPath: m_Name
@@ -9733,6 +9738,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: LooseBomb
+      objectReference: {fileID: 0}
+    - target: {fileID: 6311275716616200719, guid: ea421fdecbc4cef428b431abf643e362,
+        type: 3}
+      propertyPath: m_Layer
+      value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 7037889877552418305, guid: ea421fdecbc4cef428b431abf643e362,
+        type: 3}
+      propertyPath: m_Layer
+      value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 7165132252919416562, guid: ea421fdecbc4cef428b431abf643e362,
+        type: 3}
+      propertyPath: m_Layer
+      value: 27
       objectReference: {fileID: 0}
     - target: {fileID: 7241188248614680902, guid: ea421fdecbc4cef428b431abf643e362,
         type: 3}

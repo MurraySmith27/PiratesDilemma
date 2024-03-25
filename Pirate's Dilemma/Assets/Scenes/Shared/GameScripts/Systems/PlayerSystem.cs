@@ -525,7 +525,7 @@ public class PlayerSystem : GameSystem
         LockPlayer(playerNum);
         if (m_players[playerNum-1].GetComponent<PlayerData>().m_bombsCarried > 0)
         {
-            playerItemController.DropAllBombs();
+            playerItemController.DropAllBombs(false);
         }
 
         Coroutine deathCoroutine = StartCoroutine(DeathAnimation(playerNum));
@@ -764,6 +764,8 @@ public class PlayerSystem : GameSystem
                 m_players[i].GetComponent<PlayerItemController>().OnGameStart();
                 m_players[i].GetComponent<PlayerAnimationController>().OnGameStart();
                 m_visualStandIns[i].SetActive(true);
+                
+                m_visualStandIns[i].GetComponent<Animator>().SetTrigger("Idle");
 
                 m_readyPlayers[i] = false;
                 
@@ -799,8 +801,8 @@ public class PlayerSystem : GameSystem
         {
             PlayerItemController playerItemController = m_players[i].GetComponent<PlayerItemController>();
 
-            playerItemController.m_onPlayerPickupBomb += OnPlayerPickUpBomb;
-            playerItemController.m_onPlayerDropBomb += OnPlayerDropBomb;
+            playerItemController.m_onPlayerPickupBomb -= OnPlayerPickUpBomb;
+            playerItemController.m_onPlayerDropBomb -= OnPlayerDropBomb;
             
             m_visualStandIns[i].SetActive(false);
         }
