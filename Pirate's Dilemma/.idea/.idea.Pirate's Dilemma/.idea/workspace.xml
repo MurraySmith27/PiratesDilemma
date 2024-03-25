@@ -65,7 +65,6 @@
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneDiscMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneDiscMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneHornMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneHornMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneNeedleMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneNeedleMaterial.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Planks/LoosePlankMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Planks/LoosePlankMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenBarsMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenBarsMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenStandMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenStandMaterial.mat" afterDir="false" />
@@ -83,15 +82,21 @@
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Team1Material.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Team1Material.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Team2AccentMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Team2AccentMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Team2Material.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Team2Material.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenBodyMat.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenBodyMat.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenEyeMat.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenEyeMat.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenTentacleMat.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenTentacleMat.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level1/Level1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level1/Level1.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level2/Level2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level2/Level2.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/LevelEndSceneController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/LevelEndSceneController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/LevelEndScreen.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/LevelEndScreen.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/StarParticleMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/StarParticleMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/StarParticleTrails.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/StarParticleTrails.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BombController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/BombController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerItemController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerItemController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerMovementController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/PlayerMovementController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Systems/PlayerSystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/BombSpawner.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/BombSpawner.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Players/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Players/Player.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Players/PlayerAnimator.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/Prefabs/Players/PlayerAnimator.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Settings/InGamePostProcessingVolume.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/InGamePostProcessingVolume.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,6 +112,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/284f0abb8014497cac58bcf5042a4ea93c00/e5/0247329a/NativeInputSystem.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Level1/Level1HoversUI.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/LevelEndSceneController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/UI/LevelEndScreenUIController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/ExplosionController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Shared/UI/ArrowIndicator/ArrowIndicatorController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Shared/UI/GoldScoringParticle/GoldScoringParticlesController.cs" root0="FORCE_HIGHLIGHTING" />
@@ -158,9 +164,9 @@
   },
   "keyToStringList": {
     "rider.external.source.directories": [
-      "/Users/murray/Library/Application Support/JetBrains/Rider2023.3/resharper-host/DecompilerCache",
-      "/Users/murray/Library/Application Support/JetBrains/Rider2023.3/resharper-host/SourcesCache",
-      "/Users/murray/.local/share/Symbols/src"
+      "C:\\Users\\murra\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache",
+      "C:\\Users\\murra\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache",
+      "C:\\Users\\murra\\AppData\\Local\\Symbols\\src"
     ]
   }
 }]]></component>
@@ -174,7 +180,7 @@
       <method v="2" />
     </configuration>
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="/Applications/Unity/Hub/Editor/2022.3.17f1/Unity.app/Contents/MacOS/Unity" />
+      <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\2022.3.17f1\Editor\Unity.exe" />
       <option name="PROGRAM_PARAMETERS" value="-projectPath &quot;$PROJECT_DIR$&quot; -debugCodeOptimization" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -182,7 +188,7 @@
       <method v="2" />
     </configuration>
     <configuration name="Unit Tests (batch mode)" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="/Applications/Unity/Hub/Editor/2022.3.17f1/Unity.app/Contents/MacOS/Unity" />
+      <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\2022.3.17f1\Editor\Unity.exe" />
       <option name="PROGRAM_PARAMETERS" value="-runTests -batchmode -projectPath &quot;$PROJECT_DIR$&quot; -testResults Logs/results.xml -testPlatform EditMode -debugCodeOptimization" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -260,6 +266,7 @@
       <workItem from="1711231148339" duration="4561000" />
       <workItem from="1711286418226" duration="7035000" />
       <workItem from="1711316996920" duration="1770000" />
+      <workItem from="1711324064760" duration="5960000" />
     </task>
     <servers />
   </component>

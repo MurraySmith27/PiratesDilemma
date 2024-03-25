@@ -227,7 +227,6 @@ public class PlayerItemController : MonoBehaviour
                         bool isLit = bombController != null && bombController.m_isLit;
                         PickupBomb(item);
                         pickedUpItem = true;
-                        Destroy(item);
                         break;
                     }
 
@@ -257,7 +256,7 @@ public class PlayerItemController : MonoBehaviour
 
     private void OnPlayerDie(int playerNum)
     {
-        DropAllBombs();
+        DropAllBombs(false);
     }
     
     // public void BoardBoat(GameObject boat)
@@ -338,13 +337,21 @@ public class PlayerItemController : MonoBehaviour
             
             m_throwing = false;
 
-            DropAllBombs();
+            DropAllBombs(true);
         }
     }
 
     private void PickupBomb(GameObject item)
     {
-        item.transform.position = m_heldBombPositionTransform.position; 
+        m_playerData.m_bombsCarried++;
+
+        m_heldBombGameObject = item;
+
+        item.GetComponent<Rigidbody>().isKinematic = true;
+        
+        item.transform.position = m_heldBombPositionTransform.position;
+        item.transform.LookAt(Vector3.up);
+        item.transform.parent = m_heldBombPositionTransform.parent;
         if (m_onPlayerPickupBomb != null && m_onPlayerPickupBomb.GetInvocationList().Length > 0)
         {
             m_onPlayerPickupBomb(m_playerData.m_teamNum, m_playerData.m_playerNum);
@@ -446,24 +453,29 @@ public class PlayerItemController : MonoBehaviour
             m_throwingTargetGameObject.SetActive(false);
         }
         
-        DropAllBombs();
+        DropAllBombs(false);
     }
     
-    public void DropAllBombs()
+    public void DropAllBombs(bool isThrown)
     {
-        m_playerData.m_bombsCarried = 0;
-
-        BombController bombController = m_heldBombGameObject.GetComponent<BombController>();
-        bombController.m_lastHeldTeamNum = m_playerData.m_teamNum;
-        
-        m_heldBombGameObject.transform.parent = null;
-        m_heldBombGameObject.transform.position = m_feetPosition.position;
-        m_heldBombGameObject = null;
-        
-        m_throwing = false;
-        if (m_onPlayerDropBomb != null && m_onPlayerDropBomb.GetInvocationList().Length > 0)
+        if (m_playerData.m_bombsCarried > 0)
         {
-            m_onPlayerDropBomb(m_playerData.m_teamNum, m_playerData.m_playerNum);
+            m_playerData.m_bombsCarried = 0;
+
+            BombController bombController = m_heldBombGameObject.GetComponent<BombController>();
+            bombController.m_lastHeldTeamNum = m_playerData.m_teamNum;
+
+            m_heldBombGameObject.GetComponent<Rigidbody>().isKinematic = isThrown;
+
+            m_heldBombGameObject.transform.parent = null;
+            m_heldBombGameObject.transform.position = m_feetPosition.position;
+            m_heldBombGameObject = null;
+
+            m_throwing = false;
+            if (m_onPlayerDropBomb != null && m_onPlayerDropBomb.GetInvocationList().Length > 0)
+            {
+                m_onPlayerDropBomb(m_playerData.m_teamNum, m_playerData.m_playerNum);
+            }
         }
     }
 

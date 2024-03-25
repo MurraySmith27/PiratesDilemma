@@ -40,7 +40,7 @@ public class BombController : MonoBehaviour
     
     void Start()
     {  
-        m_despawnCoroutine = StartCoroutine(DespawnAfterSeconds());
+        // m_despawnCoroutine = StartCoroutine(DespawnAfterSeconds());
         m_cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
     }
 

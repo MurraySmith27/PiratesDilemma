@@ -32,10 +32,15 @@ public class LevelEndSceneController : MonoBehaviour
 
     [SerializeField] private GameObject m_impactBackgroundGameObject;
 
+    [SerializeField] private GameObject m_impactBackgroundParticleObject;
+
     [SerializeField] private float m_impactBackgroundFadeTime = 0.1f;
 
     [SerializeField] private float m_cameraArrivalBufferTime = 0.2f;
+    
+    [SerializeField] private List<GameObject> m_fireWorksParticles;
 
+    [SerializeField] private float m_delayBeforeFireworks = 1f;
     
     [HideInInspector] public int m_winningTeamNum;
 
@@ -140,6 +145,7 @@ public class LevelEndSceneController : MonoBehaviour
         //at the end slow down frames a lot
         Time.timeScale = 0.1f;
         m_impactBackgroundGameObject.SetActive(true);
+        m_impactBackgroundParticleObject.SetActive(true);
         foreach (GameObject visualStandIn in winnerVisualStandIns)
         {
             visualStandIn.layer = LayerMask.NameToLayer("LevelEndVisualStandIn");
@@ -166,6 +172,8 @@ public class LevelEndSceneController : MonoBehaviour
             t += Time.deltaTime;
         }
         
+        materials[0].SetFloat("_Opacity", 0f);
+        
         foreach (GameObject visualStandIn in winnerVisualStandIns)
         {
             visualStandIn.layer = LayerMask.NameToLayer("HasSelfIntersectingOutline2");
@@ -176,6 +184,15 @@ public class LevelEndSceneController : MonoBehaviour
         }
         
         m_impactBackgroundGameObject.SetActive(false);
-        
+        m_impactBackgroundParticleObject.SetActive(false);
+
+        yield return new WaitForSeconds(m_delayBeforeFireworks);
+
+        foreach (GameObject fireworkParticle in m_fireWorksParticles)
+        {
+            fireworkParticle.SetActive(true);
+            yield return new WaitForSeconds(0.2f);
+        }
+
     }
 }

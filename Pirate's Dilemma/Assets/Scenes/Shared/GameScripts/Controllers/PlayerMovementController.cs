@@ -219,7 +219,7 @@ public class PlayerMovementController : MonoBehaviour
         m_isFreezingDuringContact = false;
 
         m_dashAction.performed += OnDashButtonHeld;
-        m_dashAction.canceled += OnDashButtonReleased;
+        // m_dashAction.canceled += OnDashButtonReleased;
 
         m_initialized = true;
     }
@@ -229,7 +229,7 @@ public class PlayerMovementController : MonoBehaviour
         m_initialized = false;
 
         m_dashAction.performed -= OnDashButtonHeld;
-        m_dashAction.canceled -= OnDashButtonReleased;
+        // m_dashAction.canceled -= OnDashButtonReleased;
     }
 
     public bool IsOccupied()
@@ -297,7 +297,7 @@ public class PlayerMovementController : MonoBehaviour
                 (m_dashTargetGameObject.transform.position - m_feetPosition.position).normalized, 
                 out hit, layerMask: LayerMask.GetMask(impassableLayers), maxDistance: m_maxDashDistance))
         {
-            m_dashTargetGameObject.transform.position = m_feetPosition.position + ((m_dashTargetGameObject.transform.position - m_feetPosition.position) - m_feetPosition.position) * (hit.distance / m_maxDashDistance);
+            m_dashTargetGameObject.transform.position = m_feetPosition.position + (m_dashTargetGameObject.transform.position - m_feetPosition.position).normalized * hit.distance;
         }
 
         // m_dashIndicatorArrowBodyGameObject.SetActive(true);
