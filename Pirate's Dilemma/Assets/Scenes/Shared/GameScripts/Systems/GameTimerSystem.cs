@@ -46,7 +46,7 @@ public class GameTimerSystem : GameSystem
     
     [SerializeField] private float m_holdAfterLevelSelectEndTime = 3f;
 
-    [SerializeField] private float m_gameSceneLoadedBufferSeconds = 0.5f;
+    [SerializeField] public float m_gameSceneLoadedBufferSeconds = 0.5f;
     
     [SerializeField] private float m_gameSceneUnloadedBufferSeconds = 0.5f;
 
