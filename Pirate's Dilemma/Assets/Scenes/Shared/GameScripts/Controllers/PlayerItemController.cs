@@ -349,6 +349,9 @@ public class PlayerItemController : MonoBehaviour
         m_playerData.m_bombsCarried++;
 
         m_heldBombGameObject = item;
+        BombController bombController = m_heldBombGameObject.GetComponent<BombController>();
+
+        bombController.m_onBombExplode += OnBombExplodeInHand;
 
         item.GetComponent<Rigidbody>().isKinematic = true;
         
@@ -361,6 +364,20 @@ public class PlayerItemController : MonoBehaviour
         }
         
         m_readyToThrow = false;
+    }
+
+    private void OnBombExplodeInHand()
+    {
+
+        m_playerData.m_bombsCarried = 0;
+        
+        
+        m_heldBombGameObject = null;
+        
+        if (m_onPlayerDropBomb != null && m_onPlayerDropBomb.GetInvocationList().Length > 0)
+        {
+            m_onPlayerDropBomb(m_playerData.m_teamNum, m_playerData.m_playerNum);
+        }
     }
     
     private void PickUpBarrel()
@@ -466,6 +483,7 @@ public class PlayerItemController : MonoBehaviour
             m_playerData.m_bombsCarried = 0;
 
             BombController bombController = m_heldBombGameObject.GetComponent<BombController>();
+            bombController.m_onBombExplode -= OnBombExplodeInHand;
             bombController.m_lastHeldTeamNum = m_playerData.m_teamNum;
 
             m_heldBombGameObject.GetComponent<Rigidbody>().isKinematic = isThrown;

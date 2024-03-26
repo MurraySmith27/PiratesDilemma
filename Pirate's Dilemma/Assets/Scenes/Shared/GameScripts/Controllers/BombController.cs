@@ -6,9 +6,17 @@ using FMODUnity;
 using UnityEngine;
 
 public delegate void LooseBombCollisionEvent();
+
+public delegate void BombExplosionEvent();
 public class BombController : MonoBehaviour
 {
     [SerializeField] private float m_bombAliveSeconds = 5f;
+
+    [SerializeField] private float m_minBombFlashSpeed = 1f;
+    
+    [SerializeField] private float m_maxBombFlashSpeed = 10f;
+
+    [SerializeField] private AnimationCurve m_bombFlashSpeedOverTimeAnimCurve;
     
     [SerializeField] private GameObject m_explosionPrefab;
     
@@ -23,10 +31,14 @@ public class BombController : MonoBehaviour
     [SerializeField] private StudioEventEmitter m_hissEventEmitter;
 
     [SerializeField] private StudioEventEmitter m_splashEventEmitter;
+
+    [SerializeField] private Animator m_bombAnimator;
+
+    public BombExplosionEvent m_onBombExplode;
     
     public LooseBombCollisionEvent m_onLooseBombCollision;
 
-    public int m_lastHeldTeamNum;
+    [HideInInspector] public int m_lastHeldTeamNum = -1;
 
     public int m_damagePerBomb = 1;
 
@@ -40,13 +52,50 @@ public class BombController : MonoBehaviour
     
     void Start()
     {  
-        // m_despawnCoroutine = StartCoroutine(DespawnAfterSeconds());
         m_cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
     }
+    
 
-    IEnumerator DespawnAfterSeconds()
+    IEnumerator BlowUpAfterSeconds()
     {
-        yield return new WaitForSeconds(m_bombAliveSeconds);
+        m_bombAnimator.SetTrigger("StartLit");
+        
+        foreach (Renderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
+        {
+            //material at index 1 is the
+            List<Material> mats = new List<Material>();
+            renderer.GetMaterials(mats);
+            mats[1].SetFloat("_IsActive", 1f);
+            renderer.SetMaterials(mats);
+        }
+        
+        float t = 0;
+        while (t <= m_bombAliveSeconds)
+        {
+            float progress = m_bombFlashSpeedOverTimeAnimCurve.Evaluate(t / m_bombAliveSeconds);
+            
+            float currentFlashSpeed = m_minBombFlashSpeed * (1f - progress) + m_maxBombFlashSpeed * progress;
+
+            foreach (Renderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                //material at index 1 is the
+                List<Material> mats = new List<Material>();
+                renderer.GetMaterials(mats);
+                mats[1].SetFloat("_FlashSpeed", currentFlashSpeed);
+                renderer.SetMaterials(mats);
+            }
+            
+            
+            if (t > 0.9f * m_bombAliveSeconds)
+            {
+                //start stretching animation
+                m_bombAnimator.SetTrigger("StartPreExplosion");
+            }
+            yield return null;
+            t += Time.deltaTime;
+        }
+
+        GenerateExplosion(transform.position);
         Destroy(this.gameObject);
     }
 
@@ -63,6 +112,7 @@ public class BombController : MonoBehaviour
 
         if (isLit)
         {
+            m_despawnCoroutine = StartCoroutine(BlowUpAfterSeconds());
             m_hissEventEmitter.Play();
         }
         else
@@ -125,6 +175,11 @@ public class BombController : MonoBehaviour
         explosionController.m_explosionAnimationSeconds = m_explosionAnimationSeconds;
         explosionController.m_teamNum = m_lastHeldTeamNum;
         explosionController.m_boatDamage = m_damagePerBomb;
+
+        if (m_onBombExplode != null && m_onBombExplode.GetInvocationList().Length > 0)
+        {
+            m_onBombExplode();
+        }
         
         Destroy(this.gameObject);
     }
