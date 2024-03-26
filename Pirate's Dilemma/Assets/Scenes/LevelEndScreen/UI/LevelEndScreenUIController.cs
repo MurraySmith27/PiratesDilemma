@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class LevelEndScreenUIController : MonoBehaviour
@@ -11,6 +12,11 @@ public class LevelEndScreenUIController : MonoBehaviour
 
     [SerializeField] private List<RenderTexture> m_loserSlotRenderTextures;
 
+    [SerializeField]
+    private Renderer background;
+
+    private VisualElement m_menuRoot;
+    
     private UIDocument m_doc;
 
     private VisualElement m_root;
@@ -37,6 +43,8 @@ public class LevelEndScreenUIController : MonoBehaviour
         m_loserFrames = new List<VisualElement>();
         m_loserFrames.Add(m_root.Q<VisualElement>("loser-pane-1"));
         m_loserFrames.Add(m_root.Q<VisualElement>("loser-pane-2"));
+
+        m_menuRoot = m_root.Q<VisualElement>("menu-root");
 
         m_winnerText.text = PlayerSystem.Instance.m_teamData[m_levelEndSceneController.m_winningTeamNum-1].name + " Team!";
 
@@ -67,14 +75,37 @@ public class LevelEndScreenUIController : MonoBehaviour
     {
         m_losersRoot.ClearClassList();
         m_renderTextureCoroutine = StartCoroutine(ProjectRenderTexturesOntoLoserSlots());
+
+        PlayerInput playerInput = PlayerSystem.Instance.m_players[0].GetComponent<PlayerInput>();
+
+        playerInput.actions.FindAction("Select").performed += OnSelectPressedFirstTime;
+    }
+
+    private void OnSelectPressedFirstTime(InputAction.CallbackContext ctx)
+    {
+        m_menuRoot.ClearClassList();
     }
 
     private IEnumerator ProjectRenderTexturesOntoLoserSlots()
     {
         while (true)
         {
+            for (int i = 0; i < 2; i++)
+            {
+                RenderTexture.active = m_loserSlotRenderTextures[i];
+                Texture2D tex = new Texture2D(m_loserSlotRenderTextures[i].width, m_loserSlotRenderTextures[i].height);
+                tex.ReadPixels(new Rect(0, 0, m_loserSlotRenderTextures[i].width, m_loserSlotRenderTextures[i].height),
+                    0, 0);
+                tex.Apply();
+                m_loserFrames[i].style.backgroundImage = tex;
 
-            // m_loserFrames[0].style.backgroundImage = m_loserSlotRenderTextures.;
+                List<Material> mats = new();
+
+                background.GetMaterials(mats);
+
+                mats[0].SetTexture("_Base_Map", tex);
+            }
+
             yield return null;
         }
     }

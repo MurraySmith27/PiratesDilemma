@@ -56,6 +56,7 @@
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Crate/CrateMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Crate/CrateMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Dock/BoatFloorMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Dock/BoatFloorMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Dock/CharacterSelectDockMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Dock/CharacterSelectDockMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/DockMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/DockMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceBrickMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceBrickMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceChimneyMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceChimneyMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceMetalMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceMetalMaterial.mat" afterDir="false" />
@@ -64,6 +65,8 @@
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneDiscMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneDiscMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneHornMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneHornMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneNeedleMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Gramophone/GramophoneNeedleMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Planks/LoosePlankMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Planks/LoosePlankMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Sand/SandMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Sand/SandMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenBarsMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenBarsMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenStandMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenStandMaterial.mat" afterDir="false" />
@@ -81,13 +84,16 @@
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Team1Material.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Team1Material.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Team2AccentMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Team2AccentMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Team2Material.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Team2Material.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level2/Level2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level2/Level2.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level2/Level2_Map.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level2/Level2_Map.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level3/Level3.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level3/Level3.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level3/Level3_Map.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level3/Level3_Map.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level4/Level4.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level4/Level4.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level4/Level4_Map.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level4/Level4_Map.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/KrakenController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/Controllers/KrakenController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/UI/FilmGrainEffect.shadergraph" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/UI/FilmGrainEffect.shadergraph" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/UI/FilmGrainPostProcessingEffect.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/UI/FilmGrainPostProcessingEffect.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenBodyMat.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenBodyMat.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenEyeMat.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenEyeMat.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenTentacleMat.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Models/Characters/Kraken/KrakenTentacleMat.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/LevelEndScreen.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/LevelEndScreen.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/UI/LevelEndScreenUI.uss" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/UI/LevelEndScreenUI.uss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/UI/LevelEndScreenUI.uxml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/UI/LevelEndScreenUI.uxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/UI/LevelEndScreenUIController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/LevelEndScreen/UI/LevelEndScreenUIController.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,7 +150,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "XThreadsFramesViewSplitterKey": "0.63188976",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "final-final-pre-zynga-playtest",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
