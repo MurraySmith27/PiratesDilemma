@@ -306,7 +306,10 @@ public class PlayerItemController : MonoBehaviour
             
             CharacterController targetCharacterController = m_throwingTargetGameObject.GetComponent<CharacterController>();
 
+            
+            targetCharacterController.enabled = false;
             targetCharacterController.Move(transform.forward * m_maxThrowDistance);
+            targetCharacterController.enabled = true;
             
             m_onPlayerStartThrowCharge();
             
@@ -318,7 +321,7 @@ public class PlayerItemController : MonoBehaviour
             
             bombController.m_wasThrown = true;
             
-            Coroutine throwBombCoroutine = StartCoroutine(ThrowBombCoroutine(targetPos, looseBomb));
+            Coroutine throwBombCoroutine = StartCoroutine(ThrowBombCoroutine(m_feetPosition.transform.position + transform.forward * m_maxThrowDistance, looseBomb));
 
             m_onPlayerStartThrow();
 
@@ -527,7 +530,7 @@ public class PlayerItemController : MonoBehaviour
         // }
         
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("BombLightingArea") &&
-            m_playerData.m_bombsCarried > 0)
+            m_playerData.m_bombsCarried > 0 && m_heldBombGameObject.GetComponent<BombController>().m_isLit == false)
         {
             m_heldBombGameObject.GetComponent<BombController>().SetLit(true);
         }

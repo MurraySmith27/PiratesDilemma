@@ -153,6 +153,11 @@ public class BoatSystem : GameSystem
                 BoatDamageController boatDamageController = boat.GetComponent<BoatDamageController>();
                 boatDamageController.m_onBoatSink += OnBoatSink;
                 boatDamageController.m_onBoatDamaged = OnBoatDamaged;
+
+                BoatAnimationController boatAnimationController = boat.GetComponent<BoatAnimationController>();
+
+                boatAnimationController.SetBoatTeamMaterials(PlayerSystem.Instance.m_teamData[i].mainMaterial,
+                    PlayerSystem.Instance.m_teamData[i].accentMaterial);
                 
                 m_boatTeamAssignments.Add(i+1);
                 

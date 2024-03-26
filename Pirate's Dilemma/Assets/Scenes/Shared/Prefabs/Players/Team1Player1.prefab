@@ -346,9 +346,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &1597672171727097817 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1047488657938851046, guid: ee3cfaea2f1e16143bb3bdd0a842c606,
+    type: 3}
+  m_PrefabInstance: {fileID: 1775965276343380799}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2247232988303412436 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ee3cfaea2f1e16143bb3bdd0a842c606,
+    type: 3}
+  m_PrefabInstance: {fileID: 1775965276343380799}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3173853032279387875 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3796171124051477980, guid: ee3cfaea2f1e16143bb3bdd0a842c606,
+    type: 3}
+  m_PrefabInstance: {fileID: 1775965276343380799}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6710585142721208946 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4213761076027111091, guid: ee3cfaea2f1e16143bb3bdd0a842c606,
     type: 3}
   m_PrefabInstance: {fileID: 1775965276343380799}
   m_PrefabAsset: {fileID: 0}
@@ -600,6 +618,41 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 2100000, guid: 93647188261b84546b4afe80ca24db68, type: 2}
+    - target: {fileID: 4104745165709088208, guid: 279e7f43ba21e084ab5215f82a61693c,
+        type: 3}
+      propertyPath: m_accentTeamMaterialObjects.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4104745165709088208, guid: 279e7f43ba21e084ab5215f82a61693c,
+        type: 3}
+      propertyPath: m_mainTeamMaterialObjects.Array.data[0]
+      value: 
+      objectReference: {fileID: 5600752859681696298}
+    - target: {fileID: 4104745165709088208, guid: 279e7f43ba21e084ab5215f82a61693c,
+        type: 3}
+      propertyPath: m_mainTeamMaterialObjects.Array.data[1]
+      value: 
+      objectReference: {fileID: 6710585142721208946}
+    - target: {fileID: 4104745165709088208, guid: 279e7f43ba21e084ab5215f82a61693c,
+        type: 3}
+      propertyPath: m_accentTeamMaterialObjects.Array.data[0]
+      value: 
+      objectReference: {fileID: 4364793066263078587}
+    - target: {fileID: 4104745165709088208, guid: 279e7f43ba21e084ab5215f82a61693c,
+        type: 3}
+      propertyPath: m_accentTeamMaterialObjects.Array.data[1]
+      value: 
+      objectReference: {fileID: 483297823218976641}
+    - target: {fileID: 4104745165709088208, guid: 279e7f43ba21e084ab5215f82a61693c,
+        type: 3}
+      propertyPath: m_accentTeamMaterialObjects.Array.data[2]
+      value: 
+      objectReference: {fileID: 3173853032279387875}
+    - target: {fileID: 4104745165709088208, guid: 279e7f43ba21e084ab5215f82a61693c,
+        type: 3}
+      propertyPath: m_accentTeamMaterialObjects.Array.data[3]
+      value: 
+      objectReference: {fileID: 1597672171727097817}
     - target: {fileID: 4244186951770336794, guid: 279e7f43ba21e084ab5215f82a61693c,
         type: 3}
       propertyPath: m_Materials.Array.size
@@ -1008,6 +1061,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 279e7f43ba21e084ab5215f82a61693c, type: 3}
+--- !u!1 &483297823218976641 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6390537529701336605, guid: 279e7f43ba21e084ab5215f82a61693c,
+    type: 3}
+  m_PrefabInstance: {fileID: 6780948556863324572}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4364793066263078587 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7099952171973322535, guid: 279e7f43ba21e084ab5215f82a61693c,
+    type: 3}
+  m_PrefabInstance: {fileID: 6780948556863324572}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5600752859681696298 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1415005237896145846, guid: 279e7f43ba21e084ab5215f82a61693c,
+    type: 3}
+  m_PrefabInstance: {fileID: 6780948556863324572}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7333943547178419419 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4313782162737317191, guid: 279e7f43ba21e084ab5215f82a61693c,

@@ -121,9 +121,18 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _Fresnel: 0
+    - _FresnelAngle: -1
+    - _FresnelSize: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Light1FlickerStrength: 0
+    - _Light1Intensity: 1
+    - _Light2FlickerStrength: 0
+    - _Light2Intensity: 0
+    - _Light3FlickerStrength: 0
+    - _Light3Intensity: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -142,15 +151,28 @@ Material:
     - _Surface: 0
     - _UseCustomNormalMap: 0
     - _UseEmission: 0
+    - _UseLight1: 0
+    - _UseLight2: 0
+    - _UseLight3: 0
+    - _UseSecondLight: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Dark_Color: {r: 0.2924528, g: 0.27300194, b: 0.22761658, a: 1}
+    - _Dark_Color: {r: 0.29411766, g: 0.25956783, b: 0.22745098, a: 1}
+    - _DefaultEmissionHDR: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Light_Color: {r: 0.4339623, g: 0.4017222, b: 0.3050018, a: 1}
+    - _FresnelIntensity: {r: 1, g: 1, b: 1, a: 0}
+    - _Light1Color: {r: 0, g: 0, b: 0, a: 0}
+    - _Light1Position: {r: 0, g: 0, b: 0, a: 0}
+    - _Light2Color: {r: 0, g: 0, b: 0, a: 0}
+    - _Light2Position: {r: 0, g: 0, b: 0, a: 0}
+    - _Light3Color: {r: 0, g: 0, b: 0, a: 0}
+    - _Light3Position: {r: 0, g: 0, b: 0, a: 0}
+    - _Light_Color: {r: 0.43529412, g: 0.3727784, b: 0.30588236, a: 1}
     - _ShadowColor: {r: 0.31132078, g: 0.30985227, b: 0.30985227, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 0, g: 0, b: 0, a: 0}
+    - _TextureTiling: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []

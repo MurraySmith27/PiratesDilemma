@@ -102,7 +102,10 @@ GameObject:
   - component: {fileID: 1575094240466470441}
   - component: {fileID: 7569700150103749090}
   - component: {fileID: 4192873364133222961}
+  - component: {fileID: 2322307088373492961}
   - component: {fileID: 9188760197982640998}
+  - component: {fileID: 1252761937598757277}
+  - component: {fileID: 6149686663727182893}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -194,6 +197,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 0cf48ffe-0c93-4de2-b195-0d2623e7b17b
     m_ActionName: UI/Back[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f4fdcca5-3f0b-4cd2-b7ce-058e19b50fa6
+    m_ActionName: CharacterSelect/ChangeTeamColor[/DualShock4GamepadHID/leftShoulder,/DualShock4GamepadHID/leftTrigger,/DualShock4GamepadHID/rightTrigger,/DualShock4GamepadHID/rightShoulder,/Keyboard/q]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: CharacterSelect
@@ -285,6 +292,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa538663c5698bb48b6b380f42a3b13f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_mainTeamMaterialObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  m_accentTeamMaterialObjects: []
   m_sweatParticle: {fileID: 504876755394416719}
   m_damageFlashFalloffTime: 0.3
   m_onHitParticlePrefab: {fileID: 6065985910767874118, guid: 8f51537572cbd7a40ad475f5403e0d13,
@@ -295,6 +306,10 @@ MonoBehaviour:
   m_damageFlashColor: {r: 2.89173, g: 0.23188405, b: 0.23188405, a: 1}
   m_playerModel: {fileID: 6550420467975036842}
   m_playerTrailParticleSystem: {fileID: 3688828471138449751}
+  m_footstepIntervalTime: 0.25
+  m_footstepEventEmitter: {fileID: 2322307088373492961}
+  m_bombPickupEventEmitter: {fileID: 1252761937598757277}
+  m_catMeowSoundEffect: {fileID: 6149686663727182893}
 --- !u!143 &499935073571530274
 CharacterController:
   m_ObjectHideFlags: 0
@@ -517,6 +532,37 @@ MonoBehaviour:
   OverrideAttenuation: 0
   OverrideMinDistance: 1
   OverrideMaxDistance: 20
+--- !u!114 &2322307088373492961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3528894974979799562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -984512973
+      Data2: 1197629215
+      Data3: -926130251
+      Data4: 1516608267
+    Path: event:/footsteps_sfx
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!114 &9188760197982640998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -570,6 +616,68 @@ MonoBehaviour:
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
   m_DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &1252761937598757277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3528894974979799562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1802155734
+      Data2: 1232555778
+      Data3: -1682033255
+      Data4: 1637726119
+    Path: event:/bombpickup_sfx
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &6149686663727182893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3528894974979799562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1712061311
+      Data2: 1178900929
+      Data3: -577427018
+      Data4: -1722139740
+    Path: event:/meow_sfx
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3688828471138449751
 GameObject:
   m_ObjectHideFlags: 0

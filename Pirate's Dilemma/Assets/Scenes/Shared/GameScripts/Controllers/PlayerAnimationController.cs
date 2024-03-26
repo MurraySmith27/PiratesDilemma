@@ -5,7 +5,9 @@ using System.Linq;
 using Cinemachine;
 using FMODUnity;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 
 public class PlayerAnimationController : MonoBehaviour
 {
@@ -14,6 +16,10 @@ public class PlayerAnimationController : MonoBehaviour
     private CinemachineImpulseSource m_cinemachineImpulseSource;
     
     private CharacterController m_characterController;
+
+    [SerializeField] private List<GameObject> m_mainTeamMaterialObjects;
+    
+    [SerializeField] private List<GameObject> m_accentTeamMaterialObjects;
 
     [SerializeField] private GameObject m_sweatParticle;
 
@@ -31,7 +37,18 @@ public class PlayerAnimationController : MonoBehaviour
     
     [SerializeField] private GameObject m_playerModel;
 
-    [SerializeField] private GameObject m_playerTrailParticleSystem; 
+    [SerializeField] private GameObject m_playerTrailParticleSystem;
+
+    [SerializeField] private float m_footstepIntervalTime = 0.25f;
+
+    [FormerlySerializedAs("m_footstepEventEmitter")] [SerializeField] private StudioEventEmitter m_woodenFootstepEventEmitter;
+    
+    [SerializeField] private StudioEventEmitter m_bombPickupEventEmitter;
+
+    [SerializeField] private StudioEventEmitter m_catMeowSoundEffect;
+    
+    
+    private InputAction m_moveAction;
         
     private bool m_initialized = false;
     
@@ -40,10 +57,10 @@ public class PlayerAnimationController : MonoBehaviour
     private bool m_alive = true;
 
     private Vector3 m_lastPos;
+    
+    private float m_timeSinceLastFootstepSound = 0f;
 
     private PlayerData m_playerData;
-    
-    
 
     void Awake()
     {
@@ -59,8 +76,11 @@ public class PlayerAnimationController : MonoBehaviour
         m_playerData = GetComponent<PlayerData>();
         
         m_playerTrailParticleSystem.SetActive(true);
-        
+
+        m_moveAction = GetComponent<PlayerInput>().actions.FindAction("Move");
+
     }
+    
     
     public void OnGameStart()
     {
@@ -77,8 +97,6 @@ public class PlayerAnimationController : MonoBehaviour
         playerMovementController.m_onDashCooldownStart += OnDashCooldownStart;
         playerMovementController.m_onPlayerGetPushed += OnGetPushed;
         
-        
-
         PlayerItemController playerItemController = GetComponent<PlayerItemController>();
 
         playerItemController.m_onPlayerPickupBomb += OnPickupBomb;
@@ -88,6 +106,36 @@ public class PlayerAnimationController : MonoBehaviour
         m_initialized = true;
 
         m_alive = true;
+    }
+
+    public void SetTeamMaterials(Material mainMaterial, Material accentMaterial)
+    {
+
+        foreach (GameObject obj in m_mainTeamMaterialObjects)
+        {
+            List<Material> mats = new List<Material>();
+
+            Renderer renderer = obj.GetComponent<Renderer>();
+            
+            renderer.GetMaterials(mats);
+
+            mats[0] = mainMaterial;
+            
+            renderer.SetMaterials(mats);
+        }
+        
+        foreach (GameObject obj in m_accentTeamMaterialObjects)
+        {
+            List<Material> mats = new List<Material>();
+
+            Renderer renderer = obj.GetComponent<Renderer>();
+            
+            renderer.GetMaterials(mats);
+
+            mats[0] = accentMaterial;
+            
+            renderer.SetMaterials(mats);
+        }
     }
     
     public void SetInvulnerableMaterial(float invulnerableTime = -1)
@@ -129,7 +177,8 @@ public class PlayerAnimationController : MonoBehaviour
             materialsPerChild[i][1].SetFloat("_IsActive", 0f);
         }
     }
-
+    
+    
     void FixedUpdate()
     {
         if (m_initialized)
@@ -148,6 +197,28 @@ public class PlayerAnimationController : MonoBehaviour
             m_animator.SetFloat("MoveSpeed", currentVelocity);
             
             m_lastPos = transform.position;
+            
+            if (currentVelocity > 0f)
+            {
+                if (m_timeSinceLastFootstepSound > m_footstepIntervalTime)
+                {
+                    Vector3 feetPosition = GetComponent<PlayerMovementController>().m_feetPosition.position;
+                    if (Physics.Raycast(feetPosition, Vector3.down, maxDistance: 1f,
+                            layerMask: LayerMask.GetMask(new string[] { "WoodenFloor" })))
+                    {
+                        m_timeSinceLastFootstepSound = 0f;
+                        m_woodenFootstepEventEmitter.Play();
+                    }
+                }
+                else
+                {
+                    m_timeSinceLastFootstepSound += Time.deltaTime;
+                }
+            }
+            else
+            {
+                m_timeSinceLastFootstepSound += Time.deltaTime;
+            }
         }
         
     }
@@ -243,6 +314,7 @@ public class PlayerAnimationController : MonoBehaviour
     
     void OnPickupBomb(int teamNum, int playerNum)
     {
+        m_bombPickupEventEmitter.Play();
         m_animator.SetTrigger("StartPickup");
         m_animator.SetBool("CarryingBomb", true);
     }
@@ -260,6 +332,8 @@ public class PlayerAnimationController : MonoBehaviour
 
     void OnGetPushed(Vector3 contactPosition)
     {
+        m_catMeowSoundEffect.Play();
+        
         m_animator.SetBool("CarryingBomb", false);
         
         //reset dash cooldown effect

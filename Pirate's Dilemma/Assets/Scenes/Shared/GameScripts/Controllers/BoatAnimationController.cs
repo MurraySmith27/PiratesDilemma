@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class BoatAnimationController : MonoBehaviour
 {
@@ -13,6 +15,8 @@ public class BoatAnimationController : MonoBehaviour
     // [SerializeField] private float m_swayDegrees = 20f;
     // [SerializeField] private float m_verticalBobPeriod = 2f;
     // [SerializeField] private float m_verticalBobAmount = 0.2f;
+
+
     void Start()
     {
         GameTimerSystem.Instance.m_onGameStart -= OnGameStart; //remove first just to be safe awake gets called each scene load
@@ -27,7 +31,6 @@ public class BoatAnimationController : MonoBehaviour
         GameTimerSystem.Instance.m_onGameStart -= OnGameStart;
         GameTimerSystem.Instance.m_onGameFinish -= OnGameFinish;
     }
-
 
     private void OnGameStart()
     {
@@ -44,6 +47,18 @@ public class BoatAnimationController : MonoBehaviour
         BoatDamageController boatDamageController = GetComponent<BoatDamageController>();
 
         boatDamageController.m_onBoatDamaged -= OnBoatDamaged;
+    }
+
+    public void SetBoatTeamMaterials(Material mainMaterial, Material accentMaterial)
+    {
+        Renderer renderer = m_boatModel.GetComponent<Renderer>();
+
+        List<Material> mats = new List<Material>();
+        renderer.GetMaterials(mats);
+        mats[1] = accentMaterial;
+        mats[2] = mainMaterial;
+        mats[4] = mainMaterial;
+        renderer.SetMaterials(mats);
     }
     
     private IEnumerator EnterIdleAfterRandomDelay()

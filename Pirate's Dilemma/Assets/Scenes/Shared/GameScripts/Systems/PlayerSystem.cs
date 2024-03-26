@@ -13,6 +13,8 @@ public class TeamData
 {
     public Color color;
     public string name;
+    public Material mainMaterial;
+    public Material accentMaterial;
 }
 
 
@@ -32,9 +34,15 @@ public class PlayerSystem : GameSystem
     
     public int m_maxNumPlayers = 4;
 
-    public List<TeamData> m_teamDataOptions; //this stores all options for team data.
+    public List<TeamData> m_team1DataOptions; //this stores all options for team data.
+    
+    public List<TeamData> m_team2DataOptions;
     
     [HideInInspector] public List<TeamData> m_teamData; //this stores the currently selected ones.
+
+    private int m_team1DataOptionIndex;
+    
+    private int m_team2DataOptionIndex;
     
     public List<GameObject> m_team1playerPrefabs;
     
@@ -175,7 +183,7 @@ public class PlayerSystem : GameSystem
 
     private Coroutine m_startGameCountdownCoroutine;
 
-    private List<GameObject> m_visualStandIns;
+    public List<GameObject> m_visualStandIns;
 
     private bool m_debugMode = false;
     
@@ -207,8 +215,10 @@ public class PlayerSystem : GameSystem
             m_visualStandIns = new List<GameObject>();
 
             m_teamData = new List<TeamData>();
-            m_teamData.Add(m_teamDataOptions[0]);
-            m_teamData.Add(m_teamDataOptions[1]);
+            m_team1DataOptionIndex = 0;
+            m_teamData.Add(m_team1DataOptions[0]);
+            m_team2DataOptionIndex = 0;
+            m_teamData.Add(m_team2DataOptions[0]);
 
             m_numLevelsPlayed = 0;
         
@@ -419,6 +429,9 @@ public class PlayerSystem : GameSystem
         
         playerInput.actions.FindAction("Join").performed -= OnJoinButtonPressed;
         playerInput.actions.FindAction("Join").Disable();
+
+        playerInput.actions.FindAction("ChangeTeamColor").performed += (ctx => OnChangeTeamColorActionPerformed(teamNum));
+        playerInput.actions.FindAction("ChangeTeamColor").Enable();
         
         //after player joins, we also enable the in-game action map so they can test out the controls and ready up
         SwitchToActionMapForPlayer(playerNum, "InGame");
@@ -463,10 +476,39 @@ public class PlayerSystem : GameSystem
         
         playerAnimationController.OnGameStart();
         
+        playerAnimationController.SetTeamMaterials(m_teamData[teamNum-1].mainMaterial, m_teamData[teamNum-1].accentMaterial);
+        
         m_readyPlayers.Add(false);
         
         DontDestroyOnLoad(newPlayerInstance);
         m_onPlayerJoin(playerNum);
+    }
+
+    private void OnChangeTeamColorActionPerformed(int teamNum) 
+    {
+
+        if (teamNum == 1)
+        {
+            m_team1DataOptionIndex++;
+            m_teamData[0] = m_team1DataOptions[m_team1DataOptionIndex % m_team1DataOptions.Count];
+        }
+        else
+        {
+            m_team2DataOptionIndex++;
+            m_teamData[1] = m_team2DataOptions[m_team2DataOptionIndex % m_team2DataOptions.Count];
+        }
+
+
+        foreach (GameObject player in m_players)
+        {
+            if (player.GetComponent<PlayerData>().m_teamNum == teamNum)
+            {
+                PlayerAnimationController playerAnimationController = player.GetComponent<PlayerAnimationController>();
+                
+                playerAnimationController.SetTeamMaterials(m_teamData[teamNum-1].mainMaterial, m_teamData[teamNum-1].accentMaterial);
+            }
+        }
+        
     }
 
     public void OnReadyUpButtonPressed(int playerNum)
@@ -749,6 +791,8 @@ public class PlayerSystem : GameSystem
             playerInput = m_players[i].GetComponentInChildren<PlayerInput>();
             playerInput.actions.FindAction("ReadyUp").Disable();
             playerInput.actions.FindAction("ReadyUp").performed -= (ctx => OnReadyUpButtonPressed(i+1));
+            
+            playerInput.actions.FindAction("ChangeTeamColor").Disable();
 
             
             PlayerItemController playerItemController = m_players[i].GetComponent<PlayerItemController>();
@@ -773,6 +817,8 @@ public class PlayerSystem : GameSystem
                 m_playerControlSchemesList[i].FindAction("ReadyUp").Enable();
                 m_playerControlSchemesList[i].FindAction("Join").Disable();
                 playerInput.actions.FindAction("Join").Disable();
+                
+                playerInput.actions.FindAction("ChangeTeamColor").Enable();
                 
                 m_players[i].GetComponent<PlayerMovementController>().OnGameStart();
                 m_players[i].GetComponent<PlayerItemController>().OnGameStart();

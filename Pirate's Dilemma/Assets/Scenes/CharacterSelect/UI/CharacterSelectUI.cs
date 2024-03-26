@@ -41,7 +41,8 @@ public class CharacterSelectUI : UIBase
     private List<SupportedDeviceType> m_deviceTypesPerPlayer;
 
     private Coroutine m_startGameCountdownCoroutine;
-
+    
+    private Coroutine m_updateReadyUpHoverCoroutine;
 
     private enum SupportedDeviceType
     {
@@ -107,11 +108,6 @@ public class CharacterSelectUI : UIBase
 
         newReadyUpHover.Q<Label>("ready-text").text = "Ready";
         m_root.Add(newReadyUpHover);
-        
-        Vector3 screen = Camera.main.WorldToScreenPoint(m_renderTextureQuads[newPlayerNum - 1].transform.position);
-        newReadyUpHover.style.left =
-            screen.x - 75;
-        newReadyUpHover.style.top = (Screen.height - screen.y);
 
         PlayerSystem.Instance.SwitchToActionMapForPlayer(newPlayerNum, "CharacterSelect");
 
@@ -161,10 +157,28 @@ public class CharacterSelectUI : UIBase
             camera: m_testControlsCamera);
 
         UpdateReadyUpUI(newPlayerNum, false);
+        
+        m_updateReadyUpHoverCoroutine = StartCoroutine(UpdateReadyUpHoverPositions());
+    }
+
+    private IEnumerator UpdateReadyUpHoverPositions()
+    {
+        while(true) {
+            for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
+            {
+                Vector3 screen = Camera.main.WorldToScreenPoint(PlayerSystem.Instance.m_visualStandIns[i].transform.position);
+                m_readyUpHoverElements[i].style.left =
+                    screen.x - 75;
+                m_readyUpHoverElements[i].style.top = (Screen.height - screen.y);
+            }
+
+            yield return null;
+        }
     }
 
     private void OnCharacterSelectEnd()
     {
+        StopCoroutine(m_updateReadyUpHoverCoroutine);
         foreach (VisualElement elem in m_readyUpHoverElements)
         {
             elem.style.visibility = Visibility.Hidden;

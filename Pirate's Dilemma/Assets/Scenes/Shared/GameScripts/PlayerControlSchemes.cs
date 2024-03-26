@@ -275,6 +275,15 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeTeamColor"",
+                    ""type"": ""Button"",
+                    ""id"": ""f4fdcca5-3f0b-4cd2-b7ce-058e19b50fa6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -336,11 +345,66 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""e7b768d4-c79e-44c6-9219-48c04de8016a"",
-                    ""path"": ""<Gamepad>/start"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ReadyUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f7558c3b-abf7-48a3-b5cc-8176219a7386"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeTeamColor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""97f51e12-6d86-486d-974b-3975731f5350"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeTeamColor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92968ded-fbcb-4e02-9cd0-ae35d1fb8326"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeTeamColor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""82167e38-0848-479c-bace-6f3a8a2ca912"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeTeamColor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""13551727-2a2d-46a2-9231-70f4ff212a88"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeTeamColor"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -483,6 +547,7 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
         m_CharacterSelect = asset.FindActionMap("CharacterSelect", throwIfNotFound: true);
         m_CharacterSelect_Join = m_CharacterSelect.FindAction("Join", throwIfNotFound: true);
         m_CharacterSelect_ReadyUp = m_CharacterSelect.FindAction("ReadyUp", throwIfNotFound: true);
+        m_CharacterSelect_ChangeTeamColor = m_CharacterSelect.FindAction("ChangeTeamColor", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Pause = m_UI.FindAction("Pause", throwIfNotFound: true);
@@ -621,12 +686,14 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
     private List<ICharacterSelectActions> m_CharacterSelectActionsCallbackInterfaces = new List<ICharacterSelectActions>();
     private readonly InputAction m_CharacterSelect_Join;
     private readonly InputAction m_CharacterSelect_ReadyUp;
+    private readonly InputAction m_CharacterSelect_ChangeTeamColor;
     public struct CharacterSelectActions
     {
         private @PlayerControlSchemes m_Wrapper;
         public CharacterSelectActions(@PlayerControlSchemes wrapper) { m_Wrapper = wrapper; }
         public InputAction @Join => m_Wrapper.m_CharacterSelect_Join;
         public InputAction @ReadyUp => m_Wrapper.m_CharacterSelect_ReadyUp;
+        public InputAction @ChangeTeamColor => m_Wrapper.m_CharacterSelect_ChangeTeamColor;
         public InputActionMap Get() { return m_Wrapper.m_CharacterSelect; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -642,6 +709,9 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
             @ReadyUp.started += instance.OnReadyUp;
             @ReadyUp.performed += instance.OnReadyUp;
             @ReadyUp.canceled += instance.OnReadyUp;
+            @ChangeTeamColor.started += instance.OnChangeTeamColor;
+            @ChangeTeamColor.performed += instance.OnChangeTeamColor;
+            @ChangeTeamColor.canceled += instance.OnChangeTeamColor;
         }
 
         private void UnregisterCallbacks(ICharacterSelectActions instance)
@@ -652,6 +722,9 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
             @ReadyUp.started -= instance.OnReadyUp;
             @ReadyUp.performed -= instance.OnReadyUp;
             @ReadyUp.canceled -= instance.OnReadyUp;
+            @ChangeTeamColor.started -= instance.OnChangeTeamColor;
+            @ChangeTeamColor.performed -= instance.OnChangeTeamColor;
+            @ChangeTeamColor.canceled -= instance.OnChangeTeamColor;
         }
 
         public void RemoveCallbacks(ICharacterSelectActions instance)
@@ -760,6 +833,7 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
     {
         void OnJoin(InputAction.CallbackContext context);
         void OnReadyUp(InputAction.CallbackContext context);
+        void OnChangeTeamColor(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

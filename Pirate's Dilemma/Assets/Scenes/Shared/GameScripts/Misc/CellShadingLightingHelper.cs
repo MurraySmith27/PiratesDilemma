@@ -116,6 +116,6 @@ public class CellShadingLightingHelper : MonoBehaviour
             GetAllCellShadedMaterials(new Scene(), LoadSceneMode.Additive);
             SetStaticLights(new Scene(), LoadSceneMode.Additive);
         }
-        SetDynamicLights();
+        //SetDynamicLights();
     }
 }
