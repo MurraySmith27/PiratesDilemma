@@ -83,10 +83,12 @@ public class PlayerMovementController : MonoBehaviour
     private CharacterController m_characterController;
 
     private Coroutine m_dashChargeUpCoroutine;
+
+    public Vector3 m_playerVelocity;
     
     private bool m_isFreezingDuringContact = false;
     // Making "ice-sliding" effect, so there will be a delay in player movement controls
-    [SerializeField] public bool iceSliding = true;
+    [SerializeField] public bool iceSliding;
     private Vector3 m_smootherMotion = Vector3.zero;
     [SerializeField] public float m_smoothIndex = 0.02f;
     [SerializeField] public const float m_slidingAfterwards = 5.0f;
@@ -109,6 +111,8 @@ public class PlayerMovementController : MonoBehaviour
     
     private void FixedUpdate()
     {
+        UpdateIceSlidingState();
+        
         Vector2 moveInput = -m_moveAction.ReadValue<Vector2>().normalized;
         if (m_initialized && !m_isDashing && !m_isBeingPushed && !_mPlayerItemController.IsOccupied())
         {
@@ -166,23 +170,7 @@ public class PlayerMovementController : MonoBehaviour
                 {
                     motion = Vector3.zero;
                 }
-// <<<<<<< HEAD
-//
-//                 m_characterController.Move(motion);
-//                 
-//                 // there are some situations where moving would bounce the player off a collider and put them over a
-//                 // killzone. In those situations, just revert to the original position.
-//                  RaycastHit hit4;
-//                  if (Physics.Raycast(
-//                          transform.position, Vector3.down,
-//                          out hit4))
-//                  {
-//                      if (hit4.transform.gameObject.layer == LayerMask.NameToLayer("Killzone") && wasOverGround)
-//                      {
-//                          m_characterController.Move(prevPosition - transform.position);
-//                      }
-//                  }
-// =======
+                
                 if (iceSliding)
                 {
                     Debug.Log(m_smoothIndex);
@@ -194,6 +182,7 @@ public class PlayerMovementController : MonoBehaviour
                 else
                 {
                     m_characterController.Move(motion);
+                    
                 }
                 //there are some situations where moving would bounce the player off a collider and put them over a
                 //killzone. In those situations, just revert to the original position.
@@ -239,6 +228,22 @@ public class PlayerMovementController : MonoBehaviour
         if (moveInput.magnitude != 0 && !m_isDashing && !m_isBeingPushed)
         {
             transform.LookAt(transform.position + new Vector3(moveInput.x, 0, moveInput.y));
+        }
+    }
+    
+    private void UpdateIceSlidingState()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 2f))
+        {
+            if (hit.collider.CompareTag("IceGround"))
+            {
+                iceSliding = true;
+            }
+            else
+            {
+                iceSliding = false;
+            }
         }
     }
 
