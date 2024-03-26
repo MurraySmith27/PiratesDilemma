@@ -241,6 +241,8 @@ MonoBehaviour:
   m_trajectoryLineResolution: 10
   m_feetPosition: {fileID: 8814260995174423450}
   m_getOffBoatInputThreshold: 0.5
+  m_movingThrowMultiplier: 3
+  m_dashingThrowMultiplier: 5
 --- !u!114 &8159576825246783168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,7 +275,11 @@ MonoBehaviour:
   m_tackleSoundEventEmitter: {fileID: 1575094240466470441}
   m_dashSoundEventEmitter: {fileID: 7569700150103749090}
   m_feetPosition: {fileID: 8814260995174423450}
-  iceSliding: 0
+  m_isDashing: 0
+  m_isMoving: 0
+  m_characterController: {fileID: 0}
+  m_playerVelocity: {x: 0, y: 0, z: 0}
+  iceSliding: 1
   m_smoothIndex: 0.02
 --- !u!114 &4104745165709088208
 MonoBehaviour:

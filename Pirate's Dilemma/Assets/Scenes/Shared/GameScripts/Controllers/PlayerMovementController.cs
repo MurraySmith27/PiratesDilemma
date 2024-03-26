@@ -61,7 +61,8 @@ public class PlayerMovementController : MonoBehaviour
     
     private bool m_isChargingDash;
     
-    private bool m_isDashing;
+    public bool m_isDashing;
+    public bool m_isMoving;
 
     private bool m_invulnerable;
 
@@ -80,7 +81,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool m_initialized;
     
-    private CharacterController m_characterController;
+    public CharacterController m_characterController;
 
     private Coroutine m_dashChargeUpCoroutine;
 
@@ -108,12 +109,40 @@ public class PlayerMovementController : MonoBehaviour
         GameTimerSystem.Instance.m_onGameFinish += OnGameStop;
     }
     
+    private void UpdateIceSlidingState()
+    {
+        RaycastHit iceHitting;
+        if (Physics.Raycast(m_feetPosition.transform.position, Vector3.down, maxDistance: 1f, layerMask: LayerMask.GetMask(new string[]{"IceFloor"})))
+        {
+   
+            iceSliding = true;
+            Debug.Log("yes lol");
+        }
+        else
+        {
+            iceSliding = false;
+            Debug.Log("no lol");
+        }
+        // Debug.Log("lksjafdkljsdalkfjlsdk lol");
+    }   
     
     private void FixedUpdate()
     {
-        UpdateIceSlidingState();
+        UpdateIceSlidingState(); // Ice Sliding check
+        
+        // Debug.Log(m_characterController.velocity.magnitude);
         
         Vector2 moveInput = -m_moveAction.ReadValue<Vector2>().normalized;
+        // Debug.Log(moveInput);
+        if (moveInput == Vector2.zero)
+        {
+            m_isMoving = false;
+        }
+        else
+        {
+            m_isMoving = true;
+        }
+        
         if (m_initialized && !m_isDashing && !m_isBeingPushed && !_mPlayerItemController.IsOccupied())
         {
             float speed = m_speed;
@@ -231,21 +260,7 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
     
-    private void UpdateIceSlidingState()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, 2f))
-        {
-            if (hit.collider.CompareTag("IceGround"))
-            {
-                iceSliding = true;
-            }
-            else
-            {
-                iceSliding = false;
-            }
-        }
-    }
+
 
     public void OnGameStart()
     {
@@ -278,7 +293,8 @@ public class PlayerMovementController : MonoBehaviour
 
     public bool IsOccupied()
     {
-        return m_isDashing || m_isBeingPushed || m_isChargingDash;
+        // return m_isDashing || m_isBeingPushed || m_isChargingDash;
+        return m_isBeingPushed || m_isChargingDash;
     }
 
     public void MakeInvulnerable(float invulnerableTime = -1)
