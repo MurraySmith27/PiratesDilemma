@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="ParameterPreset" id="{b421e88d-8677-4f28-ab70-8e16f13a659d}">
+	<object class="ParameterPreset" id="{d38ab987-f60d-4a21-a621-055060be7ec2}">
 		<property name="name">
 			<value>Space</value>
 		</property>
@@ -8,10 +8,10 @@
 			<destination>{d83a2ab2-91e3-4843-aebb-158ad7c2e782}</destination>
 		</relationship>
 		<relationship name="parameter">
-			<destination>{0a73a31f-60e6-4316-a88d-29c13e3fafaa}</destination>
+			<destination>{2e304f2c-fc5a-41ce-9560-1cd58c2a3a18}</destination>
 		</relationship>
 	</object>
-	<object class="GameParameter" id="{0a73a31f-60e6-4316-a88d-29c13e3fafaa}">
+	<object class="GameParameter" id="{2e304f2c-fc5a-41ce-9560-1cd58c2a3a18}">
 		<property name="parameterType">
 			<value>2</value>
 		</property>
@@ -19,8 +19,8 @@
 			<value>2</value>
 		</property>
 		<property name="enumerationLabels">
-			<value>Inside</value>
 			<value>Outside</value>
+			<value>Inside</value>
 		</property>
 		<property name="isGlobal">
 			<value>true</value>
