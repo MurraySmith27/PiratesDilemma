@@ -51,7 +51,8 @@ public class BombController : MonoBehaviour
     private CinemachineImpulseSource m_cinemachineImpulseSource;
     
     void Start()
-    {  
+    {
+        m_lastHeldTeamNum = -1;
         m_cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
     }
     

@@ -352,6 +352,7 @@ public class PlayerItemController : MonoBehaviour
         BombController bombController = m_heldBombGameObject.GetComponent<BombController>();
 
         bombController.m_onBombExplode += OnBombExplodeInHand;
+        bombController.m_lastHeldTeamNum = -1;
 
         item.GetComponent<Rigidbody>().isKinematic = true;
         
