@@ -440,6 +440,15 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NavigateUI"",
+                    ""type"": ""Value"",
+                    ""id"": ""334b208f-896b-4e5d-9a20-a71931f3aa22"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -508,6 +517,83 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
                     ""action"": ""Back"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""229f12ab-5be1-40f2-abbb-541631387a8c"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NavigateUI"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b540e43d-8afc-43c7-a5d0-f20d3a292765"",
+                    ""path"": ""<Gamepad>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NavigateUI"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""420258e6-5e7c-4817-affc-123acec98dd0"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NavigateUI"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""3ebea1dd-f42e-4e14-bbfc-f096c8d21a6a"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NavigateUI"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""f8cb8123-5323-4546-a856-b6d1b7413f92"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NavigateUI"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""583360b5-b50b-46fc-b8a6-c1ae806d7aaf"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NavigateUI"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""e5e7cbbe-8b76-45ea-83de-533dc2ef9708"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NavigateUI"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -553,6 +639,7 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
         m_UI_Pause = m_UI.FindAction("Pause", throwIfNotFound: true);
         m_UI_Select = m_UI.FindAction("Select", throwIfNotFound: true);
         m_UI_Back = m_UI.FindAction("Back", throwIfNotFound: true);
+        m_UI_NavigateUI = m_UI.FindAction("NavigateUI", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -749,6 +836,7 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Pause;
     private readonly InputAction m_UI_Select;
     private readonly InputAction m_UI_Back;
+    private readonly InputAction m_UI_NavigateUI;
     public struct UIActions
     {
         private @PlayerControlSchemes m_Wrapper;
@@ -756,6 +844,7 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
         public InputAction @Pause => m_Wrapper.m_UI_Pause;
         public InputAction @Select => m_Wrapper.m_UI_Select;
         public InputAction @Back => m_Wrapper.m_UI_Back;
+        public InputAction @NavigateUI => m_Wrapper.m_UI_NavigateUI;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -774,6 +863,9 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
             @Back.started += instance.OnBack;
             @Back.performed += instance.OnBack;
             @Back.canceled += instance.OnBack;
+            @NavigateUI.started += instance.OnNavigateUI;
+            @NavigateUI.performed += instance.OnNavigateUI;
+            @NavigateUI.canceled += instance.OnNavigateUI;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -787,6 +879,9 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
             @Back.started -= instance.OnBack;
             @Back.performed -= instance.OnBack;
             @Back.canceled -= instance.OnBack;
+            @NavigateUI.started -= instance.OnNavigateUI;
+            @NavigateUI.performed -= instance.OnNavigateUI;
+            @NavigateUI.canceled -= instance.OnNavigateUI;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -840,5 +935,6 @@ public partial class @PlayerControlSchemes: IInputActionCollection2, IDisposable
         void OnPause(InputAction.CallbackContext context);
         void OnSelect(InputAction.CallbackContext context);
         void OnBack(InputAction.CallbackContext context);
+        void OnNavigateUI(InputAction.CallbackContext context);
     }
 }

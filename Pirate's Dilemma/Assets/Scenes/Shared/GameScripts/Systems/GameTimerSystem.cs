@@ -45,7 +45,9 @@ public class GameTimerSystem : GameSystem
     [SerializeField] private float m_holdAfterCharacterSelectEndTime = 3f;
     
     [SerializeField] private float m_holdAfterLevelSelectEndTime = 3f;
-
+    
+    [SerializeField] private float m_holdAfterLevelEndEndTime = 0f;
+    
     [SerializeField] public float m_gameSceneLoadedBufferSeconds = 0.5f;
     
     [SerializeField] private float m_gameSceneUnloadedBufferSeconds = 0.5f;
@@ -81,10 +83,11 @@ public class GameTimerSystem : GameSystem
     
     public bool m_gamePaused = false;
 
+    public string m_lastPlayedLevelName { get; private set; }
+
     private Coroutine m_gameCountdownCoroutine;
 
     private int m_winningTeamNum;
-
 
     void Update()
     {
@@ -187,6 +190,20 @@ public class GameTimerSystem : GameSystem
         }
     }
 
+    public string GetNextLevelName()
+    {
+        for (int i = 0; i < m_levelSceneNames.Count; i++) 
+        {
+
+            if (m_lastPlayedLevelName == m_levelSceneNames[i])
+            {
+                return m_levelSceneNames[i + 1];
+            }
+        }
+
+        return "";
+    }
+    
     public void StartGame()
     {
         m_gamePaused = false;
@@ -233,6 +250,10 @@ public class GameTimerSystem : GameSystem
         {
             StartCoroutine(EndLevelSelectSceneCoroutine(nextSceneToLoadName));
         }
+        else if (SceneManager.GetActiveScene().name == m_levelEndSceneName)
+        {
+            StartCoroutine(EndLevelEndSceneCoroutine(nextSceneToLoadName));
+        }
         else if (m_levelSceneNames.Contains(SceneManager.GetActiveScene().name))
         {
             StartCoroutine(EndGameCoroutine(nextSceneToLoadName));
@@ -241,6 +262,20 @@ public class GameTimerSystem : GameSystem
                 StopCoroutine(m_gameCountdownCoroutine);
             }
         }
+    }
+    
+    private IEnumerator EndLevelEndSceneCoroutine(string nextSceneToLoadName)
+    {
+        yield return new WaitForSeconds(m_holdAfterLevelEndEndTime);
+        
+        if (m_onGameSceneUnloaded != null && m_onGameSceneUnloaded.GetInvocationList().Length > 0)
+        {
+            m_onGameSceneUnloaded();
+        }
+        
+        yield return new WaitForSeconds(m_gameSceneUnloadedBufferSeconds);
+        
+        SceneManager.LoadScene(nextSceneToLoadName);
     }
     
     private IEnumerator EndLevelSelectSceneCoroutine(string nextSceneToLoadName)
@@ -295,6 +330,8 @@ public class GameTimerSystem : GameSystem
         }
         
         yield return new WaitForSeconds(m_gameSceneUnloadedBufferSeconds);
+
+        m_lastPlayedLevelName = SceneManager.GetActiveScene().name;
         
         SceneManager.LoadScene(nextSceneToLoadName);
 
