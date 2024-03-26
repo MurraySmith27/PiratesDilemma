@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{f314864a-f492-4dbf-aa90-971d2ef8e70e}">
+		<property name="assetPath">
+			<value>BombSounds/sfx_pickuphi_3.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.12595833333333334</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{4c200090-9426-4155-bc33-8200dc82c9ce}</destination>
+		</relationship>
+	</object>
+</objects>
