@@ -238,7 +238,14 @@ public class GameTimerSystem : GameSystem
         {
             if (m_lastPlayedLevelName == m_levelSceneNames[i])
             {
-                return m_levelSceneNames[i + 1];
+                if (i == m_levelSceneNames.Count - 1)
+                {
+                    return "";
+                }
+                else
+                {
+                    return m_levelSceneNames[i + 1];
+                }
             }
         }
 

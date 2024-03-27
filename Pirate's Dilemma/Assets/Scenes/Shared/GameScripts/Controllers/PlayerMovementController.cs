@@ -95,6 +95,8 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] public float m_smoothIndex = 0.02f;
     [SerializeField] public const float m_slidingAfterwards = 5.0f;
 
+    public bool m_playerDead = false;
+
     
     private void Awake()
     {
@@ -271,6 +273,7 @@ public class PlayerMovementController : MonoBehaviour
         m_dashOnCooldown = false;
         m_isBeingPushed = false;
         m_isFreezingDuringContact = false;
+        m_playerDead = false;
 
         m_dashAction.performed += OnDashButtonHeld;
         // m_dashAction.canceled += OnDashButtonReleased;
@@ -463,11 +466,18 @@ public class PlayerMovementController : MonoBehaviour
             Vector3 pushDirection = (transform.position - otherCollider.gameObject.transform.position).normalized;
             GetPushed(new Vector2(pushDirection.x, pushDirection.z), m_explosionPushDistance, otherCollider.ClosestPoint(transform.position));
         }
-        
+    }
+
+    private void OnTriggerStay(Collider otherCollider)
+    {
         if (otherCollider.gameObject.layer == LayerMask.NameToLayer("Killzone") && !m_isDashing)
         {
             //player dies.
-            m_onPlayerDie(m_playerData.m_playerNum);
+            if (!m_playerDead)
+            {
+                m_onPlayerDie(m_playerData.m_playerNum);
+                m_playerDead = true;
+            }
         }
     }
 

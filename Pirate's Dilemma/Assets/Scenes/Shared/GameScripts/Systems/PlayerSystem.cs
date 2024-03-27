@@ -596,6 +596,7 @@ public class PlayerSystem : GameSystem
         m_players[playerNum - 1].GetComponent<PlayerMovementController>();
         playerMovementController.WarpToPosition(m_playerSpawnPositions[playerNum - 1].position);
         playerMovementController.MakeInvulnerable();
+        playerMovementController.m_playerDead = false;
 
         PlayerAnimationController playerAnimationController =
             m_players[playerNum - 1].GetComponent<PlayerAnimationController>();

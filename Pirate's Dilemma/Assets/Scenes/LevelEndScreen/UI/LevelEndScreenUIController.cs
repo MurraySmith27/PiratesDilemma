@@ -55,8 +55,15 @@ public class LevelEndScreenUIController : MonoBehaviour
         m_menuItems = new List<Button>();
 
         Button nextLevelButton = m_menuRoot.Q<Button>("next-level-button");
-        nextLevelButton.clicked += () => LoadNextScene(GameTimerSystem.Instance.GetNextLevelName());
-        m_menuItems.Add(nextLevelButton);
+        if (GameTimerSystem.Instance.GetNextLevelName() != "")
+        {
+            nextLevelButton.clicked += () => LoadNextScene(GameTimerSystem.Instance.GetNextLevelName());
+            m_menuItems.Add(nextLevelButton);
+        }
+        else
+        {
+            nextLevelButton.AddToClassList("menu-button-disabled");    
+        }
 
         Button levelSelectButton = m_menuRoot.Q<Button>("level-select-button"); 
         levelSelectButton.clicked += () => LoadNextScene(GameTimerSystem.Instance.m_levelSelectSceneName);
@@ -110,7 +117,6 @@ public class LevelEndScreenUIController : MonoBehaviour
     private void OnImpactBackgroundDisappear()
     {
         m_losersRoot.ClearClassList();
-        m_renderTextureCoroutine = StartCoroutine(ProjectRenderTexturesOntoLoserSlots());
 
         PlayerInput playerInput = PlayerSystem.Instance.m_players[0].GetComponent<PlayerInput>();
 
@@ -122,6 +128,9 @@ public class LevelEndScreenUIController : MonoBehaviour
     {
         m_menuRoot.ClearClassList();
         m_menuRoot.AddToClassList("menu-root-style");
+        
+        m_winnerText.AddToClassList("losers-root-out");
+        m_losersRoot.AddToClassList("losers-root-out");
 
         PlayerInput playerInput = PlayerSystem.Instance.m_players[0].GetComponent<PlayerInput>();
 
@@ -139,7 +148,6 @@ public class LevelEndScreenUIController : MonoBehaviour
 
     private void OnButtonSelected(InputAction.CallbackContext ctx)
     {
-        Debug.Log($"button clicked! Currenly selected: {m_currentlySelectedMenuItemIndex}");
         Button button = m_menuItems[m_currentlySelectedMenuItemIndex];
         //simulate a click event.
         using (var e = new NavigationSubmitEvent() { target = button })
@@ -178,7 +186,6 @@ public class LevelEndScreenUIController : MonoBehaviour
                 //move up
                 if (m_currentlySelectedMenuItemIndex > 0)
                 {
-                    Debug.Log("move up!");
                     m_currentlySelectedMenuItemIndex--;
                     m_menuClickEventEmitter.Play();
                 }
@@ -189,12 +196,10 @@ public class LevelEndScreenUIController : MonoBehaviour
                 if (m_currentlySelectedMenuItemIndex < m_menuItems.Count - 1)
                 {
                     
-                    Debug.Log("move down!");
                     m_currentlySelectedMenuItemIndex++;
                     m_menuClickEventEmitter.Play();
                 }
             }
-            Debug.Log($"currentlyselected: {m_currentlySelectedMenuItemIndex}");
 
         }
         UpdateMenuButtons();
@@ -204,30 +209,4 @@ public class LevelEndScreenUIController : MonoBehaviour
     {
         m_menuItems[m_currentlySelectedMenuItemIndex].Focus();
     }
-
-    private IEnumerator ProjectRenderTexturesOntoLoserSlots()
-    {
-        while (true)
-        {
-            for (int i = 0; i < 2; i++)
-            {
-                RenderTexture.active = m_loserSlotRenderTextures[i];
-                Texture2D tex = new Texture2D(m_loserSlotRenderTextures[i].width, m_loserSlotRenderTextures[i].height);
-                tex.ReadPixels(new Rect(0, 0, m_loserSlotRenderTextures[i].width, m_loserSlotRenderTextures[i].height),
-                    0, 0);
-                tex.Apply();
-                m_loserFrames[i].style.backgroundImage = tex;
-
-                List<Material> mats = new();
-
-                background.GetMaterials(mats);
-
-                mats[0].SetTexture("_Base_Map", tex);
-            }
-
-            yield return null;
-        }
-    }
-
-
 }

@@ -115,9 +115,9 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Light1FlickerStrength: 10
-    - _Light1Intensity: 6.55
-    - _Light2FlickerStrength: 10
-    - _Light2Intensity: 6.55
+    - _Light1Intensity: 4.02
+    - _Light2FlickerStrength: 2
+    - _Light2Intensity: 8
     - _Light3FlickerStrength: 10
     - _Light3Intensity: 3.75
     - _Metallic: 0
@@ -138,8 +138,8 @@ Material:
     - _Surface: 0
     - _UseCustomNormalMap: 0
     - _UseEmission: 1
-    - _UseLight1: 1
-    - _UseLight2: 1
+    - _UseLight1: 0
+    - _UseLight2: 0
     - _UseLight3: 0
     - _UseSecondLight: 0
     - _WorkflowMode: 1
@@ -151,10 +151,10 @@ Material:
     - _DefaultEmissionHDR: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FresnelIntensity: {r: 1, g: 1, b: 1, a: 0}
-    - _Light1Color: {r: 0.4811321, g: 0.45007017, b: 0.28675473, a: 1}
-    - _Light1Position: {r: -34.15057, g: 5.40219, b: -6.3999996, a: 0}
-    - _Light2Color: {r: 0.4811321, g: 0.45007017, b: 0.28675473, a: 1}
-    - _Light2Position: {r: 22.973732, g: 5.40219, b: -23.217213, a: 0}
+    - _Light1Color: {r: 1, g: 0.61922556, b: 0, a: 0.2627451}
+    - _Light1Position: {r: -0.17092912, g: 6.1650324, b: 13.327577, a: 0}
+    - _Light2Color: {r: 0.9528302, g: 0.49602422, b: 0, a: 0.1764706}
+    - _Light2Position: {r: -5.3319, g: 14.7593975, b: 18.52, a: 0}
     - _Light3Color: {r: 0.5283019, g: 0.3086993, b: 0, a: 1}
     - _Light3Position: {r: -5.95, g: 6.862, b: 21.48, a: 0}
     - _Light_Color: {r: 0.81886786, g: 0.68970305, b: 0.5129512, a: 1}

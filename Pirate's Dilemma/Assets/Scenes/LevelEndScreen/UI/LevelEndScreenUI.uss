@@ -23,13 +23,42 @@
 .menu-button {
     -unity-font-definition: initial;
     -unity-font: url('project://database/Assets/Scenes/Shared/UI/GladlyAcceptRegular-Wyjov.ttf?fileID=12800000&guid=b110f5bd0d6b1bf4bb9c836913cbccfa&type=3#GladlyAcceptRegular-Wyjov');
-    background-color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0);
+    background-image: url('project://database/Assets/Art/GUI/PNG/Board-plank%205%20500x500_1.png?fileID=-1709899334&guid=28d855b28324a3743aa2bd215f3bddab&type=3#Board-plank 5 500x500_1_0');
 }
 
 .menu-button-hover:focus {
-    border-left-color: rgb(0, 0, 0);
-    border-right-color: rgb(0, 0, 0);
-    border-top-color: rgb(0, 0, 0);
-    border-bottom-color: rgb(0, 0, 0);
-    background-color: rgb(45, 223, 255);
+    background-color: rgba(255, 255, 255, 0);
+    background-image: url('project://database/Assets/Art/GUI/PNG/Board-plank%205%20500x500.png?fileID=66792359&guid=bd1757e4b0fbaf644937941fff9ef610&type=3#Board-plank 5 500x500_0');
+}
+
+.menu-button-disabled {
+    background-color: rgb(60, 60, 60);
+    -unity-background-image-tint-color: rgb(84, 84, 84);
+}
+
+.loser-pane-background {
+    flex-grow: 5;
+    flex-shrink: 5;
+    background-image: url('project://database/Assets/Art/GUI/PNG/Board%202%20500x500_1.png?fileID=-1171380724&guid=3fd927f4d0551724aa97400dc37372ba&type=3#Board 2 500x500_1_0');
+}
+
+.loser-pane {
+    flex-grow: 1;
+    background-color: rgb(0, 0, 0);
+    margin-top: 10%;
+    margin-right: 10%;
+    margin-bottom: 10%;
+    margin-left: 10%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.losers-root-up {
+    transition-duration: 1s;
+    transition-timing-function: ease-in-bounce;
+    translate: 0 -100%;
+    flex-grow: 1;
 }
