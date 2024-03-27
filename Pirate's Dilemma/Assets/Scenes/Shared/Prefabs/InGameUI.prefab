@@ -530,6 +530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84524c042fb29746b7f231db0975ded, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_systemDependencies: []
+  m_systemDependencies:
+  - GameTimerSystem
   m_transitionTime: 0.5
   m_startCovered: 1

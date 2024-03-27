@@ -308,23 +308,30 @@ public class PlayerItemController : MonoBehaviour
             m_throwingTargetGameObject.SetActive(true);
             
             CharacterController targetCharacterController = m_throwingTargetGameObject.GetComponent<CharacterController>();
-
-            
-            targetCharacterController.enabled = false;
-            targetCharacterController.Move(transform.forward * m_maxThrowDistance);
-            targetCharacterController.enabled = true;
             
             m_onPlayerStartThrowCharge();
-            
-            Vector3 targetPos = m_throwingTargetGameObject.transform.position;
 
+            float throwDistance = m_maxThrowDistance;
+            
+            float throwMultiplier = 1f;
+            if (m_playerMovementController.m_isDashing)
+            {
+                throwDistance *= m_dashingThrowMultiplier;
+            }
+            else if (m_playerMovementController.m_isMoving && !m_playerMovementController.m_isDashing)
+            {
+                throwDistance *= m_movingThrowMultiplier;
+            }
+            
+            Vector3 targetPos = m_feetPosition.transform.position + transform.forward * throwDistance;
+            
             GameObject looseBomb = m_heldBombGameObject;
 
             BombController bombController = looseBomb.GetComponent<BombController>();
             
             bombController.m_wasThrown = true;
             
-            Coroutine throwBombCoroutine = StartCoroutine(ThrowBombCoroutine(m_feetPosition.transform.position + transform.forward * m_maxThrowDistance, looseBomb));
+            Coroutine throwBombCoroutine = StartCoroutine(ThrowBombCoroutine(targetPos, looseBomb));
 
             m_onPlayerStartThrow();
 
@@ -428,9 +435,6 @@ public class PlayerItemController : MonoBehaviour
 
     private IEnumerator ThrowBombCoroutine(Vector3 finalPos, GameObject looseBomb)
     {
-        // Debug.Log(m_playerMovementController.m_characterController.velocity);
-        // Debug.Log(m_playerMovementController.m_isDashing);
-        // Debug.Log(m_playerMovementController.m_isMoving);
 
         float throwMultiplier = 1f;
         if (m_playerMovementController.m_isDashing)
@@ -469,7 +473,7 @@ public class PlayerItemController : MonoBehaviour
             {
                 break;
             }
-            newPos.y = -(progress * horizontalDistance - horizontalDistance) * (progress*horizontalDistance + ((heightDeltaWithFloor - finalPosHeightDeltaWithFloor) / horizontalDistance)) + finalPosHeightDeltaWithFloor;
+            newPos.y = -((progress * horizontalDistance - horizontalDistance) * (progress*horizontalDistance + ((heightDeltaWithFloor - finalPosHeightDeltaWithFloor) / horizontalDistance)) + finalPosHeightDeltaWithFloor) / (throwMultiplier);
             
             looseBombRb.MovePosition(newPos);
         }

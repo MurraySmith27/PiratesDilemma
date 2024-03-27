@@ -95,6 +95,14 @@ public class GameTimerSystem : GameSystem
         {
             EndGame(1,0);
         }
+
+        for (int i = 0; i < m_levelSceneNames.Count; i++)
+        {
+            if (Input.GetKeyDown((i+1).ToString()))
+            {
+                StopGame(m_levelSceneNames[i]);
+            }
+        }
     }
     
     

@@ -201,6 +201,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: f4fdcca5-3f0b-4cd2-b7ce-058e19b50fa6
     m_ActionName: CharacterSelect/ChangeTeamColor[/DualShock4GamepadHID/leftShoulder,/DualShock4GamepadHID/leftTrigger,/DualShock4GamepadHID/rightTrigger,/DualShock4GamepadHID/rightShoulder,/Keyboard/q]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 334b208f-896b-4e5d-9a20-a71931f3aa22
+    m_ActionName: UI/NavigateUI[/DualShock4GamepadHID/leftStick,/DualShock4GamepadHID/dpad,/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: CharacterSelect
@@ -248,8 +252,8 @@ MonoBehaviour:
   m_trajectoryLineResolution: 10
   m_feetPosition: {fileID: 8814260995174423450}
   m_getOffBoatInputThreshold: 0.5
-  m_movingThrowMultiplier: 3
-  m_dashingThrowMultiplier: 5
+  m_movingThrowMultiplier: 1.2
+  m_dashingThrowMultiplier: 1.8
 --- !u!114 &8159576825246783168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,7 +319,7 @@ MonoBehaviour:
   m_playerModel: {fileID: 6550420467975036842}
   m_playerTrailParticleSystem: {fileID: 3688828471138449751}
   m_footstepIntervalTime: 0.25
-  m_footstepEventEmitter: {fileID: 2322307088373492961}
+  m_woodenFootstepEventEmitter: {fileID: 2322307088373492961}
   m_bombPickupEventEmitter: {fileID: 1252761937598757277}
   m_catMeowSoundEffect: {fileID: 6149686663727182893}
 --- !u!143 &499935073571530274

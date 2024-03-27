@@ -30,6 +30,7 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float m_onCollideWithGoldForce = 1f;
     
     // For dashing
+    [SerializeField] private float m_dashOnIceSpeed = 1.3f;
     [SerializeField] private GameObject m_dashTargetGameObject;
     [SerializeField] private float m_timeToChargeToMaxDashRange;
     [SerializeField] private float m_minDashDistance;
@@ -116,21 +117,17 @@ public class PlayerMovementController : MonoBehaviour
         {
    
             iceSliding = true;
-            Debug.Log("yes lol");
         }
         else
         {
             iceSliding = false;
-            Debug.Log("no lol");
         }
-        // Debug.Log("lksjafdkljsdalkfjlsdk lol");
     }   
     
-    private void FixedUpdate()
+    private void Update()
     {
         UpdateIceSlidingState(); // Ice Sliding check
         
-        // Debug.Log(m_characterController.velocity.magnitude);
         
         Vector2 moveInput = -m_moveAction.ReadValue<Vector2>().normalized;
         // Debug.Log(moveInput);
@@ -143,7 +140,7 @@ public class PlayerMovementController : MonoBehaviour
             m_isMoving = true;
         }
         
-        if (m_initialized && !m_isDashing && !m_isBeingPushed && !_mPlayerItemController.IsOccupied())
+        if (m_initialized && !m_isBeingPushed && !_mPlayerItemController.IsOccupied())
         {
             float speed = m_speed;
             if (m_isChargingDash)
@@ -154,7 +151,7 @@ public class PlayerMovementController : MonoBehaviour
             Vector3 prevPosition = transform.position;
             Vector2 moveVector = moveInput * (speed * Time.deltaTime);
 
-            if (moveVector.magnitude != 0)
+            if (moveVector.magnitude != 0 || m_isDashing)
             {
 
                 bool wasOverGround = false;
@@ -202,16 +199,14 @@ public class PlayerMovementController : MonoBehaviour
                 
                 if (iceSliding)
                 {
-                    Debug.Log(m_smoothIndex);
                     motion = motion / (speed * Time.deltaTime);
                     m_smootherMotion = Vector3.Lerp(m_smootherMotion, motion, m_smoothIndex);
                     m_characterController.Move(m_smootherMotion * speed * Time.deltaTime);
-                    motion = motion * speed * Time.deltaTime;
                 }
-                else
+                else if (!m_isDashing)
                 {
                     m_characterController.Move(motion);
-                    
+                    m_smootherMotion = motion;
                 }
                 //there are some situations where moving would bounce the player off a collider and put them over a
                 //killzone. In those situations, just revert to the original position.
@@ -425,6 +420,7 @@ public class PlayerMovementController : MonoBehaviour
         Vector3 initialPos = transform.position;
         
         Vector3 pos;
+        Vector3 motion = Vector3.zero;
         for (float t = 0; t < 1; t += Time.deltaTime / m_dashDuration)
         {
             yield return new WaitUntil(() =>
@@ -434,7 +430,16 @@ public class PlayerMovementController : MonoBehaviour
 
             float progress = Mathf.Pow(t, 1f / 3f);
             pos = initialPos + (endPos - initialPos) * progress - transform.position;
-            m_characterController.Move(new Vector3(pos.x, 0, pos.z));
+            motion = new Vector3(pos.x, 0, pos.z);
+
+            if (iceSliding)
+            {
+                m_smootherMotion = motion * m_dashOnIceSpeed;
+            }
+            else
+            {
+                m_characterController.Move(motion);
+            }
         }
 
         m_isDashing = false;
@@ -500,6 +505,7 @@ public class PlayerMovementController : MonoBehaviour
                 direction.y = 0;
                 Vector2 dashDirection = new Vector2(direction.x, direction.z).normalized;
                 otherPlayerMovement.GetPushed(dashDirection, m_pushDistance, hit.point);
+                m_smootherMotion = Vector3.zero;
             }
         }
     }
@@ -519,6 +525,8 @@ public class PlayerMovementController : MonoBehaviour
 
     public void GetPushed(Vector2 dashDirection, float pushDistance, Vector3 contactPosition)
     {
+        m_smootherMotion = Vector3.zero;
+        
         if (m_isChargingDash)
         {
             //if attacked while charging a dash, stop charging and get pushed.
