@@ -23,7 +23,7 @@ public delegate void PlayerStartedThrowEvent();
 [RequireComponent(typeof(PlayerInput), typeof(PlayerData))]
 public class PlayerItemController : MonoBehaviour
 {
-    [FormerlySerializedAs("m_goldCapacity")] [SerializeField] public int m_bombCapacity = 3;
+    [FormerlySerializedAs("m_goldCapacity")] [SerializeField] public int m_bombCapacity = 1;
 
     [SerializeField] private Transform m_heldBombPositionTransform = null;
     
@@ -128,6 +128,7 @@ public class PlayerItemController : MonoBehaviour
     {
         m_throwing = false;
         m_heldBarrelGameObject.SetActive(false);
+        Destroy(m_heldBombGameObject);
     }
     
     public void OnGameStart()
@@ -140,6 +141,8 @@ public class PlayerItemController : MonoBehaviour
         m_playerMovementController.m_onPlayerDie += OnPlayerDie;
         
         m_playerData.m_bombsCarried = 0;
+        
+        Destroy(m_heldBombGameObject);
 
         m_interactAction = m_playerInput.actions["Interact"];
         m_interactAction.performed += OnInteractButtonPressed;

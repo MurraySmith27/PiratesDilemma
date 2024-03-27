@@ -99,8 +99,17 @@ public class CharacterSelectUI : UIBase
         GameTimerSystem.Instance.m_onCharacterSelectEnd += OnCharacterSelectEnd;
     }
 
+    private void OnDestroy()
+    {
+        
+        PlayerSystem.Instance.m_onPlayerJoin -= OnPlayerJoin;
+        PlayerSystem.Instance.m_onPlayerReadyUpToggle -= UpdateReadyUpUI;
+        GameTimerSystem.Instance.m_onCharacterSelectEnd -= OnCharacterSelectEnd;
+    }
+
     void OnPlayerJoin(int newPlayerNum)
     {
+        Debug.Log($"OnPlayerJoinCalled! playerNum: {newPlayerNum}");
         m_pressToJoinElements[newPlayerNum - 1].Q<Label>("press-to-join-label").text = "";
 
         VisualElement newReadyUpHover = m_readyUpHover.Instantiate();
@@ -157,8 +166,15 @@ public class CharacterSelectUI : UIBase
             camera: m_testControlsCamera);
 
         UpdateReadyUpUI(newPlayerNum, false);
-        
-        m_updateReadyUpHoverCoroutine = StartCoroutine(UpdateReadyUpHoverPositions());
+
+        //only start updating on the last player
+        if (newPlayerNum == PlayerSystem.Instance.m_numPlayers)
+        {
+            if (m_updateReadyUpHoverCoroutine == null)
+            {
+                m_updateReadyUpHoverCoroutine = StartCoroutine(UpdateReadyUpHoverPositions());
+            }
+        }
     }
 
     private IEnumerator UpdateReadyUpHoverPositions()

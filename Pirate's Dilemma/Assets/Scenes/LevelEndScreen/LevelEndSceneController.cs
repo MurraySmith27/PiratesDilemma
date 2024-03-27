@@ -11,6 +11,16 @@ public delegate void ImpactBackgroundDisappearEvent();
 
 public class LevelEndSceneController : MonoBehaviour
 {
+    private static LevelEndSceneController _instance;
+
+    public static LevelEndSceneController Instance
+    {
+        get
+        {
+            return _instance;
+        }
+    }
+
     [SerializeField] private float m_platformRiseTime;
 
     [SerializeField] private AnimationCurve m_platformRiseAnimationCurve;
@@ -53,18 +63,31 @@ public class LevelEndSceneController : MonoBehaviour
     
     [HideInInspector] public int m_winningTeamNum;
 
-    
-    
+
+    void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
     
     public void StartEndLevelScene()
     {
         StartCoroutine(LevelEndSceneCoroutine());
+
+        GameTimerSystem.Instance.m_onLevelEndSceneEnd += OnLevelEndSceneEnd;
     }
 
     private IEnumerator LevelEndSceneCoroutine()
     {
         List<GameObject> winnerVisualStandIns = new List<GameObject>();
         //move winning team num to their podium spot, losing team num to the render texture frames.
+        List<Transform> prevWinnerVisualStandInParents = new List<Transform>();
         for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
         {
             Transform playerParent = PlayerSystem.Instance.m_playersParents[i];
@@ -81,6 +104,7 @@ public class LevelEndSceneController : MonoBehaviour
                     visualStandIn = child.gameObject;
                 }
             }
+
             
             visualStandIn.SetActive(true);
 
@@ -90,6 +114,7 @@ public class LevelEndSceneController : MonoBehaviour
                 visualStandIn.transform.position = m_winnerPositions[i / 2].position;
                 visualStandIn.transform.localScale = m_winnerPositions[i / 2].localScale;
                 visualStandIn.transform.rotation = m_winnerPositions[i / 2].rotation;
+                prevWinnerVisualStandInParents.Add(visualStandIn.transform.parent);
                 visualStandIn.transform.parent = m_platformGameObject.transform;
                 visualStandIn.GetComponent<Animator>().SetTrigger("WonGame");
                 winnerVisualStandIns.Add(visualStandIn);
@@ -186,13 +211,15 @@ public class LevelEndSceneController : MonoBehaviour
         
         materials[0].SetFloat("_Opacity", 0f);
         
-        foreach (GameObject visualStandIn in winnerVisualStandIns)
+        for (int i = 0; i < winnerVisualStandIns.Count; i++)
         {
+            GameObject visualStandIn = winnerVisualStandIns[i];
             visualStandIn.layer = LayerMask.NameToLayer("HasSelfIntersectingOutline2");
             for (int child = 0; child < visualStandIn.transform.childCount; child++)
             {
                 visualStandIn.transform.GetChild(child).gameObject.layer = LayerMask.NameToLayer("HasSelfIntersectingOutline2");
             }
+            visualStandIn.transform.parent = prevWinnerVisualStandInParents[i];
         }
         
         m_impactBackgroundGameObject.SetActive(false);
@@ -207,5 +234,9 @@ public class LevelEndSceneController : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
 
+    }
+
+    private void OnLevelEndSceneEnd()
+    {
     }
 }

@@ -13,7 +13,12 @@ public delegate void GamePauseEvent();
 public delegate void GameUnpauseEvent();
 public delegate void GameFreezeEvent();
 public delegate void GameUnFreezeEvent();
+public delegate void CharacterSelectStartEvent();
+public delegate void LevelSelectStartEvent();
+public delegate void LevelEndSceneStartEvent();
 public delegate void CharacterSelectEndEvent();
+public delegate void LevelSelectEndEvent();
+public delegate void LevelEndSceneEndEvent();
 public delegate void GameSceneLoadedEvent();
 public delegate void GameSceneUnloadedEvent();
 public delegate void ReadyToStartGameTimerEvent();
@@ -68,7 +73,17 @@ public class GameTimerSystem : GameSystem
 
     public GameUnpauseEvent m_onGameUnpause;
 
+    public CharacterSelectStartEvent m_onCharacterSelectStart;
+    
+    public LevelSelectStartEvent m_onLevelSelectStart;
+
+    public LevelEndSceneStartEvent m_onLevelEndSceneStart;
+
     public CharacterSelectEndEvent m_onCharacterSelectEnd;
+
+    public LevelSelectEndEvent m_onLevelSelectEnd;
+
+    public LevelEndSceneEndEvent m_onLevelEndSceneEnd;
     
     public GameSceneLoadedEvent m_onGameSceneLoaded;
     
@@ -146,11 +161,30 @@ public class GameTimerSystem : GameSystem
         {
             StartGame();
         }
+        else if (currentSceneName == m_characterSelectSceneName)
+        {
+            if (m_onCharacterSelectStart != null && m_onCharacterSelectStart.GetInvocationList().Length > 0)
+            {
+                m_onCharacterSelectStart();
+            }
+        }
+        else if (currentSceneName == m_levelSelectSceneName)
+        {
+            if (m_onLevelSelectStart != null && m_onLevelSelectStart.GetInvocationList().Length > 0)
+            {
+                m_onLevelSelectStart();
+            }
+        }
         else if (currentSceneName == m_levelEndSceneName)
         {
             LevelEndSceneController levelEndSceneController = FindObjectOfType<LevelEndSceneController>();
             levelEndSceneController.m_winningTeamNum = m_winningTeamNum;
             levelEndSceneController.StartEndLevelScene();
+            
+            if (m_onLevelEndSceneStart != null && m_onLevelEndSceneStart.GetInvocationList().Length > 0)
+            {
+                m_onLevelEndSceneStart();
+            }
         }
     }
 
@@ -202,7 +236,6 @@ public class GameTimerSystem : GameSystem
     {
         for (int i = 0; i < m_levelSceneNames.Count; i++) 
         {
-
             if (m_lastPlayedLevelName == m_levelSceneNames[i])
             {
                 return m_levelSceneNames[i + 1];
@@ -274,6 +307,8 @@ public class GameTimerSystem : GameSystem
     
     private IEnumerator EndLevelEndSceneCoroutine(string nextSceneToLoadName)
     {
+        m_onLevelEndSceneEnd();
+        
         yield return new WaitForSeconds(m_holdAfterLevelEndEndTime);
         
         if (m_onGameSceneUnloaded != null && m_onGameSceneUnloaded.GetInvocationList().Length > 0)
@@ -288,8 +323,7 @@ public class GameTimerSystem : GameSystem
     
     private IEnumerator EndLevelSelectSceneCoroutine(string nextSceneToLoadName)
     {
-        
-        m_onGameFinish();
+        m_onLevelSelectEnd();
         
         yield return new WaitForSeconds(m_holdAfterLevelSelectEndTime);
         

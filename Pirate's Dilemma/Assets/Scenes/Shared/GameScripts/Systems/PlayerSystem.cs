@@ -826,6 +826,11 @@ public class PlayerSystem : GameSystem
                 m_visualStandIns[i].SetActive(true);
                 
                 m_visualStandIns[i].GetComponent<Animator>().SetTrigger("Idle");
+                
+                GameObject characterSelectSpawn = GameObject.FindGameObjectWithTag($"P{i+1}CharacterSelectSpawn"); 
+                m_visualStandIns[i].gameObject.transform.position = characterSelectSpawn.transform.position;
+                m_visualStandIns[i].gameObject.transform.rotation = characterSelectSpawn.transform.rotation;
+                m_visualStandIns[i].gameObject.transform.localScale = characterSelectSpawn.transform.localScale;
 
                 m_readyPlayers[i] = false;
                 

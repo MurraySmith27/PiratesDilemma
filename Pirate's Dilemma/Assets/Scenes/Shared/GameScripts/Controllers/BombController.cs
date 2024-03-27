@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using FMODUnity;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public delegate void LooseBombCollisionEvent();
 
@@ -54,8 +55,13 @@ public class BombController : MonoBehaviour
     {
         m_lastHeldTeamNum = -1;
         m_cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
-    
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Destroy(this.gameObject);
+    }
 
     IEnumerator BlowUpAfterSeconds()
     {
@@ -103,6 +109,7 @@ public class BombController : MonoBehaviour
     private void OnDestroy()
     {
         m_hissEventEmitter.Stop();
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     public void SetLit(bool isLit)

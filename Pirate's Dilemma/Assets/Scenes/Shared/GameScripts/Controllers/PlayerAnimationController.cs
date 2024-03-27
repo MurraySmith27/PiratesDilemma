@@ -7,6 +7,7 @@ using FMODUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 public class PlayerAnimationController : MonoBehaviour
@@ -74,18 +75,52 @@ public class PlayerAnimationController : MonoBehaviour
         m_cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
 
         m_playerData = GetComponent<PlayerData>();
-        
+
         m_playerTrailParticleSystem.SetActive(true);
 
         m_moveAction = GetComponent<PlayerInput>().actions.FindAction("Move");
 
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ResetAnimator();
+    }
+
+    private void ResetAnimator()
+    {
+        m_animator.Play("Idle", 0);
+        foreach (var param in m_animator.parameters)
+        {
+            if (param.type == AnimatorControllerParameterType.Trigger)
+            {
+                m_animator.ResetTrigger(param.name);
+            }
+        }
+        
+        Renderer[] meshRenderers = m_playerModel.GetComponentsInChildren<Renderer>();
+        
+        foreach (Renderer meshRenderer in meshRenderers)
+        {
+            List<Material> materials = new List<Material>();
+            meshRenderer.GetMaterials(materials);
+            materials[3].SetFloat("_CooldownProgress",1f);
+        }
+        m_sweatParticle.SetActive(false);
     }
     
     
     public void OnGameStart()
     {
         m_animator = GetComponentInChildren<Animator>();
-        m_animator.Play("Idle", 0);
+        ResetAnimator();
         m_characterController = GetComponent<CharacterController>();
         m_playerTrailParticleSystem.SetActive(true);
         
@@ -227,6 +262,7 @@ public class PlayerAnimationController : MonoBehaviour
     {
         m_alive = true;
         m_animator.SetTrigger("Respawn");
+        ResetAnimator();
         m_playerTrailParticleSystem.SetActive(true);
     }
 

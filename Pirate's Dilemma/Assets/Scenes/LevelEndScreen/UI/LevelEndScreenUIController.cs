@@ -181,7 +181,6 @@ public class LevelEndScreenUIController : MonoBehaviour
                     Debug.Log("move up!");
                     m_currentlySelectedMenuItemIndex--;
                     m_menuClickEventEmitter.Play();
-                    UpdateMenuButtons();
                 }
             }
             else
@@ -193,10 +192,12 @@ public class LevelEndScreenUIController : MonoBehaviour
                     Debug.Log("move down!");
                     m_currentlySelectedMenuItemIndex++;
                     m_menuClickEventEmitter.Play();
-                    UpdateMenuButtons();
                 }
             }
+            Debug.Log($"currentlyselected: {m_currentlySelectedMenuItemIndex}");
+
         }
+        UpdateMenuButtons();
     }
 
     private void UpdateMenuButtons()

@@ -31,6 +31,8 @@ public class KrakenController : MonoBehaviour
 
     [SerializeField] private List<GameObject> m_krakenArrivalDestrucables;
     
+    [SerializeField] private List<GameObject> m_krakenArrivalGameObjectsToDestroy;
+    
     [SerializeField] private float m_krakenArrivalTime = 30f;
 
     [SerializeField] private float m_krakenArrivalAgressiveness = 1;
@@ -119,6 +121,11 @@ public class KrakenController : MonoBehaviour
             Vector3 pos = krakenInitialPos + (krakenFinalPos - krakenInitialPos) * progress;
             krakenRb.MovePosition(pos);
             yield return new WaitForFixedUpdate();
+        }
+
+        foreach (GameObject obj in m_krakenArrivalGameObjectsToDestroy)
+        {
+            Destroy(obj);
         }
 
         
