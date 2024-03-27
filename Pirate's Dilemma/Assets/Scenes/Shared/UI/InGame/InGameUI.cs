@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -41,6 +42,9 @@ public class InGameUI : UIBase
     
     [SerializeField] private Color m_gameFinishImageTint;
 
+    [SerializeField] private StudioEventEmitter m_goSoundEventEmitter;
+    
+    [SerializeField] private StudioEventEmitter m_countdownSoundEventEmitter;
 
 
     
@@ -131,6 +135,14 @@ public class InGameUI : UIBase
     
     void OnStartGameTimerValueChange(int newValueSeconds)
     {
+        if (newValueSeconds == 0)
+        {
+            m_goSoundEventEmitter.Play();
+        }
+        else
+        {
+            m_countdownSoundEventEmitter.Play();
+        }
         StartCoroutine(FlashImageOnScreen(m_gameStartTimerElement, m_gameStartCountdownImages[newValueSeconds], m_gameStartCountdownTints[newValueSeconds], 0.95f));
     }
 

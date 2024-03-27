@@ -905,6 +905,16 @@ PrefabInstance:
       propertyPath: m_Intensity
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 7768678599487161142, guid: a45431fa1026ee94abe65f5f9b089163,
+        type: 3}
+      propertyPath: m_oceanAmbienceVolume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7768678599487161142, guid: a45431fa1026ee94abe65f5f9b089163,
+        type: 3}
+      propertyPath: m_oceanAmbienceEventEmitter
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 9147108273513952897, guid: a45431fa1026ee94abe65f5f9b089163,
         type: 3}
       propertyPath: m_Name
@@ -917,8 +927,127 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 46102789}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6382698353585597127, guid: a45431fa1026ee94abe65f5f9b089163,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1479261663}
   m_SourcePrefab: {fileID: 100100000, guid: a45431fa1026ee94abe65f5f9b089163, type: 3}
+--- !u!1 &1479261661 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6382698353585597127, guid: a45431fa1026ee94abe65f5f9b089163,
+    type: 3}
+  m_PrefabInstance: {fileID: 1479261660}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1479261663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1479261661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: -1
+  OverrideMaxDistance: -1
+--- !u!1 &1621545950
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1621545953}
+  - component: {fileID: 1621545952}
+  - component: {fileID: 1621545951}
+  m_Layer: 0
+  m_Name: AmbientSoundEmitter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1621545951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621545950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1817852817
+      Data2: 1294965812
+      Data3: 1223745698
+      Data4: 210177145
+    Path: event:/oceanambience_sfx
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &1621545952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621545950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d08bbf00999e949a4d9f06006a70ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_oceanAmbienceEventEmitter: {fileID: 1621545951}
+  m_oceanAmbienceVolume: 1
+--- !u!4 &1621545953
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621545950}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.9999986, z: -0, w: -0.0016824828}
+  m_LocalPosition: {x: 1.4693471, y: -4.6606927, z: -22.639639}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1660667908
 GameObject:
   m_ObjectHideFlags: 0
@@ -956,6 +1085,7 @@ MonoBehaviour:
   m_holdBeforeCountdownTimerTime: 1
   m_holdAfterCharacterSelectEndTime: 3
   m_holdAfterLevelSelectEndTime: 3
+  m_holdAfterLevelEndEndTime: 0
   m_gameSceneLoadedBufferSeconds: 0.55
   m_gameSceneUnloadedBufferSeconds: 0.55
   m_resultsSceneName: CharacterSelect
@@ -1579,12 +1709,12 @@ PrefabInstance:
     - target: {fileID: 4264240050300890443, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.0010331075
+      value: 0.0010331403
       objectReference: {fileID: 0}
     - target: {fileID: 4264240050300890443, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0017858646
+      value: 0.0017858845
       objectReference: {fileID: 0}
     - target: {fileID: 4327416635992228003, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
@@ -1699,12 +1829,12 @@ PrefabInstance:
     - target: {fileID: 8619921798994050774, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.0010331075
+      value: 0.0010331403
       objectReference: {fileID: 0}
     - target: {fileID: 8619921798994050774, guid: fa837950df16ae74c966d0e174bf7d67,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0017858646
+      value: 0.0017858845
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6705063984321070574, guid: fa837950df16ae74c966d0e174bf7d67, type: 3}
@@ -1840,6 +1970,7 @@ SceneRoots:
   - {fileID: 1463666973}
   - {fileID: 370869179}
   - {fileID: 1766832881}
+  - {fileID: 1621545953}
   - {fileID: 1660667910}
   - {fileID: 1933291251}
   - {fileID: 1479261660}
