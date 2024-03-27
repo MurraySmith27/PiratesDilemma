@@ -156,9 +156,9 @@ Material:
     - _UseCustomNormalMap: 0
     - _UseEmission: 0
     - _UseFresnel: 1
-    - _UseLight1: 0
-    - _UseLight2: 0
-    - _UseLight3: 0
+    - _UseLight1: 1
+    - _UseLight2: 1
+    - _UseLight3: 1
     - _UseSecondLight: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
@@ -174,7 +174,7 @@ Material:
     - _Light2Color: {r: 0.9528302, g: 0.49602422, b: 0, a: 0.1764706}
     - _Light2Position: {r: -5.3319, g: 14.7593975, b: 18.52, a: 0}
     - _Light3Color: {r: 0.5283019, g: 0.3086993, b: 0, a: 1}
-    - _Light3Position: {r: -5.84, g: 6.862, b: 22.18, a: 0}
+    - _Light3Position: {r: -5.95, g: 6.862, b: 21.48, a: 0}
     - _Light_Color: {r: 0.85882354, g: 0.61634874, b: 0.38431376, a: 1}
     - _SecondLightPosition: {r: 1, g: 1, b: 1, a: 0}
     - _ShadowColor: {r: 0.31132078, g: 0.30985227, b: 0.30985227, a: 0}

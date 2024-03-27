@@ -21,6 +21,11 @@ public class AmbientSoundController : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
+    void Update()
+    {
+        m_oceanAmbienceEventEmitter.EventInstance.setVolume(m_oceanAmbienceVolume);
+    }
+
     private void SpinUpAmbientNoise()
     {
         FMODUnity.RuntimeManager.StudioSystem.setParameterByName("Space", 0);

@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2fa9daa2-90f4-44c3-9351-b9e137dd4c15" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Pirate's Dilemma/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CatCharacter/ColorVariant1/CatColorVariant1BrowMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CatCharacter/ColorVariant1/CatColorVariant1BrowMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CatCharacter/ColorVariant1/CatColorVariant1FurMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CatCharacter/ColorVariant1/CatColorVariant1FurMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CatCharacter/ColorVariant1/CatColorVariant1HeadMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Characters/CatCharacter/ColorVariant1/CatColorVariant1HeadMaterial.mat" afterDir="false" />
@@ -57,6 +56,7 @@
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Dock/BoatFloorMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Dock/BoatFloorMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Dock/CharacterSelectDockMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Dock/CharacterSelectDockMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Dock/CharacterSelectFloorMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Dock/CharacterSelectFloorMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/DockMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/DockMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceBrickMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceBrickMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceChimneyMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceChimneyMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceMetalMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/FirePlace/FireplaceMetalMaterial.mat" afterDir="false" />
@@ -72,14 +72,22 @@
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenStandMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Screen/ScreenStandMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/ShipMaterials/ShipDeckMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/ShipMaterials/ShipDeckMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/ShipMaterials/ShipDeckMaterial2.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/ShipMaterials/ShipDeckMaterial2.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Table/TableMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Table/TableMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/TreasureMap/TreasureMapMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/TreasureMap/TreasureMapMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/TreasureMap/TreasureMapPinMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/TreasureMap/TreasureMapPinMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/WallMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/WallMaterial.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Walls/Wallmat.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/Walls/Wallmat.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Environments/WantedPoster/WantedPosterMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Environments/WantedPoster/WantedPosterMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/LevelSelect/LevelMarker/LevelSelectMarkerBorderMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/LevelSelect/LevelMarker/LevelSelectMarkerBorderMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/LevelSelect/LevelMarker/LevelSelectMarkerIncompleteMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/LevelSelect/LevelMarker/LevelSelectMarkerIncompleteMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/TeamColors/CoolColors/TeamCoolColor2AccentMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/TeamColors/CoolColors/TeamCoolColor2AccentMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/TeamColors/CoolColors/TeamCoolColor2Material.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/TeamColors/CoolColors/TeamCoolColor2Material.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/TeamColors/WarmColors/TeamWarmColor2AccentMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/TeamColors/WarmColors/TeamWarmColor2AccentMaterial.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/TeamColors/WarmColors/TeamWarmColor2Material.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/TeamColors/WarmColors/TeamWarmColor2Material.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/CharacterSelect.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/GameScripts/CharacterSelectSoundController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CharacterSelect/GameScripts/CharacterSelectSoundController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/UI/InGame/InGameUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/PlayerControlSchemes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/GameScripts/PlayerControlSchemes.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Shared/PlayerControlSchemes.inputactions" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Shared/PlayerControlSchemes.inputactions" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
