@@ -22,6 +22,7 @@ public delegate void PlayerDieEvent(int playerNum);
 public delegate void PlayerRespawnEvent(int playerNum);
 public delegate void PlayerJoinEvent(int newPlayerNum);
 public delegate void PlayerReadyUpToggleEvent(int playerNum, bool isReady);
+public delegate void ChangeTeamColorEvent(int teamNum);
 
 //The purpose of this class to to store data that persists between scenes about players.
 public class PlayerSystem : GameSystem
@@ -170,6 +171,8 @@ public class PlayerSystem : GameSystem
     public PlayerDropBombEvent m_onPlayerDropBomb;
     
     public PlayerDashCooldownStartEvent m_onDashCooldownStart;
+
+    public ChangeTeamColorEvent m_onChangeTeamColor;
 
     public InputActionAsset m_actions;
     
@@ -507,6 +510,11 @@ public class PlayerSystem : GameSystem
                 
                 playerAnimationController.SetTeamMaterials(m_teamData[teamNum-1].mainMaterial, m_teamData[teamNum-1].accentMaterial);
             }
+        }
+
+        if (m_onChangeTeamColor != null && m_onChangeTeamColor.GetInvocationList().Length > 0)
+        {
+            m_onChangeTeamColor(teamNum);
         }
         
     }

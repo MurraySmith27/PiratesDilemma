@@ -22,7 +22,7 @@ public class GenericIndicatorController : MonoBehaviour
     private Coroutine m_hoverCoroutine;
 
     private Camera m_camera;
-    private Color m_color;
+    public Color m_color;
 
     public void StartIndicator(float heightAboveToHover, 
         Color color,
@@ -84,10 +84,6 @@ public class GenericIndicatorController : MonoBehaviour
         VisualElement icon = root.Q<VisualElement>("generic-icon");
         icon.style.backgroundImage = new StyleBackground(image.sprite);
 
-        icon.style.unityBackgroundImageTintColor = new StyleColor(m_color);
-        
-        root.Q<VisualElement>("triangle").style.unityBackgroundImageTintColor = new StyleColor(m_color);
-
         Vector3 originalLocalScale = transform.localScale;
         
         for (float t = 0; t < 1; t += Time.deltaTime / m_timeToLive)
@@ -111,6 +107,10 @@ public class GenericIndicatorController : MonoBehaviour
             transform.localScale = originalLocalScale * (m_scaleFactor * zDistanceFromTrackingObject);
             
             transform.LookAt(transform.position + m_camera.transform.forward, Vector3.up);
+            
+            icon.style.unityBackgroundImageTintColor = new StyleColor(m_color);
+        
+            root.Q<VisualElement>("triangle").style.unityBackgroundImageTintColor = new StyleColor(m_color);
 
             yield return null;
         }

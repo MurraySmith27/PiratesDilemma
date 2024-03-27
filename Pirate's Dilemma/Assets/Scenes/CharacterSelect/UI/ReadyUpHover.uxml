@@ -1,6 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement name="root" style="flex-grow: 0; position: absolute; width: 150px; height: 70px; background-color: rgb(255, 0, 0); border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; flex-direction: row;">
+    <Style src="project://database/Assets/Scenes/CharacterSelect/UI/ReadyUpHover.uss?fileID=7433441132597879392&amp;guid=1da159c4e7939c04a82cab4fbf6b9410&amp;type=3#ReadyUpHover" />
+    <ui:VisualElement name="root" class="not-ready" style="width: 150px; height: 70px; flex-direction: row; position: absolute;">
         <ui:VisualElement name="button-icon" style="flex-grow: 1; flex-basis: 60%;" />
-        <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ready-text" style="flex-basis: 40%; -unity-text-align: middle-left;" />
+        <ui:Label tabindex="-1" text="Ready" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ready-text" style="flex-basis: 40%; -unity-text-align: middle-left; -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/Scenes/Shared/UI/GladlyAcceptRegular-Wyjov.ttf?fileID=12800000&amp;guid=b110f5bd0d6b1bf4bb9c836913cbccfa&amp;type=3#GladlyAcceptRegular-Wyjov&apos;);" />
     </ui:VisualElement>
 </ui:UXML>

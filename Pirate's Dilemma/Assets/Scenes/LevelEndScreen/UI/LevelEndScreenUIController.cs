@@ -24,6 +24,8 @@ public class LevelEndScreenUIController : MonoBehaviour
 
     private VisualElement m_root;
 
+    private VisualElement m_mainRoot;
+
     private VisualElement m_losersRoot;
 
     private List<VisualElement> m_loserFrames;
@@ -41,6 +43,8 @@ public class LevelEndScreenUIController : MonoBehaviour
         m_doc = GetComponent<UIDocument>();
 
         m_root = m_doc.rootVisualElement.Q<VisualElement>("root");
+        
+        m_mainRoot = m_root.Q<VisualElement>("main-root");
 
         m_losersRoot = m_root.Q<VisualElement>("losers-root");
 
@@ -129,8 +133,7 @@ public class LevelEndScreenUIController : MonoBehaviour
         m_menuRoot.ClearClassList();
         m_menuRoot.AddToClassList("menu-root-style");
         
-        m_winnerText.AddToClassList("losers-root-out");
-        m_losersRoot.AddToClassList("losers-root-out");
+        m_mainRoot.AddToClassList("losers-root-up");
 
         PlayerInput playerInput = PlayerSystem.Instance.m_players[0].GetComponent<PlayerInput>();
 

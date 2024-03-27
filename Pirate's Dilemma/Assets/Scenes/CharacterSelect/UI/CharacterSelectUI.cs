@@ -36,6 +36,8 @@ public class CharacterSelectUI : UIBase
 
     private List<bool> m_readyPlayers;
 
+    private List<GameObject> m_playerHoverIndicatorObjects;
+
     private List<InputAction> m_readyUpActions;
 
     private List<SupportedDeviceType> m_deviceTypesPerPlayer;
@@ -65,6 +67,8 @@ public class CharacterSelectUI : UIBase
         m_readyUpActions = new List<InputAction>();
         m_readyPlayers = new List<bool>();
         m_deviceTypesPerPlayer = new List<SupportedDeviceType>();
+
+        m_playerHoverIndicatorObjects = new List<GameObject>();
         
         //resize the render texture quads to fit the screen properly
         Vector3 cameraPos = Camera.main.transform.position;
@@ -95,6 +99,8 @@ public class CharacterSelectUI : UIBase
         
         PlayerSystem.Instance.m_onPlayerJoin += OnPlayerJoin;
         PlayerSystem.Instance.m_onPlayerReadyUpToggle += UpdateReadyUpUI;
+        
+        PlayerSystem.Instance.m_onChangeTeamColor += OnTeamChangeColor;
 
         GameTimerSystem.Instance.m_onCharacterSelectEnd += OnCharacterSelectEnd;
     }
@@ -105,11 +111,12 @@ public class CharacterSelectUI : UIBase
         PlayerSystem.Instance.m_onPlayerJoin -= OnPlayerJoin;
         PlayerSystem.Instance.m_onPlayerReadyUpToggle -= UpdateReadyUpUI;
         GameTimerSystem.Instance.m_onCharacterSelectEnd -= OnCharacterSelectEnd;
+
+        PlayerSystem.Instance.m_onChangeTeamColor -= OnTeamChangeColor;
     }
 
     void OnPlayerJoin(int newPlayerNum)
     {
-        Debug.Log($"OnPlayerJoinCalled! playerNum: {newPlayerNum}");
         m_pressToJoinElements[newPlayerNum - 1].Q<Label>("press-to-join-label").text = "";
 
         VisualElement newReadyUpHover = m_readyUpHover.Instantiate();
@@ -164,6 +171,8 @@ public class CharacterSelectUI : UIBase
             objectToTrack: PlayerSystem.Instance.m_players[newPlayerNum - 1],
             scaleFactor: 0.1f,
             camera: m_testControlsCamera);
+        
+        m_playerHoverIndicatorObjects.Add(genericIndicatorInstance);
 
         UpdateReadyUpUI(newPlayerNum, false);
 
@@ -173,6 +182,18 @@ public class CharacterSelectUI : UIBase
             if (m_updateReadyUpHoverCoroutine == null)
             {
                 m_updateReadyUpHoverCoroutine = StartCoroutine(UpdateReadyUpHoverPositions());
+            }
+        }
+    }
+
+    private void OnTeamChangeColor(int teamNum)
+    {
+        for (int i = 0; i < PlayerSystem.Instance.m_numPlayers; i++)
+        {
+            if (PlayerSystem.Instance.m_playerTeamAssignments[i] == teamNum)
+            {
+                m_playerHoverIndicatorObjects[i].GetComponent<GenericIndicatorController>().m_color =
+                    PlayerSystem.Instance.m_teamData[teamNum - 1].color;
             }
         }
     }
@@ -203,16 +224,16 @@ public class CharacterSelectUI : UIBase
 
     private void UpdateReadyUpUI(int playerNum, bool isReady)
     {
-        Color color;
+        VisualElement hoverElement = m_readyUpHoverElements[playerNum-1].Q<VisualElement>("root");
+        hoverElement.ClearClassList();
         if (isReady)
         {
-            color = Color.green;
+            hoverElement.AddToClassList("ready");
         }
         else
         {
-            color = Color.red;
+            hoverElement.AddToClassList("not-ready");
         }
-        m_readyUpHoverElements[playerNum - 1].Q<VisualElement>("root").style.backgroundColor = new StyleColor(color);
     }
 
     void OnDisable()

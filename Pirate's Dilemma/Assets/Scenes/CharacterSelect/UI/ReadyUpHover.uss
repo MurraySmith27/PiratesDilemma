@@ -1,0 +1,9 @@
+.ready {
+    background-image: url('project://database/Assets/Art/GUI/PNG/Board-plank%203%201000x1000.png?fileID=1149160510&guid=340efba6a60bcf44caa531482b383140&type=3#Board-plank 3 1000x1000_0');
+    -unity-background-image-tint-color: rgb(64, 219, 18);
+}
+
+.not-ready {
+    background-image: url('project://database/Assets/Art/GUI/PNG/Board-plank%203%20500x500_1.png?fileID=-61356428&guid=a888b6fa59fc5e842b1a9e961a421eaf&type=3#Board-plank 3 500x500_1_0');
+    -unity-background-image-tint-color: rgb(241, 7, 0);
+}
