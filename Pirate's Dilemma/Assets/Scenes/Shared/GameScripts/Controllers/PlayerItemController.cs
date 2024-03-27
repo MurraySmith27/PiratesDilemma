@@ -52,6 +52,10 @@ public class PlayerItemController : MonoBehaviour
     [SerializeField] private Transform m_feetPosition;
     
     [SerializeField] private float m_getOffBoatInputThreshold = 0.5f;
+
+    [SerializeField] private float m_movingThrowMultiplier;
+    
+    [SerializeField] private float m_dashingThrowMultiplier;
     
     public PlayerPickUpBombEvent m_onPlayerPickupBomb;
 
@@ -204,7 +208,6 @@ public class PlayerItemController : MonoBehaviour
         m_readyToThrow = true;
         bool pickedUpItem = false;
         
-   
         if (m_playerData.m_bombsCarried < m_bombCapacity && !m_barrelInHand)
         {
             List<GameObject> itemsInScene = GameObject.FindGameObjectsWithTag("LooseBomb").ToList();
@@ -420,11 +423,25 @@ public class PlayerItemController : MonoBehaviour
     //         DropAllGold();
     //         m_barrelInHand = false;
     //         m_heldBarrelGameObject.SetActive(false);
-    //     }
+    //     
     // }
 
     private IEnumerator ThrowBombCoroutine(Vector3 finalPos, GameObject looseBomb)
     {
+        // Debug.Log(m_playerMovementController.m_characterController.velocity);
+        // Debug.Log(m_playerMovementController.m_isDashing);
+        // Debug.Log(m_playerMovementController.m_isMoving);
+
+        float throwMultiplier = 1f;
+        if (m_playerMovementController.m_isDashing)
+        {
+            throwMultiplier = m_dashingThrowMultiplier;
+        }
+        else if (m_playerMovementController.m_isMoving && !m_playerMovementController.m_isDashing)
+        {
+            throwMultiplier = m_movingThrowMultiplier;
+        }
+        
         Vector3 initialPos = m_feetPosition.position;
         
         float heightDeltaWithFloor = transform.position.y - m_feetPosition.position.y;
@@ -436,7 +453,7 @@ public class PlayerItemController : MonoBehaviour
         Rigidbody looseBombRb = looseBomb.GetComponent<Rigidbody>();
         looseBombRb.isKinematic = true;
         
-        float throwBombTime = m_bombThrowingAirTime * (horizontalDistance / m_maxThrowDistance);
+        float throwBombTime = m_bombThrowingAirTime * (horizontalDistance / (m_maxThrowDistance * throwMultiplier));
         
         for (float t = 0; t < 1; t += Time.fixedDeltaTime / throwBombTime)
         {
